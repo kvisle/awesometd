@@ -231,6 +231,10 @@ void draw_health(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_FillRect(s, &green, SDL_MapRGB(s->format,0,255,0));
     SDL_FillRect(s, &red, SDL_MapRGB(s->format, 255,0,0));
 }
+void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
+    SDL_Rect gray = { x+2,y,(28*cur/max),3 };
+    SDL_FillRect(s, &gray, SDL_MapRGB(s->format,200,200,200));
+}
 
 void draw_towers(void) {
     int i;
@@ -238,6 +242,7 @@ void draw_towers(void) {
         if ( towers[i].active == 1 ) {
             updaterect(towers[i].loc_x, towers[i].loc_y);
             draw_sprite(get_screen(),towers[i].spid, towers[i].frameno,DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
+            draw_reload(get_screen(), towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
         }
     }
 }
@@ -249,6 +254,7 @@ void draw_tower(int x, int y) {
             if ( towers[i].loc_x == x && towers[i].loc_y == y ) {
                 updaterect(x,y);
                 draw_sprite(get_screen(),towers[i].spid, towers[i].frameno, DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
+                draw_reload(get_screen(),towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
                 return;
             }
         }
@@ -352,6 +358,7 @@ void shoot_towers(void) {
             } else {
                 towers[i].reloadtimeleft--;
             }
+            updaterect(towers[i].loc_x, towers[i].loc_y);
         }
     }
 }
