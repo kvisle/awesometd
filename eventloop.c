@@ -7,9 +7,8 @@
 #include "sprites.h"
 #include "gfx_buttons.h"
 
-SDL_Event eventqueue;
-
 void event_loop(void) {
+    SDL_Event eventqueue;
     int quit = 0;
     while(1) {
         while(SDL_PollEvent(&eventqueue)) {

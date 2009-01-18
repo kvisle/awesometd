@@ -5,12 +5,12 @@
 #include "render.h"
 #include "game.h"
 
-int mouse_x, mouse_y;
-int cell_x, cell_y;
+static int mouse_x, mouse_y;
+static int cell_x, cell_y;
 
-int colorspopped = 0;
+static int colorspopped = 0;
 
-Uint32 colors[2];
+static Uint32 colors[2];
 
 void update_cursor(int x, int y) {
     if ( cell_y > 12 ) {

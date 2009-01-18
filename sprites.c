@@ -8,7 +8,7 @@
 #include "settings.h"
 #include "game.h"
 
-int level_monster[1][10][40] = {
+static const int level_monster[1][10][40] = {
     {
         { 1,1,1,1,1,1,1,1,1,1 },
         { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
@@ -16,28 +16,28 @@ int level_monster[1][10][40] = {
     }
 };
 
-int monster_batches[1][10] = {
+static const int monster_batches[1][10] = {
     { 10, 15, 30, 0, 0, 0, 0, 0, 0, 0 }
 };
 
-int level_batches[1] = {
+static const int level_batches[1] = {
     10
 };
 
-struct monster monster_definitions[3] = {
+static const struct monster monster_definitions[3] = {
     { 0,0,0,0,15,15,4,DIRECTION_S,0,0,10,5 },
     { 0,0,0,0,20,20,5,DIRECTION_S,0,0,20,10 },
     { 0,0,0,0,50,50,4,DIRECTION_S,0,0,35,15 }
 };
 
-struct tower tower_definitions[2] = {
+static const struct tower tower_definitions[2] = {
     { 0,0,1,0,1,10,5,0,50,0,100 },
     { 0,0,1,0,1,50,30,10,100,0,50 }
 };
 
-int level = 0;
-int batch = 0;
-int monster = 0;
+static int level = 0;
+static int batch = 0;
+static int monster = 0;
 
 
 struct monster monsters[MAX_MONSTERS];
@@ -45,7 +45,7 @@ struct tower towers[MAX_TOWERS];
 struct sprites sprites;
 
 
-int sprites_inited = 0;
+static int sprites_inited = 0;
 
 void load_sprite_from_pic(char *filename, int width, int height, int frames) {
     int i,d;

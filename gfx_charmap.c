@@ -3,8 +3,8 @@
 #include "gfx_charmap.h"
 #include "render.h"
 
-int charmap_inited = 0;
-int numcharmap[256] = {
+static int charmap_inited = 0;
+static const int numcharmap[256] = {
     ['0'] = 1,
     ['1'] = 2,
     ['2'] = 3,
@@ -43,7 +43,7 @@ int numcharmap[256] = {
     ['z'] = 36
 };
 
-int charmap[CHAR_COUNT][CHAR_SIZE_Y][CHAR_SIZE_X] = {
+static const int charmap[CHAR_COUNT][CHAR_SIZE_Y][CHAR_SIZE_X] = {
     {
         { 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -456,7 +456,7 @@ SDL_Rect charmapslices[] = {
     { 288,0,CHAR_SIZE_X,CHAR_SIZE_Y }
 };
 
-SDL_Surface *charmapsurface;
+static SDL_Surface *charmapsurface;
 
 void init_gfx_charmap(void) {
     int i, x, y;

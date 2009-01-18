@@ -4,7 +4,7 @@
 #include "level.h"
 #include "render.h"
 
-int levels[1][15][20] = {
+static const int levels[1][15][20] = {
     { // Level 1!
         { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
         { 0,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0 },
@@ -24,7 +24,7 @@ int levels[1][15][20] = {
     }
 };
 
-SDL_Rect level_tiles[8] = {
+static const SDL_Rect level_tiles[8] = {
     { 0,0,32,32 }, // Path going North/South
     { 32,0,32,32 }, // Path going West/East
     { 64,0,32,32 }, // Grass
@@ -44,11 +44,11 @@ SDL_Rect level_tiles[8] = {
 // c = east tile
 // d = south tile
 // e = west tile
-int tilepicker[2][2][2][2] = {{{{ 2,2 },{ 2,6 }},{{ 2,1 },{ 5,2 }}},{{{ 2,3 },{ 0,2 }},{{ 4,2 },{ 2,7 }}}};
+static const int tilepicker[2][2][2][2] = {{{{ 2,2 },{ 2,6 }},{{ 2,1 },{ 5,2 }}},{{{ 2,3 },{ 0,2 }},{{ 4,2 },{ 2,7 }}}};
 
-SDL_Surface *tiles;
+static SDL_Surface *tiles;
 
-int currentlevel = 0;
+static int currentlevel = 0;
 
 void load_level(SDL_Surface *bg, int lid) {
     int a,b,c,d,e;

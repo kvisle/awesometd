@@ -5,9 +5,9 @@
 #include "settings.h"
 #include "game.h"
 
-int money = 200;
-int score = 0;
-int lives = 20;
+static int money = 200;
+static int score = 0;
+static int lives = 20;
 
 void update_money(int amount) {
     char moneytext[20];

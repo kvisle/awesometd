@@ -10,18 +10,18 @@
 #include "level.h"
 #include "game.h"
 
-SDL_Surface *screen;
-SDL_Surface *background;
+static SDL_Surface *screen;
+static SDL_Surface *background;
 
 // An array of integers representing the playfield grid ( X x Y ) ...
 // If set to 1, indicates that it should be updated. Usually set by
 // updaterect, which also makes sure that the background is blit first.
-int field[VIDEOMODE_WIDTH/RECTSIZE_X][VIDEOMODE_HEIGHT/RECTSIZE_Y];
-int rendercount = 0;
-char fpstext[16] = "";
-char recttext[24] = "";
+static int field[VIDEOMODE_WIDTH/RECTSIZE_X][VIDEOMODE_HEIGHT/RECTSIZE_Y];
+static int rendercount = 0;
+static char fpstext[16] = "";
+static char recttext[24] = "";
 
-struct updatefield updatefield;
+static struct updatefield updatefield;
 
 // Some stuff we wanna do before we start drawing stuff.
 int init_video(void) {
