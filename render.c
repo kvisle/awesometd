@@ -42,6 +42,8 @@ int init_video(void) {
     update_score(0);
     update_money(0);
     update_lives(0);
+    draw_hint_text(screen);
+    draw_buttons(screen);
 
     return 0;
 }
@@ -116,7 +118,7 @@ void draw_stuff_on_top(void) {
 
     for (x=0;x<20;x++) {
         for (y=0;y<15;y++) {
-            if ( x >= 10 && x <= 14 && y == 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
+            if ( x >= 10 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
                 drawn_helptext = 1;
                 draw_hint_text(screen);
                 drawn_buttons = 1;
