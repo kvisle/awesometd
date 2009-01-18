@@ -478,7 +478,7 @@ void init_gfx_charmap(void) {
     charmap_inited++;
 }
 
-void draw_text(SDL_Surface *s, char *text, int x, int y) {
+void draw_text(SDL_Surface *s, const char *text, int x, int y) {
     SDL_Rect dstrect = { 0,0,CHAR_SIZE_X,CHAR_SIZE_Y };
     int i = 0;
     if ( charmap_inited == 0 ) init_gfx_charmap();
@@ -486,7 +486,7 @@ void draw_text(SDL_Surface *s, char *text, int x, int y) {
         dstrect.x = x+(i*8);
         dstrect.y = y;
         updaterect((x+(i*8))/32, y/32);
-        SDL_BlitSurface(charmapsurface, &charmapslices[numcharmap[text[i]]], s, &dstrect);
+        SDL_BlitSurface(charmapsurface, &charmapslices[numcharmap[(unsigned char)text[i]]], s, &dstrect);
         i++;
     }
 }

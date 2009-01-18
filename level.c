@@ -24,7 +24,7 @@ static const int levels[1][15][20] = {
     }
 };
 
-static const SDL_Rect level_tiles[8] = {
+static SDL_Rect level_tiles[8] = {
     { 0,0,32,32 }, // Path going North/South
     { 32,0,32,32 }, // Path going West/East
     { 64,0,32,32 }, // Grass
@@ -53,7 +53,7 @@ static int currentlevel = 0;
 void load_level(SDL_Surface *bg, int lid) {
     int a,b,c,d,e;
     SDL_Rect *tile;
-    Uint32 color, black, green, brown;
+    Uint32 black, green, brown;
     black = SDL_MapRGB(bg->format,0,0,0);
     green = SDL_MapRGB(bg->format,0,128,0);
     brown = SDL_MapRGB(bg->format,128,64,0);

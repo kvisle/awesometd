@@ -69,6 +69,7 @@ void draw_health(SDL_Surface *s, int x, int y, int cur, int max);
 void add_tower(int x, int y, int type);
 int has_tower(int x, int y);
 void shoot_towers(void);
+void draw_tower(int x, int y);
 
 
 #endif /* __SPRITES_H__ */

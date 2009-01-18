@@ -5,6 +5,6 @@
 #define CHAR_SIZE_X 8
 #define CHAR_SIZE_Y 8
 
-void draw_text(SDL_Surface *s, char *text, int x, int y);
+void draw_text(SDL_Surface *s, const char *text, int x, int y);
 
 #endif /* __GFX_CHARMAP_H__ */

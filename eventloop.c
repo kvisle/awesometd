@@ -6,6 +6,7 @@
 #include "cursor.h"
 #include "sprites.h"
 #include "gfx_buttons.h"
+#include "level.h"
 
 void event_loop(void) {
     SDL_Event eventqueue;
@@ -38,8 +39,8 @@ void event_loop(void) {
                             spawn_monster();
                         break;
                         case TIMER_MOVEMONSTER:
-                            move_monster();
                             move_projectile();
+                            move_monster();
                         break;
                         case TIMER_ANIMATESPRITES:
                             animate_sprites();
