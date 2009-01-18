@@ -6,6 +6,7 @@
 #define MAX_DIRECTIONS 4
 #define MAX_MONSTERS 50
 #define MAX_TOWERS 100
+#define MAX_PROJECTILES 512
 
 #define DIRECTION_N 0
 #define DIRECTION_E 1
@@ -37,6 +38,7 @@ struct tower {
     int price;
     int reloadtimeleft;
     int range;
+    int projectile;
 };
 
 struct sprites {
@@ -46,9 +48,20 @@ struct sprites {
     int spritecount;
 };
 
+struct projectile {
+    int loc_x, loc_y; // The exact location.
+    int spid; // Sprite ID
+    int frameno;
+    int speed;
+    int targetmonster;
+    int damage; // If damage is 0, it's considered as inactive.
+    int splash;
+};
+
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y);
 void spawn_monster(void);
 void move_monster(void);
+void move_projectile(void);
 void animate_sprites(void);
 void init_sprites(void);
 void draw_towers(void);

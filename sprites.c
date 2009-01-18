@@ -8,6 +8,8 @@
 #include "settings.h"
 #include "game.h"
 
+#define PI 3.14159265
+
 static const int level_monster[1][10][40] = {
     {
         { 1,1,1,1,1,1,1,1,1,1 },
@@ -31,8 +33,12 @@ static const struct monster monster_definitions[3] = {
 };
 
 static const struct tower tower_definitions[2] = {
-    { 0,0,1,0,1,10,5,0,50,0,100 },
-    { 0,0,1,0,1,50,30,10,100,0,50 }
+    { 0,0,1,0,1,10,5,0,50,0,100,0 },
+    { 0,0,1,0,1,50,30,10,100,0,50,0 }
+};
+
+static const struct projectile projectile_definitions[1] = {
+    { 0,0,1,0,10,0,5,0 }
 };
 
 static int level = 0;
@@ -42,6 +48,7 @@ static int monster = 0;
 
 struct monster monsters[MAX_MONSTERS];
 struct tower towers[MAX_TOWERS];
+struct projectile projectiles[MAX_PROJECTILES];
 struct sprites sprites;
 
 
@@ -146,6 +153,76 @@ void spawn_monster(void) {
     }
 }
 
+void move_projectile(void) {
+    int i, ax, ay;
+    float x, y, angle;
+    SDL_Rect projrect = { 0,0, 4, 4 };
+
+    for (i=0;i<MAX_PROJECTILES;i++) {
+        if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
+            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
+                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+                    updaterect(ax,ay);
+                }
+            }
+            projectiles[i].damage = 0;
+        } else if ( projectiles[i].damage > 0 ) {
+
+            angle = atan2(monsters[projectiles[i].targetmonster].loc_y - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x - projectiles[i].loc_x)*2 / PI;
+            x = cos(angle);
+            y = sin(angle);
+
+            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
+                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+                    updaterect(ax,ay);
+                }
+            }
+
+
+            projectiles[i].loc_y += y * projectiles[i].speed;
+            projectiles[i].loc_x += x * projectiles[i].speed;
+            projrect.x = projectiles[i].loc_x;
+            projrect.y = projectiles[i].loc_y;
+
+            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
+                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+                    updaterect(ax,ay);
+                }
+            }
+
+            if (
+                projectiles[i].loc_x > monsters[projectiles[i].targetmonster].loc_x &&
+                projectiles[i].loc_x < (monsters[projectiles[i].targetmonster].loc_x + RECTSIZE_X) &&
+                projectiles[i].loc_y > monsters[projectiles[i].targetmonster].loc_y &&
+                projectiles[i].loc_y < (monsters[projectiles[i].targetmonster].loc_y + RECTSIZE_Y)
+                ) {
+                    monsters[projectiles[i].targetmonster].cur_hp = monsters[projectiles[i].targetmonster].cur_hp-projectiles[i].damage;
+                    projectiles[i].damage = 0;
+                    if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
+                        monsters[projectiles[i].targetmonster].cur_hp = 0;
+
+                        for ( ax=(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X);ax<=((monsters[projectiles[i].targetmonster].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
+                            for ( ay=(monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);ay<=((monsters[projectiles[i].targetmonster].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
+                                updaterect(ax,ay);
+                            }
+                        }
+//                        updaterect(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X, monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);
+//                        updaterect((monsters[projectiles[i].targetmonster].loc_x+31)/RECTSIZE_X,monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);
+//                        updaterect((monsters[projectiles[i].targetmonster].loc_x+31)/RECTSIZE_X,(monsters[projectiles[i].targetmonster].loc_y+31)/RECTSIZE_Y);
+//                        updaterect(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X,(monsters[projectiles[i].targetmonster].loc_y+31)/RECTSIZE_Y);
+
+                        update_score(monsters[projectiles[i].targetmonster].score);
+                        update_money(monsters[projectiles[i].targetmonster].money);
+                        draw_numbers();
+                    }
+
+            } else {
+                SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
+            }
+        }
+    }
+}
+
 void move_monster(void) {
     if ( sprites_inited != 1 ) return;
     int i, old_x, old_y;
@@ -232,7 +309,7 @@ void draw_health(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_FillRect(s, &red, SDL_MapRGB(s->format, 255,0,0));
 }
 void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
-    SDL_Rect gray = { x+2,y,(28*cur/max),3 };
+    SDL_Rect gray = { x+2,y+28,(28*cur/max),3 };
     SDL_FillRect(s, &gray, SDL_MapRGB(s->format,200,200,200));
 }
 
@@ -308,6 +385,19 @@ void animate_sprites(void) {
     }
 }
 
+void add_projectile(int pid, int mid, int tid) {
+    int i;
+    for (i=0;i<MAX_PROJECTILES;i++) {
+        if ( projectiles[i].damage == 0 ) {
+            projectiles[i] = projectile_definitions[pid];
+            projectiles[i].loc_x = (towers[tid].loc_x * RECTSIZE_X) + (RECTSIZE_X / 2);
+            projectiles[i].loc_y = (towers[tid].loc_y * RECTSIZE_Y) + (RECTSIZE_Y / 2);
+            projectiles[i].targetmonster = mid;
+            return;
+        }
+    }
+}
+
 void shoot_towers(void) {
     int i,y;
     double k1,k2,h;
@@ -339,25 +429,13 @@ void shoot_towers(void) {
                     }
                 }
                 if ( target > -1 ) {
-                    monsters[target].cur_hp = monsters[target].cur_hp-towers[i].damage;
-                    if ( monsters[target].cur_hp <= 0 ) {
-                        monsters[target].cur_hp = 0;
-
-                        updaterect(monsters[target].loc_x/RECTSIZE_X, monsters[target].loc_y/RECTSIZE_Y);
-                        updaterect((monsters[target].loc_x+31)/RECTSIZE_X,monsters[target].loc_y/RECTSIZE_Y);
-                        updaterect((monsters[target].loc_x+31)/RECTSIZE_X,(monsters[target].loc_y+31)/RECTSIZE_Y);
-                        updaterect(monsters[target].loc_x/RECTSIZE_X,(monsters[target].loc_y+31)/RECTSIZE_Y);
-
-                        update_score(monsters[target].score);
-                        update_money(monsters[target].money);
-                        draw_numbers();
-                    }
-
+                    add_projectile(towers[i].projectile,target,i);
                     towers[i].reloadtimeleft = towers[i].reload;
                 }
             } else {
                 towers[i].reloadtimeleft--;
             }
+            // This one is here to make sure that the reload-bar is updated on the screen.
             updaterect(towers[i].loc_x, towers[i].loc_y);
         }
     }

@@ -39,6 +39,7 @@ void event_loop(void) {
                         break;
                         case TIMER_MOVEMONSTER:
                             move_monster();
+                            move_projectile();
                         break;
                         case TIMER_ANIMATESPRITES:
                             animate_sprites();
