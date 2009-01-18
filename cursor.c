@@ -21,6 +21,7 @@ void update_cursor(int x, int y) {
     mouse_y = y;
     cell_x = x / RECTSIZE_X;
     cell_y = y / RECTSIZE_Y;
+    updaterect(cell_x,cell_y);
 }
 
 void get_cursor_location(int *x, int *y) {

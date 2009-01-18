@@ -118,7 +118,7 @@ void spawn_monster(void) {
     if ( monster_batches[level][batch] == monster ) {
         for (i=0;i<MAX_MONSTERS;i++) {
             if ( monsters[i].cur_hp > 0 ) {
-                printf("Not spawning: Stuff is still alive.\n");
+//                printf("Not spawning: Stuff is still alive.\n");
 //   Not spawning any new monsters, 
 //   because we still have live monsters on the field.
                 return;
@@ -149,17 +149,22 @@ void spawn_monster(void) {
 void move_monster(void) {
     if ( sprites_inited != 1 ) return;
     int i, old_x, old_y;
+
     for (i=0;i<MAX_MONSTERS;i++) {
+
         if ( monsters[i].cur_hp > 0 ) {
-            old_x = monsters[i].loc_x / RECTSIZE_X;
-            old_y = monsters[i].loc_y / RECTSIZE_Y;
+            old_x = monsters[i].loc_x;
+            old_y = monsters[i].loc_y;
             if ( monsters[i].loc_x/RECTSIZE_X == 19 && monsters[i].loc_y/RECTSIZE_Y == 2 ) {
+                // TODO: This is a hardcoded way for me to detect if the monster has arrived at its end path
+                // This should be fixed to not put stupid limitations on the game.
                 update_lives(-1);
                 draw_numbers();
                 monsters[i].cur_hp = 0;
             }
             monsters[i].progress = monsters[i].progress + monsters[i].speed;
-            if ( monsters[i].progress > 10 ) {
+
+            while ( monsters[i].progress > 10 ) {
                 switch(monsters[i].direction) {
                     case DIRECTION_N:
                         if ( is_path( monsters[i].loc_x/RECTSIZE_X, ((monsters[i].loc_y-1)/RECTSIZE_Y)) ) monsters[i].loc_y--;
@@ -208,8 +213,11 @@ void move_monster(void) {
                 }
                 monsters[i].progress = monsters[i].progress - 10;
             }
-//            if ( old_x != (monsters[i].loc_x / RECTSIZE_X) || old_y != (monsters[i].loc_y / RECTSIZE_Y)) updaterect(old_x, old_y);
-            updaterect(old_x, old_y);
+            updaterect(old_x/RECTSIZE_X, old_y/RECTSIZE_Y);
+            updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
+            updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+            updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+
             draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
             draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
         }
@@ -314,8 +322,7 @@ void shoot_towers(void) {
                         k2 = ((towers[i].loc_y*32)+16)-(monsters[y].loc_y+16);
                         if ( k2 < 0 ) k2 = k2 * -1;
 
-                        h = sqrt(pow(k1,2) + pow(k2,2));
-
+                        h = sqrt((k1*k1) + (k2*k2));
 
                         if ( h < towers[i].range ) {
                             if ( shortest == 0 || shortest > h ) {
