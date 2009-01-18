@@ -8,8 +8,6 @@
 #include "settings.h"
 #include "game.h"
 
-#define PI 3.14159265
-
 static const int level_monster[1][10][40] = {
     {
         { 1,1,1,1,1,1,1,1,1,1 },
@@ -168,7 +166,7 @@ void move_projectile(void) {
             projectiles[i].damage = 0;
         } else if ( projectiles[i].damage > 0 ) {
 
-            angle = atan2(monsters[projectiles[i].targetmonster].loc_y - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x - projectiles[i].loc_x)*2 / PI;
+            angle = atan2(monsters[projectiles[i].targetmonster].loc_y - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x - projectiles[i].loc_x)*2 / M_PI;
             x = cos(angle);
             y = sin(angle);
 
