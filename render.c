@@ -70,6 +70,7 @@ void render(void) {
 int getrenders(void) {
     int i = rendercount;
     sprintf(fpstext, "%11d fps", i);
+    draw_text(screen, fpstext, 520, 0);
     rendercount = 0;
     return i;
 }
@@ -138,5 +139,8 @@ void draw_stuff_on_top(void) {
     if ( field[19][2] == 1 ) {
         SDL_Rect rect = { 19*RECTSIZE_X, 2*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
+    }
+    if ( field[17][0] == 1 || field[18][0] == 1 || field[19][0] == 1) {
+        draw_text(screen, fpstext, 520, 0);
     }
 }
