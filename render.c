@@ -51,19 +51,11 @@ int init_video(void) {
 
 // DRAW STUFF!
 void render(void) {
-    // TODO : Remove unnecessary drawing from this function ... if we stick to only
-    // drawing stuff when we need to, we will save a lot of time.
-
-    SDL_Rect rect = { 3*RECTSIZE_X, 0*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
 //    draw_text(screen, fpstext, 520, 0);
-    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
 
     sprintf(recttext, "%11d rectupdates", updatefield.count);
 //    draw_text(screen, recttext, 0, 0);
-    rect.x = 19*RECTSIZE_X;
-    rect.y = 2*RECTSIZE_Y;
 
-    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
     draw_stuff_on_top();
 
     if ( updatefield.count > 0 ) {
@@ -132,9 +124,19 @@ void draw_stuff_on_top(void) {
                 drawn_buttons = 1;
                 draw_buttons(screen);
             }
-            if ( has_tower(x,y) == 1 && field[x][y] == 1 ) {
+            if ( field[x][y] == 1 ) {
                 draw_tower(x,y);
+                draw_enemy(x,y);
+                draw_projectile(x,y);
             }
         }
+    }
+    if ( field[3][0] == 1 ) {
+        SDL_Rect rect = { 3*RECTSIZE_X, 0*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
+    }
+    if ( field[19][2] == 1 ) {
+        SDL_Rect rect = { 19*RECTSIZE_X, 2*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
     }
 }

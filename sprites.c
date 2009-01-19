@@ -204,10 +204,6 @@ void move_projectile(void) {
                                 updaterect(ax,ay);
                             }
                         }
-//                        updaterect(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X, monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);
-//                        updaterect((monsters[projectiles[i].targetmonster].loc_x+31)/RECTSIZE_X,monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);
-//                        updaterect((monsters[projectiles[i].targetmonster].loc_x+31)/RECTSIZE_X,(monsters[projectiles[i].targetmonster].loc_y+31)/RECTSIZE_Y);
-//                        updaterect(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X,(monsters[projectiles[i].targetmonster].loc_y+31)/RECTSIZE_Y);
 
                         update_score(monsters[projectiles[i].targetmonster].score);
                         update_money(monsters[projectiles[i].targetmonster].money);
@@ -215,7 +211,7 @@ void move_projectile(void) {
                     }
 
             } else {
-                SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
+//                SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
             }
         }
     }
@@ -293,8 +289,8 @@ void move_monster(void) {
             updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
             updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
 
-            draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
-            draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
+//            draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
+//            draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
         }
     }
 //    printf("Moving monsters...\n");
@@ -310,6 +306,39 @@ void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_Rect gray = { x+2,y+28,(28*cur/max),3 };
     SDL_FillRect(s, &gray, SDL_MapRGB(s->format,200,200,200));
 }
+
+void draw_enemy(int x, int y) {
+    int i, ax, ay;
+    for (i=0;i<MAX_MONSTERS;i++) {
+        if ( monsters[i].cur_hp > 0 ) {
+            for (ax=(monsters[i].loc_x/RECTSIZE_X);ax<=((monsters[i].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
+                for (ay=(monsters[i].loc_y/RECTSIZE_Y);ay<=((monsters[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
+                    if ( ay == y && ax == x ) {
+                        draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
+                        draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void draw_projectile(int x, int y) {
+    int i, ax, ay;
+    for (i=0;i<MAX_PROJECTILES;i++) {
+        if ( projectiles[i].damage > 0 ) {
+            for (ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
+                for (ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
+                    if ( ay == y && ax == x ) {
+                        SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
+                        SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 void draw_towers(void) {
     int i;
