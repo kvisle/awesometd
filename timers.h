@@ -10,5 +10,7 @@
 
 void init_timers(void);
 Uint32 timeduserevent(Uint32 interval, void *param);
+Uint32 timedrenderevent(Uint32 interval, void *param);
+void mark_rendered(void);
 
 #endif

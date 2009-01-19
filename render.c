@@ -9,6 +9,7 @@
 #include "gfx_buttons.h"
 #include "level.h"
 #include "game.h"
+#include "timers.h"
 
 static SDL_Surface *screen;
 static SDL_Surface *background;
@@ -62,6 +63,7 @@ void render(void) {
         memset(&field, 0x00, sizeof(int)*(VIDEOMODE_WIDTH/RECTSIZE_X)*(VIDEOMODE_HEIGHT/RECTSIZE_Y));
         SDL_UpdateRects(screen, updatefield.count, (SDL_Rect *) &updatefield.rects);
         updatefield.count = 0;
+        mark_rendered();
     }
     rendercount++;
 }

@@ -9,7 +9,7 @@ static SDL_Event render_t, report_fps_t, spawn_monster_t, move_monster_t, animat
 void init_timers(void) {
     render_t.type = SDL_USEREVENT;
     render_t.user.code = TIMER_RENDER;
-    render_id = SDL_AddTimer(1000/60, timeduserevent, &render_t);
+    render_id = SDL_AddTimer(1000/60, timedrenderevent, &render_t);
 
     report_fps_t.type = SDL_USEREVENT;
     report_fps_t.user.code = TIMER_REPORTFPS;
@@ -32,9 +32,29 @@ void init_timers(void) {
     shoot_towers_id = SDL_AddTimer(100, timeduserevent, &shoot_towers_t);
 }
 
+static int waitingforrender = 0;
+
+Uint32 timedrenderevent(Uint32 interval, void* param) {
+    SDL_Event *event = (SDL_Event*)param;
+    if ( waitingforrender == 0 ) {
+        SDL_PushEvent(event);
+        waitingforrender = 1;
+    }
+    else {
+//        printf("Dropping frame, since we still haven't rendered the previous one. WE DO NOT WANT TO MAKE A RENDERQUEUE - THAT'S JUST FUCKING STUPID!\n");
+    }
+    return interval;
+}
+
 Uint32 timeduserevent(Uint32 interval, void* param) {
     SDL_Event *event = (SDL_Event*)param;
     SDL_PushEvent(event);
     return interval;
 }
 
+void mark_rendered(void) {
+    if ( waitingforrender == 0 ) {
+        printf("WTF? waitingforrender == 0?!\n");
+    }
+    waitingforrender = 0;
+}

@@ -12,9 +12,10 @@ void event_loop(void) {
     SDL_Event eventqueue;
     int quit = 0;
     while(1) {
-        while(SDL_PollEvent(&eventqueue)) {
+        while(SDL_WaitEvent(&eventqueue)) {
             switch(eventqueue.type) {
                 case SDL_QUIT:
+                    return;
                     quit = 1;
                 break;
                 case SDL_MOUSEMOTION:
@@ -47,6 +48,9 @@ void event_loop(void) {
                         break;
                         case TIMER_SHOOTTOWERS:
                             shoot_towers();
+                        break;
+                        case TIMER_RENDER:
+                            render();
                         break;
                     }
                 break;
