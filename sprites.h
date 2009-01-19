@@ -71,5 +71,6 @@ int has_tower(int x, int y);
 void shoot_towers(void);
 void draw_tower(int x, int y);
 void draw_enemy(int x, int y);
+void draw_projectile(int x, int y);
 
 #endif /* __SPRITES_H__ */
