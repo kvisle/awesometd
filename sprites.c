@@ -283,17 +283,13 @@ void move_monster(void) {
                     break;
                 }
                 monsters[i].progress = monsters[i].progress - 10;
+                updaterect(old_x/RECTSIZE_X, old_y/RECTSIZE_Y);
+                updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
+                updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+                updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
             }
-            updaterect(old_x/RECTSIZE_X, old_y/RECTSIZE_Y);
-            updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
-            updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
-            updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
-
-//            draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
-//            draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
         }
     }
-//    printf("Moving monsters...\n");
 }
 
 void draw_health(SDL_Surface *s, int x, int y, int cur, int max) {
