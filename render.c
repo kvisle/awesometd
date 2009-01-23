@@ -81,15 +81,16 @@ int getrenders(void) {
 // This function should be called before we draw any sprites in the cell, since
 // it will blit from the background surface if we have one.
 void updaterect(int x, int y) {
-    if ( field[x][y] == 0 ) {
-        field[x][y] = 1;
-        updatefield.rects[updatefield.count].x = x * RECTSIZE_X;
-        updatefield.rects[updatefield.count].y = y * RECTSIZE_Y;
-        updatefield.rects[updatefield.count].w = RECTSIZE_X;
-        updatefield.rects[updatefield.count].h = RECTSIZE_Y;
-        SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
-
-        updatefield.count++;
+    if ( x < 20 && y < 15 ) {
+        if ( field[x][y] == 0 ) {
+            field[x][y] = 1;
+            updatefield.rects[updatefield.count].x = x * RECTSIZE_X;
+            updatefield.rects[updatefield.count].y = y * RECTSIZE_Y;
+            updatefield.rects[updatefield.count].w = RECTSIZE_X;
+            updatefield.rects[updatefield.count].h = RECTSIZE_Y;
+            SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
+            updatefield.count++;
+        }
     }
 }
 
@@ -101,10 +102,11 @@ void draw_stuff_on_top(void) {
     int m_x, m_y;
 
     int drawn_helptext = 0;
-    int drawn_mouse = 0;
     int drawn_buttons = 0;
 
     get_cursor_location(&m_x, &m_y);
+
+    draw_cursor(screen);
 
     for (x=0;x<20;x++) {
         for (y=0;y<15;y++) {
@@ -113,10 +115,6 @@ void draw_stuff_on_top(void) {
                 draw_hint_text(screen);
                 drawn_buttons = 1;
                 draw_buttons(screen);
-            }
-            if ( x == m_x && y == m_y && drawn_mouse == 0 && field[x][y] == 1 ) {
-                drawn_mouse = 1;
-                draw_cursor(screen);
             }
             if ( x >= 8 && y >= 13 && x <= 10 && y <= 14 && drawn_buttons == 0 && field[x][y] == 1 ) {
                 drawn_buttons = 1;

@@ -101,10 +101,9 @@ void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
                 dst.h = sprites.slices[spid][rot][fid].h;
                 for (ax=(x/RECTSIZE_X);ax<=((dst.x+dst.w-1)/RECTSIZE_X);ax++) {
                     for (ay=(y/RECTSIZE_Y);ay<=((dst.y+dst.h-1)/RECTSIZE_Y);ay++) {
-                        if ( ax < (VIDEOMODE_WIDTH/RECTSIZE_X) && ay < (VIDEOMODE_HEIGHT/RECTSIZE_Y) ) updaterect(ax, ay);
+                        updaterect(ax, ay);
                     }
                 }
-                updaterect(0,0);
                 SDL_BlitSurface(sprites.sprites[spid], &sprites.slices[spid][rot][fid], s, &dst);
             } else {
                 printf("ERR -- draw_sprite(): Attempt to draw outside the screen.\n");
@@ -157,7 +156,7 @@ void move_projectile(void) {
     SDL_Rect projrect = { 0,0, 4, 4 };
 
     for (i=0;i<MAX_PROJECTILES;i++) {
-        if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
+        if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 && projectiles[i].damage > 0 ) {
             for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
                 for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
                     updaterect(ax,ay);
@@ -304,33 +303,21 @@ void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
 }
 
 void draw_enemy(int x, int y) {
-    int i, ax, ay;
+    int i;
     for (i=0;i<MAX_MONSTERS;i++) {
-        if ( monsters[i].cur_hp > 0 ) {
-            for (ax=(monsters[i].loc_x/RECTSIZE_X);ax<=((monsters[i].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
-                for (ay=(monsters[i].loc_y/RECTSIZE_Y);ay<=((monsters[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
-                    if ( ay == y && ax == x ) {
-                        draw_sprite(screen,monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
-                        draw_health(screen,monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
-                    }
-                }
-            }
+        if ( monsters[i].cur_hp > 0 && (monsters[i].loc_x/RECTSIZE_X) == x && (monsters[i].loc_y/RECTSIZE_Y) == y ) {
+            draw_sprite(screen,monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
+            draw_health(screen,monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
         }
     }
 }
 
 void draw_projectile(int x, int y) {
-    int i, ax, ay;
+    int i;
     for (i=0;i<MAX_PROJECTILES;i++) {
-        if ( projectiles[i].damage > 0 ) {
-            for (ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
-                for (ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
-                    if ( ay == y && ax == x ) {
-                        SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
-                        SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
-                    }
-                }
-            }
+        if ( projectiles[i].damage > 0 && (projectiles[i].loc_x/RECTSIZE_X) == x && (projectiles[i].loc_y/RECTSIZE_Y) == y ) {
+            SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
+            SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
         }
     }
 }
