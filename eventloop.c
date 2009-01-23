@@ -8,6 +8,8 @@
 #include "gfx_buttons.h"
 #include "level.h"
 
+int gamecycle = 0;
+
 void event_loop(void) {
     SDL_Event eventqueue;
     int quit = 0;
@@ -36,18 +38,14 @@ void event_loop(void) {
                         case TIMER_REPORTFPS:
                             getrenders();
                         break;
-                        case TIMER_SPAWNMONSTER:
-                            spawn_monster();
-                        break;
-                        case TIMER_MOVEMONSTER:
+                        case TIMER_GAMECYCLE:
                             move_projectile();
                             move_monster();
-                        break;
-                        case TIMER_ANIMATESPRITES:
-                            animate_sprites();
-                        break;
-                        case TIMER_SHOOTTOWERS:
-                            shoot_towers();
+                            if ( (gamecycle % 20) == 0 ) animate_sprites();
+                            if ( (gamecycle % 10) == 0 ) shoot_towers();
+                            if ( (gamecycle % 100) == 0 ) spawn_monster();
+                            if ( gamecycle == 100 ) gamecycle = 0;
+                            gamecycle++;
                         break;
                         case TIMER_RENDER:
                             render();
