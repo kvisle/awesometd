@@ -103,6 +103,7 @@ void draw_stuff_on_top(void) {
 
     int drawn_helptext = 0;
     int drawn_buttons = 0;
+    int drawn_numbers = 0;
 
     get_cursor_location(&m_x, &m_y);
 
@@ -124,6 +125,10 @@ void draw_stuff_on_top(void) {
                 draw_tower(x,y);
                 draw_enemy(x,y);
                 draw_projectile(x,y);
+            }
+            if ( x >= 3 && x <= 9 && y >=13 && field[x][y] == 1 && drawn_numbers == 0 ) {
+                drawn_numbers = 1;
+                draw_numbers();
             }
         }
     }
