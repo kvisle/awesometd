@@ -33,6 +33,8 @@ void event_loop(void) {
                     } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
                         press_button(eventqueue.button.x, eventqueue.button.y);
                 break;
+                case SDL_MOUSEBUTTONUP:
+                break;
                 case SDL_USEREVENT:
                     switch(eventqueue.user.code) {
                         case TIMER_REPORTFPS:
