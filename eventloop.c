@@ -34,7 +34,7 @@ void event_loop(void) {
                 case SDL_USEREVENT:
                     switch(eventqueue.user.code) {
                         case TIMER_REPORTFPS:
-                            printf("** Frames last second: %d!\n", getrenders());
+                            getrenders();
                         break;
                         case TIMER_SPAWNMONSTER:
                             spawn_monster();

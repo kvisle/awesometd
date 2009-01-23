@@ -11,7 +11,7 @@
 #include "game.h"
 #include "timers.h"
 
-static SDL_Surface *screen;
+SDL_Surface *screen;
 static SDL_Surface *background;
 
 // An array of integers representing the playfield grid ( X x Y ) ...
@@ -92,11 +92,6 @@ void updaterect(int x, int y) {
         updatefield.count++;
     }
 }
-
-SDL_Surface *get_screen(void) {
-    return screen;
-}
-
 
 //10x13 = help-text
 

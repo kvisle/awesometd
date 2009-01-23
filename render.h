@@ -27,7 +27,7 @@ int init_video(void);
 void render(void);
 void updaterect(int x, int y);
 int getrenders(void);
-SDL_Surface *get_screen(void);
+SDL_Surface *screen;
 void draw_stuff_on_top(void);
 
 #endif /* __RENDER_H__ */

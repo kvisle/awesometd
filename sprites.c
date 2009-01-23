@@ -211,7 +211,7 @@ void move_projectile(void) {
                     }
 
             } else {
-//                SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
+//                SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
             }
         }
     }
@@ -310,8 +310,8 @@ void draw_enemy(int x, int y) {
             for (ax=(monsters[i].loc_x/RECTSIZE_X);ax<=((monsters[i].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
                 for (ay=(monsters[i].loc_y/RECTSIZE_Y);ay<=((monsters[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
                     if ( ay == y && ax == x ) {
-                        draw_sprite(get_screen(),monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
-                        draw_health(get_screen(),monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
+                        draw_sprite(screen,monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
+                        draw_health(screen,monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
                     }
                 }
             }
@@ -327,7 +327,7 @@ void draw_projectile(int x, int y) {
                 for (ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
                     if ( ay == y && ax == x ) {
                         SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
-                        SDL_FillRect(get_screen(),&projrect, SDL_MapRGB(get_screen()->format, 0,0,255));
+                        SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
                     }
                 }
             }
@@ -341,8 +341,8 @@ void draw_towers(void) {
     for (i=0;i<MAX_TOWERS;i++) {
         if ( towers[i].active == 1 ) {
             updaterect(towers[i].loc_x, towers[i].loc_y);
-            draw_sprite(get_screen(),towers[i].spid, towers[i].frameno,DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
-            draw_reload(get_screen(), towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
+            draw_sprite(screen,towers[i].spid, towers[i].frameno,DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
+            draw_reload(screen, towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
         }
     }
 }
@@ -353,8 +353,8 @@ void draw_tower(int x, int y) {
         if ( towers[i].active == 1 ) {
             if ( towers[i].loc_x == x && towers[i].loc_y == y ) {
                 updaterect(x,y);
-                draw_sprite(get_screen(),towers[i].spid, towers[i].frameno, DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
-                draw_reload(get_screen(),towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
+                draw_sprite(screen,towers[i].spid, towers[i].frameno, DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
+                draw_reload(screen,towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
                 return;
             }
         }
