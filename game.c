@@ -26,8 +26,8 @@ void update_lives(int amount) {
     lives += amount;
     if ( lives < 0 ) {
         lives = 0;
-        game_over();
     }
+    if ( lives == 0 ) game_over();
     sprintf(lifetext, "lives %6d", lives);
     updaterect(3,13);
 }
