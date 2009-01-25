@@ -49,7 +49,7 @@ struct sprites {
 };
 
 struct projectile {
-    int loc_x, loc_y; // The exact location.
+    float loc_x, loc_y; // The exact location.
     int spid; // Sprite ID
     int frameno;
     int speed;

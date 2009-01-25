@@ -39,12 +39,12 @@ static const struct monster monster_definitions[7] = {
 };
 
 static const struct tower tower_definitions[2] = {
-    { 0,0,1,0,1,10,5,0,50,0,100,0 },
+    { 0,0,1,0,1,5,5,0,50,0,100,0 },
     { 0,0,1,0,1,50,30,10,100,0,50,0 }
 };
 
 static const struct projectile projectile_definitions[1] = {
-    { 0,0,1,0,10,0,5,0 }
+    { 0,0,1,0,10,0,3,0 }
 };
 
 static int level = 0;
@@ -162,7 +162,7 @@ void move_projectile(void) {
             projectiles[i].damage = 0;
         } else if ( projectiles[i].damage > 0 ) {
 
-            angle = atan2(monsters[projectiles[i].targetmonster].loc_y - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x - projectiles[i].loc_x)*2 / M_PI;
+            angle = atan2(monsters[projectiles[i].targetmonster].loc_y+16 - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x+16 - projectiles[i].loc_x);
             x = cos(angle);
             y = sin(angle);
 
@@ -313,9 +313,11 @@ void draw_enemy(int x, int y) {
 }
 
 void draw_projectile(int x, int y) {
-    int i;
+    int i, x2, y2;
     for (i=0;i<MAX_PROJECTILES;i++) {
-        if ( projectiles[i].damage > 0 && (projectiles[i].loc_x/RECTSIZE_X) == x && (projectiles[i].loc_y/RECTSIZE_Y) == y ) {
+        x2 = (projectiles[i].loc_x/RECTSIZE_X);
+        y2 = (projectiles[i].loc_y/RECTSIZE_Y);
+        if ( projectiles[i].damage > 0 && x2 == x && y2 == y ) {
             SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
             SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
         }
