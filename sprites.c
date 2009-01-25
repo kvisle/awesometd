@@ -163,7 +163,7 @@ void move_projectile(void) {
     for (i=0;i<MAX_PROJECTILES;i++) {
         if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 && projectiles[i].damage > 0 ) {
             for ( ay = get_celly( projectiles[i] ); ay <= get_locy( projectiles[i].pos_y+projrect.h ); ay++ ) {
-                for ( ax = get_celly( projectiles[i] ); ax <= get_locx( projectiles[i].pos_x+projrect.w ); ax++ ) {
+                for ( ax = get_cellx( projectiles[i] ); ax <= get_locx( projectiles[i].pos_x+projrect.w ); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
@@ -175,7 +175,7 @@ void move_projectile(void) {
             y = sin(angle);
 
             for ( ay = get_celly( projectiles[i] ); ay <= get_locy(projectiles[i].pos_y + projrect.h); ay++ ) {
-                for ( ax = get_celly( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
+                for ( ax = get_cellx( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
@@ -185,11 +185,12 @@ void move_projectile(void) {
             projrect.x = projectiles[i].pos_x;
             projrect.y = projectiles[i].pos_y;
 
-            for ( ay = get_locy( projectiles[i].pos_y ); ay <= get_locy(projectiles[i].pos_y+projrect.h); ay++ ) {
-                for ( ax = get_locx( projectiles[i].pos_x ); ax <= get_locx(projectiles[i].pos_x+projrect.w); ax++ ) {
+            for ( ay = get_celly( projectiles[i] ); ay <= get_locy(projectiles[i].pos_y + projrect.h); ay++ ) {
+                for ( ax = get_cellx( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
+
 
             if (
                 projectiles[i].pos_x > monsters[projectiles[i].targetmonster].pos_x &&
