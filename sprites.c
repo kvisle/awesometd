@@ -441,12 +441,12 @@ void shoot_towers(void) {
                 if ( target > -1 ) {
                     add_projectile(towers[i].projectile,target,i);
                     towers[i].reloadtimeleft = towers[i].reload;
+                    updaterect(towers[i].loc_x, towers[i].loc_y);
                 }
             } else {
                 towers[i].reloadtimeleft--;
+                updaterect(towers[i].loc_x, towers[i].loc_y);
             }
-            // This one is here to make sure that the reload-bar is updated on the screen.
-            updaterect(towers[i].loc_x, towers[i].loc_y);
         }
     }
 }
