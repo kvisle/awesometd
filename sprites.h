@@ -1,6 +1,8 @@
 #ifndef __SPRITES_H__
 #define __SPRITES_H__
 
+#include <SDL.h>
+
 #define MAX_SPRITES 8
 #define MAX_FRAMES 8
 #define MAX_DIRECTIONS 4

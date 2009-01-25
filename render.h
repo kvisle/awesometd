@@ -1,6 +1,7 @@
 #ifndef __RENDER_H__
 #define __RENDER_H__
 
+#include <SDL.h>
 #include "settings.h"
 
 #define RECTSIZE_X  32
