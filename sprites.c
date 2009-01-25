@@ -8,10 +8,10 @@
 #include "settings.h"
 #include "game.h"
 
-#define get_locy(__A) (__A/RECTSIZE_Y)
-#define get_locx(__A) (__A/RECTSIZE_X)
-#define get_cellx(__A) (__A.pos_x/RECTSIZE_X)
-#define get_celly(__A) (__A.pos_y/RECTSIZE_Y)
+#define get_locy(__A) ((__A)/RECTSIZE_Y)
+#define get_locx(__A) ((__A)/RECTSIZE_X)
+#define get_cellx(__A) (((__A).pos_x)/RECTSIZE_X)
+#define get_celly(__A) (((__A).pos_y)/RECTSIZE_Y)
 
 static const int level_monster[1][10][40] = {
     {
