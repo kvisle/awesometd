@@ -282,6 +282,10 @@ void move_monster(void) {
                 updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
                 updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
                 updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+                updaterect(monsters[i].loc_x/RECTSIZE_X, monsters[i].loc_y/RECTSIZE_Y);
+                updaterect((monsters[i].loc_x+31)/RECTSIZE_X,monsters[i].loc_y/RECTSIZE_Y);
+                updaterect((monsters[i].loc_x+31)/RECTSIZE_X,(monsters[i].loc_y+31)/RECTSIZE_Y);
+                updaterect(monsters[i].loc_x/RECTSIZE_X,(monsters[i].loc_y+31)/RECTSIZE_Y);
             }
         }
     }
