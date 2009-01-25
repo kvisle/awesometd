@@ -12,8 +12,8 @@ static SDL_Rect button_rects[2] = {
 static const int button_count = 2;
 static int button_pressed[2] = { 1, 0 };
 static const char buttonhint[2][40] = {
-    "build archer tower",
-    "build cannon tower"
+    "build pillbox",
+    "tower not implemented"
 };
 
 void init_buttons(void) {
