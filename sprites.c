@@ -35,7 +35,7 @@ static const struct monster monster_definitions[7] = {
     { 0,0,0,0,100,100,3,DIRECTION_S,0,0,50,20 },
     { 0,0,0,0,150,150,5,DIRECTION_S,0,0,100,30 },
     { 0,0,0,0,200,200,6,DIRECTION_S,0,0,100,60 },
-    { 0,0,0,0,10000,10000,7,DIRECTION_S,0,0,100000,1000 }
+    { 0,0,2,0,10000,10000,7,DIRECTION_S,0,0,100000,1000 }
 };
 
 static const struct tower tower_definitions[2] = {
@@ -86,6 +86,7 @@ void load_sprite_from_pic(char *filename, int width, int height, int frames) {
 void init_sprites(void) {
     load_sprite_from_pic("enemy1.bmp",32,32,2);
     load_sprite_from_pic("tower1.bmp",32,32,1);
+    load_sprite_from_pic("enemy2.bmp",32,32,2);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
