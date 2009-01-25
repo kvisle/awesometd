@@ -33,7 +33,7 @@ void draw_cursor(SDL_Surface *s) {
     Uint32 color = colors[0];
     if ( colorspopped == 0 ) {
         colors[0] = SDL_MapRGB(s->format, 255,255,255); // "OK" color
-        colors[1] = SDL_MapRGB(s->format, 255,0,0); // "Not OK" color
+        colors[1] = SDL_MapRGB(s->format, 255,64,64); // "Not OK" color
         colorspopped++;
     }
     if ( cell_x > 0 && cell_x < 19 && cell_y > 0 && cell_y < 13 ) {
