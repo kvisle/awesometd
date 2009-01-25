@@ -425,14 +425,11 @@ void shoot_towers(void) {
                 for (y=0;y<MAX_MONSTERS;y++) {
                     if (monsters[y].cur_hp > 0) {
                         k1 = ((towers[i].loc_x*32)+16)-(monsters[y].loc_x+16);
-                        if ( k1 < 0 ) k1 = k1 * -1;
-
                         k2 = ((towers[i].loc_y*32)+16)-(monsters[y].loc_y+16);
-                        if ( k2 < 0 ) k2 = k2 * -1;
 
-                        h = sqrt((k1*k1) + (k2*k2));
+                        h = (k1*k1) + (k2*k2);
 
-                        if ( h < towers[i].range ) {
+                        if ( h < towers[i].range*towers[i].range ) {
                             if ( shortest == 0 || shortest > h ) {
                                 shortest = h;
                                 target = y;
