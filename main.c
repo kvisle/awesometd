@@ -4,6 +4,7 @@
 #include "timers.h"
 #include "render.h"
 #include "eventloop.h"
+#include "sprites.h"
 
 
 int main(int argc, char *argv[]) {
@@ -19,6 +20,7 @@ int main(int argc, char *argv[]) {
     init_video();
     printf("* Initializing Timers...\n");
     init_timers();
+    init_sprites();
     printf("* Entering Eventloop...\n");
     event_loop();
     return 0;

@@ -58,8 +58,6 @@ struct projectile projectiles[MAX_PROJECTILES];
 struct sprites sprites;
 
 
-static int sprites_inited = 0;
-
 void load_sprite_from_pic(char *filename, int width, int height, int frames) {
     int i,d;
     sprites.sprites[sprites.spritecount] = SDL_LoadBMP(filename);
@@ -86,20 +84,11 @@ void load_sprite_from_pic(char *filename, int width, int height, int frames) {
 }
 
 void init_sprites(void) {
-    memset(&monsters, 0x00, sizeof(struct monster)*MAX_MONSTERS);
-    memset(&towers, 0x00, sizeof(struct tower)*MAX_TOWERS);
-    memset(&sprites, 0x00, sizeof(struct sprites));
-
     load_sprite_from_pic("enemy1.bmp",32,32,2);
     load_sprite_from_pic("tower1.bmp",32,32,1);
-
-
-    sprites_inited++;
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
-    if ( sprites_inited == 0 ) init_sprites();
-
     int ax, ay;
     SDL_Rect dst = { x, y, RECTSIZE_X, RECTSIZE_Y };
     if ( spid < sprites.spritecount ) {
@@ -225,7 +214,6 @@ void move_projectile(void) {
 }
 
 void move_monster(void) {
-    if ( sprites_inited != 1 ) return;
     int i, old_x, old_y;
 
     for (i=0;i<MAX_MONSTERS;i++) {
