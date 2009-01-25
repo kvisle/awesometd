@@ -29,16 +29,11 @@ int init_video(void) {
     screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, SDL_HWSURFACE);
     background = SDL_CreateRGBSurface(SDL_HWSURFACE, VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, RMASK, GMASK, BMASK, AMASK);
 
-
-    memset(&updatefield, 0x00, sizeof(struct updatefield));
-    memset(&field, 0x00, sizeof(int)*(VIDEOMODE_WIDTH/RECTSIZE_X)*(VIDEOMODE_HEIGHT/RECTSIZE_Y));
-
     init_sprites();
     init_buttons();
 
     SDL_FillRect(background, NULL, SDL_MapRGB(background->format,0,0,0));
     load_level(background, 0);
-    SDL_SaveBMP(background, "level.bmp");
 
     update_score(0);
     update_money(0);
