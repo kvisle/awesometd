@@ -7,5 +7,7 @@ void update_lives(int amount);
 void draw_numbers(void);
 int have_money(int amount);
 void game_over(void);
+void iddqd(void);
+void idkfa(void);
 
 #endif /* __GAME_H__ */

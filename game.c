@@ -10,8 +10,11 @@ static int score = 0;
 static int lives = 1;
 char moneytext[20], scoretext[20], lifetext[20];
 
+int iddqd_enabled = 0;
+int idkfa_enabled = 0;
+
 void update_money(int amount) {
-    money += amount;
+    if (! idkfa_enabled) money += amount;
     if ( money < 0 ) money = 0;
     sprintf(moneytext, "money %6d", money);
     updaterect(3,13);
@@ -23,7 +26,7 @@ void update_score(int amount) {
     updaterect(3,13);
 }
 void update_lives(int amount) {
-    lives += amount;
+    if (! iddqd_enabled) lives += amount;
     if ( lives < 0 ) {
         lives = 0;
     }
@@ -32,6 +35,7 @@ void update_lives(int amount) {
     updaterect(3,13);
 }
 int have_money(int amount) {
+    if (idkfa_enabled) return 1;
     if ( money >= amount ) return 1;
     return 0;
 }
@@ -44,4 +48,17 @@ SDL_Event go = { SDL_QUIT };
 void game_over(void) {
     printf("GAME OVER!!!!\n");
     SDL_PushEvent(&go);
+}
+void iddqd(void)
+{
+    iddqd_enabled = 1;
+    lives = 999;
+    update_lives(0);
+}
+
+void idkfa(void)
+{
+    idkfa_enabled = 1;
+    money = 999999;
+    update_money(0);
 }

@@ -7,8 +7,11 @@
 #include "sprites.h"
 #include "gfx_buttons.h"
 #include "level.h"
+#include "game.h"
 
 int gamecycle = 0;
+
+static char lastkeys[32] = { 0 };
 
 void event_loop(void) {
     SDL_Event eventqueue;
@@ -34,6 +37,18 @@ void event_loop(void) {
                         press_button(eventqueue.button.x, eventqueue.button.y);
                 break;
                 case SDL_MOUSEBUTTONUP:
+                break;
+                case SDL_KEYDOWN:
+                    memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
+                    lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
+                    if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
+                        "iddqd", strlen("iddqd")) == 0)
+                        iddqd();
+                    if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
+                        "idkfa", strlen("idkfa")) == 0)
+                        idkfa();
+                break;
+                case SDL_KEYUP:
                 break;
                 case SDL_USEREVENT:
                     switch(eventqueue.user.code) {
