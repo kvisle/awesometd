@@ -40,7 +40,7 @@ static const struct monster monster_definitions[7] = {
     { 0,0,0,0,100,100,3,DIRECTION_S,0,0,50,20 },
     { 0,0,0,0,150,150,5,DIRECTION_S,0,0,100,30 },
     { 0,0,0,0,200,200,6,DIRECTION_S,0,0,100,60 },
-    { 0,0,2,0,10000,10000,7,DIRECTION_S,0,0,100000,1000 }
+    { 0,0,2,0,2000,2000,7,DIRECTION_S,0,0,100000,1000 }
 };
 
 static const struct tower tower_definitions[2] = {
