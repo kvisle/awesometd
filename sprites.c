@@ -8,6 +8,11 @@
 #include "settings.h"
 #include "game.h"
 
+#define get_locy(__A) (__A/RECTSIZE_Y)
+#define get_locx(__A) (__A/RECTSIZE_X)
+#define get_cellx(__A) (__A.pos_x/RECTSIZE_X)
+#define get_celly(__A) (__A.pos_y/RECTSIZE_Y)
+
 static const int level_monster[1][10][40] = {
     {
         { 1,1,1,1,1,1,1,1,1,1 },
@@ -97,8 +102,8 @@ void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
             if ( x < VIDEOMODE_WIDTH && y < VIDEOMODE_HEIGHT ) {
                 dst.w = sprites.slices[spid][rot][fid].w;
                 dst.h = sprites.slices[spid][rot][fid].h;
-                for (ax=(x/RECTSIZE_X);ax<=((dst.x+dst.w-1)/RECTSIZE_X);ax++) {
-                    for (ay=(y/RECTSIZE_Y);ay<=((dst.y+dst.h-1)/RECTSIZE_Y);ay++) {
+                for ( ax = (x/RECTSIZE_X); ax <= ((dst.x+dst.w-1)/RECTSIZE_X); ax++) {
+                    for ( ay=(y/RECTSIZE_Y);ay <= ((dst.y+dst.h-1)/RECTSIZE_Y); ay++) {
                         updaterect(ax, ay);
                     }
                 }
@@ -118,7 +123,7 @@ void spawn_monster(void) {
     int i;
 
     if ( monster_batches[level][batch] == monster ) {
-        for (i=0;i<MAX_MONSTERS;i++) {
+        for (i = 0; i < MAX_MONSTERS; i++) {
             if ( monsters[i].cur_hp > 0 ) {
 //                printf("Not spawning: Stuff is still alive.\n");
 //   Not spawning any new monsters, 
@@ -139,14 +144,16 @@ void spawn_monster(void) {
     for (i=0;i<MAX_MONSTERS;i++) {
         if ( monsters[i].cur_hp == 0 ) {
             monsters[i] = monster_definitions[level_monster[level][batch][monster]-1];
-            monsters[i].loc_x = 3*RECTSIZE_X;
-            monsters[i].loc_y = 0*RECTSIZE_Y;
+            monsters[i].pos_x = 3*RECTSIZE_X;
+            monsters[i].pos_y = 0*RECTSIZE_Y;
             monsters[i].direction = DIRECTION_S;
             monster++;
             return;
         }
     }
 }
+
+
 
 void move_projectile(void) {
     int i, ax, ay;
@@ -155,49 +162,48 @@ void move_projectile(void) {
 
     for (i=0;i<MAX_PROJECTILES;i++) {
         if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 && projectiles[i].damage > 0 ) {
-            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
-                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+            for ( ay = get_celly( projectiles[i] ); ay <= get_locy( projectiles[i].pos_y+projrect.h ); ay++ ) {
+                for ( ax = get_celly( projectiles[i] ); ax <= get_locx( projectiles[i].pos_x+projrect.w ); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
             projectiles[i].damage = 0;
         } else if ( projectiles[i].damage > 0 ) {
 
-            angle = atan2(monsters[projectiles[i].targetmonster].loc_y+16 - projectiles[i].loc_y, monsters[projectiles[i].targetmonster].loc_x+16 - projectiles[i].loc_x);
+            angle = atan2(monsters[projectiles[i].targetmonster].pos_y+16 - projectiles[i].pos_y, monsters[projectiles[i].targetmonster].pos_x+16 - projectiles[i].pos_x);
             x = cos(angle);
             y = sin(angle);
 
-            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
-                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+            for ( ay = get_celly( projectiles[i] ); ay <= get_locy(projectiles[i].pos_y + projrect.h); ay++ ) {
+                for ( ax = get_celly( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
 
+            projectiles[i].pos_y += y * projectiles[i].speed;
+            projectiles[i].pos_x += x * projectiles[i].speed;
+            projrect.x = projectiles[i].pos_x;
+            projrect.y = projectiles[i].pos_y;
 
-            projectiles[i].loc_y += y * projectiles[i].speed;
-            projectiles[i].loc_x += x * projectiles[i].speed;
-            projrect.x = projectiles[i].loc_x;
-            projrect.y = projectiles[i].loc_y;
-
-            for ( ay=(projectiles[i].loc_y/RECTSIZE_Y);ay<=((projectiles[i].loc_y+projrect.h)/RECTSIZE_Y);ay++ ) {
-                for ( ax=(projectiles[i].loc_x/RECTSIZE_X);ax<=((projectiles[i].loc_x+projrect.w)/RECTSIZE_X);ax++ ) {
+            for ( ay = get_locy( projectiles[i].pos_y ); ay <= get_locy(projectiles[i].pos_y+projrect.h); ay++ ) {
+                for ( ax = get_locx( projectiles[i].pos_x ); ax <= get_locx(projectiles[i].pos_x+projrect.w); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
 
             if (
-                projectiles[i].loc_x > monsters[projectiles[i].targetmonster].loc_x &&
-                projectiles[i].loc_x < (monsters[projectiles[i].targetmonster].loc_x + RECTSIZE_X) &&
-                projectiles[i].loc_y > monsters[projectiles[i].targetmonster].loc_y &&
-                projectiles[i].loc_y < (monsters[projectiles[i].targetmonster].loc_y + RECTSIZE_Y)
+                projectiles[i].pos_x > monsters[projectiles[i].targetmonster].pos_x &&
+                projectiles[i].pos_x < (monsters[projectiles[i].targetmonster].pos_x + RECTSIZE_X) &&
+                projectiles[i].pos_y > monsters[projectiles[i].targetmonster].pos_y &&
+                projectiles[i].pos_y < (monsters[projectiles[i].targetmonster].pos_y + RECTSIZE_Y)
                 ) {
                     monsters[projectiles[i].targetmonster].cur_hp = monsters[projectiles[i].targetmonster].cur_hp-projectiles[i].damage;
                     projectiles[i].damage = 0;
                     if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
                         monsters[projectiles[i].targetmonster].cur_hp = 0;
 
-                        for ( ax=(monsters[projectiles[i].targetmonster].loc_x/RECTSIZE_X);ax<=((monsters[projectiles[i].targetmonster].loc_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
-                            for ( ay=(monsters[projectiles[i].targetmonster].loc_y/RECTSIZE_Y);ay<=((monsters[projectiles[i].targetmonster].loc_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
+                        for ( ax=(monsters[projectiles[i].targetmonster].pos_x/RECTSIZE_X);ax<=((monsters[projectiles[i].targetmonster].pos_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
+                            for ( ay=(monsters[projectiles[i].targetmonster].pos_y/RECTSIZE_Y);ay<=((monsters[projectiles[i].targetmonster].pos_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
                                 updaterect(ax,ay);
                             }
                         }
@@ -220,9 +226,9 @@ void move_monster(void) {
     for (i=0;i<MAX_MONSTERS;i++) {
 
         if ( monsters[i].cur_hp > 0 ) {
-            old_x = monsters[i].loc_x;
-            old_y = monsters[i].loc_y;
-            if ( monsters[i].loc_x/RECTSIZE_X == 19 && monsters[i].loc_y/RECTSIZE_Y == 2 ) {
+            old_x = monsters[i].pos_x;
+            old_y = monsters[i].pos_y;
+            if ( get_cellx(monsters[i]) == 19 && get_celly(monsters[i]) == 2 ) {
                 // TODO: This is a hardcoded way for me to detect if the monster has arrived at its end path
                 // This should be fixed to not put stupid limitations on the game.
                 update_lives(-1);
@@ -234,46 +240,46 @@ void move_monster(void) {
             while ( monsters[i].progress > 10 ) {
                 switch(monsters[i].direction) {
                     case DIRECTION_N:
-                        if ( is_path( monsters[i].loc_x/RECTSIZE_X, ((monsters[i].loc_y-1)/RECTSIZE_Y)) ) monsters[i].loc_y--;
-                        else if ( is_path(((monsters[i].loc_x)/RECTSIZE_X)+1,(monsters[i].loc_y/RECTSIZE_Y)) ) {
-                            monsters[i].loc_x++;
+                        if ( is_path( get_cellx(monsters[i]), ((monsters[i].pos_y-1)/RECTSIZE_Y)) ) monsters[i].pos_y--;
+                        else if ( is_path(((monsters[i].pos_x)/RECTSIZE_X)+1,(get_celly(monsters[i]))) ) {
+                            monsters[i].pos_x++;
                             monsters[i].direction = DIRECTION_E;
                         }
-                        else if ( is_path(((monsters[i].loc_x-1)/RECTSIZE_X),(monsters[i].loc_y/RECTSIZE_Y)) ) {
-                            monsters[i].loc_x--;
+                        else if ( is_path(((monsters[i].pos_x-1)/RECTSIZE_X),(get_celly(monsters[i]))) ) {
+                            monsters[i].pos_x--;
                             monsters[i].direction = DIRECTION_W;
                         }
                     break;
                     case DIRECTION_E:
-                        if ( is_path(((monsters[i].loc_x)/RECTSIZE_X)+1,monsters[i].loc_y/RECTSIZE_Y) ) monsters[i].loc_x++;
-                        else if ( is_path(monsters[i].loc_x/RECTSIZE_X, ((monsters[i].loc_y)/RECTSIZE_Y)+1) ) {
-                            monsters[i].loc_y++;
+                        if ( is_path(((monsters[i].pos_x)/RECTSIZE_X)+1,get_celly(monsters[i])) ) monsters[i].pos_x++;
+                        else if ( is_path(get_cellx(monsters[i]), ((monsters[i].pos_y)/RECTSIZE_Y)+1) ) {
+                            monsters[i].pos_y++;
                             monsters[i].direction = DIRECTION_S;
                         }
-                        else if ( is_path( monsters[i].loc_x/RECTSIZE_X,((monsters[i].loc_y)/RECTSIZE_Y)-1) ) {
-                            monsters[i].loc_y--;
+                        else if ( is_path( get_cellx(monsters[i]),((monsters[i].pos_y)/RECTSIZE_Y)-1) ) {
+                            monsters[i].pos_y--;
                             monsters[i].direction = DIRECTION_N;
                         }
                     break;
                     case DIRECTION_S:
-                        if ( is_path(monsters[i].loc_x/RECTSIZE_X,((monsters[i].loc_y)/RECTSIZE_Y)+1) ) monsters[i].loc_y++;
-                        else if ( is_path(((monsters[i].loc_x)/RECTSIZE_X)+1,(monsters[i].loc_y/RECTSIZE_Y)) ) {
-                            monsters[i].loc_x++;
+                        if ( is_path(get_cellx(monsters[i]),((monsters[i].pos_y)/RECTSIZE_Y)+1) ) monsters[i].pos_y++;
+                        else if ( is_path(((monsters[i].pos_x)/RECTSIZE_X)+1,(get_celly(monsters[i]))) ) {
+                            monsters[i].pos_x++;
                             monsters[i].direction = DIRECTION_E;
                         }
-                        else if ( is_path(((monsters[i].loc_x-1)/RECTSIZE_X),(monsters[i].loc_y/RECTSIZE_Y))) {
-                            monsters[i].loc_x--;
+                        else if ( is_path(((monsters[i].pos_x-1)/RECTSIZE_X),(get_celly(monsters[i])))) {
+                            monsters[i].pos_x--;
                             monsters[i].direction = DIRECTION_W;
                         }
                     break;
                     case DIRECTION_W:
-                        if ( is_path(((monsters[i].loc_x-1)/RECTSIZE_X),(monsters[i].loc_y/RECTSIZE_Y)) ) monsters[i].loc_x--;
-                        else if ( is_path( monsters[i].loc_x/RECTSIZE_X,((monsters[i].loc_y)/RECTSIZE_Y)-1) ) {
-                            monsters[i].loc_y--;
+                        if ( is_path(((monsters[i].pos_x-1)/RECTSIZE_X),(get_celly(monsters[i]))) ) monsters[i].pos_x--;
+                        else if ( is_path( get_cellx(monsters[i]),((monsters[i].pos_y)/RECTSIZE_Y)-1) ) {
+                            monsters[i].pos_y--;
                             monsters[i].direction = DIRECTION_N;
                         }
-                        else if ( is_path(monsters[i].loc_x/RECTSIZE_X, ((monsters[i].loc_y)/RECTSIZE_Y)+1) ) {
-                            monsters[i].loc_y++;
+                        else if ( is_path(get_cellx(monsters[i]), ((monsters[i].pos_y)/RECTSIZE_Y)+1) ) {
+                            monsters[i].pos_y++;
                             monsters[i].direction = DIRECTION_S;
                         }
                     break;
@@ -283,10 +289,10 @@ void move_monster(void) {
                 updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
                 updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
                 updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
-                updaterect(monsters[i].loc_x/RECTSIZE_X, monsters[i].loc_y/RECTSIZE_Y);
-                updaterect((monsters[i].loc_x+31)/RECTSIZE_X,monsters[i].loc_y/RECTSIZE_Y);
-                updaterect((monsters[i].loc_x+31)/RECTSIZE_X,(monsters[i].loc_y+31)/RECTSIZE_Y);
-                updaterect(monsters[i].loc_x/RECTSIZE_X,(monsters[i].loc_y+31)/RECTSIZE_Y);
+                updaterect(get_cellx(monsters[i]), get_celly(monsters[i]));
+                updaterect((monsters[i].pos_x+31)/RECTSIZE_X,get_celly(monsters[i]));
+                updaterect((monsters[i].pos_x+31)/RECTSIZE_X,(monsters[i].pos_y+31)/RECTSIZE_Y);
+                updaterect(get_cellx(monsters[i]),(monsters[i].pos_y+31)/RECTSIZE_Y);
             }
         }
     }
@@ -306,9 +312,9 @@ void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
 void draw_enemy(int x, int y) {
     int i;
     for (i=0;i<MAX_MONSTERS;i++) {
-        if ( monsters[i].cur_hp > 0 && (monsters[i].loc_x/RECTSIZE_X) == x && (monsters[i].loc_y/RECTSIZE_Y) == y ) {
-            draw_sprite(screen,monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].loc_x, monsters[i].loc_y);
-            draw_health(screen,monsters[i].loc_x, monsters[i].loc_y, monsters[i].cur_hp, monsters[i].max_hp);
+        if ( monsters[i].cur_hp > 0 && (get_cellx(monsters[i])) == x && (get_celly(monsters[i])) == y ) {
+            draw_sprite(screen,monsters[i].spid, monsters[i].frameno,monsters[i].direction, monsters[i].pos_x, monsters[i].pos_y);
+            draw_health(screen,monsters[i].pos_x, monsters[i].pos_y, monsters[i].cur_hp, monsters[i].max_hp);
         }
     }
 }
@@ -316,10 +322,10 @@ void draw_enemy(int x, int y) {
 void draw_projectile(int x, int y) {
     int i, x2, y2;
     for (i=0;i<MAX_PROJECTILES;i++) {
-        x2 = (projectiles[i].loc_x/RECTSIZE_X);
-        y2 = (projectiles[i].loc_y/RECTSIZE_Y);
+        x2 = get_cellx(projectiles[i]);
+        y2 = get_celly(projectiles[i]);
         if ( projectiles[i].damage > 0 && x2 == x && y2 == y ) {
-            SDL_Rect projrect = { projectiles[i].loc_x, projectiles[i].loc_y, 4, 4 };
+            SDL_Rect projrect = { projectiles[i].pos_x, projectiles[i].pos_y, 4, 4 };
             SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
         }
     }
@@ -403,8 +409,8 @@ void add_projectile(int pid, int mid, int tid) {
     for (i=0;i<MAX_PROJECTILES;i++) {
         if ( projectiles[i].damage == 0 ) {
             projectiles[i] = projectile_definitions[pid];
-            projectiles[i].loc_x = (towers[tid].loc_x * RECTSIZE_X) + (RECTSIZE_X / 2);
-            projectiles[i].loc_y = (towers[tid].loc_y * RECTSIZE_Y) + (RECTSIZE_Y / 2);
+            projectiles[i].pos_x = (towers[tid].loc_x * RECTSIZE_X) + (RECTSIZE_X / 2);
+            projectiles[i].pos_y = (towers[tid].loc_y * RECTSIZE_Y) + (RECTSIZE_Y / 2);
             projectiles[i].targetmonster = mid;
             return;
         }
@@ -425,8 +431,8 @@ void shoot_towers(void) {
                 shortest = 0;
                 for (y=0;y<MAX_MONSTERS;y++) {
                     if (monsters[y].cur_hp > 0) {
-                        k1 = ((towers[i].loc_x*32)+16)-(monsters[y].loc_x+16);
-                        k2 = ((towers[i].loc_y*32)+16)-(monsters[y].loc_y+16);
+                        k1 = ((towers[i].loc_x*32)+16)-(monsters[y].pos_x+16);
+                        k2 = ((towers[i].loc_y*32)+16)-(monsters[y].pos_y+16);
 
                         h = (k1*k1) + (k2*k2);
 

@@ -16,7 +16,7 @@
 #define DIRECTION_W 3
 
 struct monster {
-    int loc_x, loc_y; // Exact coordinates, not the cell-coordinates...
+    int pos_x, pos_y; // Exact coordinates, not the cell-coordinates...
                     // We need the exact ones, because we want smooth movements.
     int spid; // Sprite ID
     int frameno;
@@ -51,7 +51,7 @@ struct sprites {
 };
 
 struct projectile {
-    float loc_x, loc_y; // The exact location.
+    float pos_x, pos_y; // The exact location.
     int spid; // Sprite ID
     int frameno;
     int speed;
