@@ -16,12 +16,9 @@ int main(int argc, char *argv[]) {
         printf("SDL_Init failed : %s\n", SDL_GetError());
         return 1;
     }
-    printf("* Initializing Video...\n");
     init_video();
-    printf("* Initializing Timers...\n");
     init_timers();
     init_sprites();
-    printf("* Entering Eventloop...\n");
     event_loop();
     return 0;
 }
