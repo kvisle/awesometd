@@ -55,7 +55,6 @@ void event_loop(void) {
                     }
                 break;
                 default:
-                    printf("WARN: Unhandled event (type: %d)!\n", eventqueue.type);
                 break;
             }
         }
