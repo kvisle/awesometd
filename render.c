@@ -106,16 +106,18 @@ void draw_stuff_on_top(void) {
 
     for (x=0;x<20;x++) {
         for (y=0;y<15;y++) {
-            if ( x >= 10 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
+            if ( x >= 8 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
                 drawn_helptext = 1;
                 draw_hint_text(screen);
+//                draw_text(screen,"cost",270,416);
                 drawn_buttons = 1;
                 draw_buttons(screen);
+                draw_text(screen,"cost",270,416);
             }
-            if ( x >= 8 && y >= 13 && x <= 10 && y <= 14 && drawn_buttons == 0 && field[x][y] == 1 ) {
+/*            if ( x >= 8 && y >= 13 && x <= 10 && y <= 14 && drawn_buttons == 0 && field[x][y] == 1 ) {
                 drawn_buttons = 1;
                 draw_buttons(screen);
-            }
+            }*/
             if ( field[x][y] == 1 ) {
                 draw_tower(x,y);
                 draw_enemy(x,y);

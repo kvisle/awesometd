@@ -45,11 +45,12 @@ static const struct monster monster_definitions[7] = {
 
 static const struct tower tower_definitions[2] = {
     { 0,0,1,0,1,5,5,0,50,0,100,0 },
-    { 0,0,1,0,1,50,30,10,100,0,50,0 }
+    { 0,0,3,0,1,50,30,10,100,0,50,1 }
 };
 
-static const struct projectile projectile_definitions[1] = {
-    { 0,0,1,0,10,0,3,0 }
+static const struct projectile projectile_definitions[2] = {
+    { 0,0,1,0,10,0,3,0 },
+    { 0,0,1,0,1,0,100,0 }
 };
 
 static int level = 0;
@@ -92,6 +93,7 @@ void init_sprites(void) {
     load_sprite_from_pic("enemy1.bmp",32,32,2);
     load_sprite_from_pic("tower1.bmp",32,32,1);
     load_sprite_from_pic("enemy2.bmp",32,32,2);
+    load_sprite_from_pic("tower2.bmp",32,32,8);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {

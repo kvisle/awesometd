@@ -462,7 +462,7 @@ void init_gfx_charmap(void) {
     int i, x, y;
     Uint32 color;
     SDL_Rect pixel = { 0, 0, 1, 1 };
-    charmapsurface = SDL_CreateRGBSurface(SDL_HWSURFACE, CHAR_SIZE_X*CHAR_COUNT, CHAR_SIZE_Y, 32, RMASK, GMASK, BMASK, AMASK);
+    charmapsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, CHAR_SIZE_X*CHAR_COUNT, CHAR_SIZE_Y, 8, 255, 255, 255, 0);
     color = SDL_MapRGB(charmapsurface->format, 255,255,255);
     for (i=0;i<CHAR_COUNT;i++) {
         for (x=0;x<8;x++) {

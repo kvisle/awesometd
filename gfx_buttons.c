@@ -10,10 +10,11 @@ static SDL_Rect button_rects[2] = {
 };
 
 static const int button_count = 2;
+int towerbutton = 0;
 static int button_pressed[2] = { 1, 0 };
 static const char buttonhint[2][40] = {
     "build pillbox",
-    "tower not implemented"
+    "build artificial volcano"
 };
 
 void init_buttons(void) {
@@ -42,6 +43,7 @@ void press_button(int x, int y) {
     for (i=0;i<button_count;i++) {
         if ( x <= (button_rects[i].x + button_rects[i].w) && x >= button_rects[i].x && y >= button_rects[i].y && y <= (button_rects[i].y + button_rects[i].h) ) {
             button_pressed[i] = 1;
+            towerbutton = i;
             for (n=0;n<button_count;n++) { if (n != i ) button_pressed[n] = 0; }
             draw_buttons(screen);
             return;
