@@ -139,7 +139,7 @@ void spawn_monster(void) {
     }
 
     if ( batch == level_batches[level] ) {
-//  level won, or something... \o/
+        printf("You won the level, grats! I haven't made a scoreboard or anything yet.\n");
         return;
     }
 
