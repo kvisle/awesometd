@@ -21,6 +21,7 @@ struct monster {
     int spid; // Sprite ID
     int frameno;
     int cur_hp, max_hp;
+    int upcoming_damage;
     int speed;
     int direction;
     int progress;
