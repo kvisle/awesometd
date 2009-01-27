@@ -61,7 +61,7 @@ struct projectile {
 };
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y);
-void spawn_monster(void);
+int spawn_monster(void);
 void move_monster(void);
 void move_projectile(void);
 void animate_sprites(void);

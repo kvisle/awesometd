@@ -21,7 +21,6 @@ void event_loop(void) {
             switch(eventqueue.type) {
                 case SDL_QUIT:
                     return;
-                    quit = 1;
                 break;
                 case SDL_MOUSEMOTION:
                     update_cursor(eventqueue.motion.x,eventqueue.motion.y);
@@ -60,7 +59,7 @@ void event_loop(void) {
                             move_monster();
                             if ( (gamecycle % 20) == 0 ) animate_sprites();
                             if ( (gamecycle % 10) == 0 ) shoot_towers();
-                            if ( (gamecycle % 100) == 0 ) spawn_monster();
+                            if ( (gamecycle % 100) == 0 ) if ( spawn_monster() ) return;
                             if ( gamecycle == 100 ) gamecycle = 0;
                             gamecycle++;
                         break;

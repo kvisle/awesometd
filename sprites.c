@@ -121,7 +121,7 @@ void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
     }
 }
 
-void spawn_monster(void) {
+int spawn_monster(void) {
     int i;
 
     if ( monster_batches[level][batch] == monster ) {
@@ -130,17 +130,17 @@ void spawn_monster(void) {
 //                printf("Not spawning: Stuff is still alive.\n");
 //   Not spawning any new monsters, 
 //   because we still have live monsters on the field.
-                return;
+                return 0;
             }
         }
         monster = 0;
         batch++;
-        return;
+        return 0;
     }
 
     if ( batch == level_batches[level] ) {
         printf("You won the level, grats! I haven't made a scoreboard or anything yet.\n");
-        return;
+        return 1;
     }
 
     for (i=0;i<MAX_MONSTERS;i++) {
@@ -150,9 +150,10 @@ void spawn_monster(void) {
             monsters[i].pos_y = 0*RECTSIZE_Y;
             monsters[i].direction = DIRECTION_S;
             monster++;
-            return;
+            return 0;
         }
     }
+    return 0;
 }
 
 
