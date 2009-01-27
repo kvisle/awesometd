@@ -490,3 +490,19 @@ void draw_text(SDL_Surface *s, const char *text, int x, int y) {
         i++;
     }
 }
+
+void draw_text_color(SDL_Surface *s, const char *text, int x, int y, int r, int g, int b) {
+    int fontcolor = SDL_MapRGB(charmapsurface->format, 255, 255, 255);
+    SDL_Color colors[256];
+    memset(colors, 0, sizeof(colors));
+    colors[fontcolor].r = r;
+    colors[fontcolor].g = g;
+    colors[fontcolor].b = b;
+    SDL_SetPalette(charmapsurface,SDL_LOGPAL|SDL_PHYSPAL,colors,0,256);
+    draw_text(s,text,x,y);
+    fontcolor = SDL_MapRGB(charmapsurface->format, r, g, b);
+    colors[fontcolor].r = 255;
+    colors[fontcolor].g = 255;
+    colors[fontcolor].b = 255;
+    SDL_SetPalette(charmapsurface,SDL_LOGPAL|SDL_PHYSPAL,colors,0,256);
+}

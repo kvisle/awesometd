@@ -1,6 +1,7 @@
 #include <SDL.h>
 
 #include "render.h"
+#include "sprites.h"
 #include "gfx_charmap.h"
 
 SDL_Surface *buttonsurface;
@@ -44,6 +45,7 @@ void press_button(int x, int y) {
         if ( x <= (button_rects[i].x + button_rects[i].w) && x >= button_rects[i].x && y >= button_rects[i].y && y <= (button_rects[i].y + button_rects[i].h) ) {
             button_pressed[i] = 1;
             towerbutton = i;
+            sprintf(costtext, "%6d", tower_definitions[i].price);
             for (n=0;n<button_count;n++) { if (n != i ) button_pressed[n] = 0; }
             draw_buttons(screen);
             return;

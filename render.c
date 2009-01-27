@@ -21,6 +21,7 @@ static int field[VIDEOMODE_WIDTH/RECTSIZE_X][VIDEOMODE_HEIGHT/RECTSIZE_Y];
 static int rendercount = 0;
 static char fpstext[16] = "";
 static char recttext[24] = "";
+char costtext[8] = "    50";
 
 static struct updatefield updatefield;
 
@@ -109,15 +110,10 @@ void draw_stuff_on_top(void) {
             if ( x >= 8 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
                 drawn_helptext = 1;
                 draw_hint_text(screen);
-//                draw_text(screen,"cost",270,416);
                 drawn_buttons = 1;
                 draw_buttons(screen);
-                draw_text(screen,"cost",270,416);
+                draw_text_color(screen,costtext,265,416,255,255,0);
             }
-/*            if ( x >= 8 && y >= 13 && x <= 10 && y <= 14 && drawn_buttons == 0 && field[x][y] == 1 ) {
-                drawn_buttons = 1;
-                draw_buttons(screen);
-            }*/
             if ( field[x][y] == 1 ) {
                 draw_tower(x,y);
                 draw_enemy(x,y);

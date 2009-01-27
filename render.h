@@ -30,5 +30,7 @@ void updaterect(int x, int y);
 int getrenders(void);
 SDL_Surface *screen;
 void draw_stuff_on_top(void);
+char costtext[8];
+
 
 #endif /* __RENDER_H__ */

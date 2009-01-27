@@ -75,4 +75,6 @@ void draw_tower(int x, int y);
 void draw_enemy(int x, int y);
 void draw_projectile(int x, int y);
 
+const struct tower tower_definitions[2];
+
 #endif /* __SPRITES_H__ */

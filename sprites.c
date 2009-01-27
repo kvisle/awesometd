@@ -43,7 +43,7 @@ static const struct monster monster_definitions[7] = {
     { 0,0,2,0,2000,2000,7,DIRECTION_S,0,0,100000,1000 }
 };
 
-static const struct tower tower_definitions[2] = {
+const struct tower tower_definitions[2] = {
     { 0,0,1,0,1,5,5,0,50,0,100,0 },
     { 0,0,3,0,1,50,30,10,100,0,50,1 }
 };
