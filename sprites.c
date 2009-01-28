@@ -35,10 +35,10 @@ static const int level_batches[1] = {
 
 static const struct monster monster_definitions[7] = {
     { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3 },
-    { 0,0,0,0,20,20,0,5,DIRECTION_S,0,0,20,6 },
+    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6 },
     { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10 },
     { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20 },
-    { 0,0,0,0,150,150,0,5,DIRECTION_S,0,0,100,30 },
+    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30 },
     { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60 },
     { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000 }
 };
@@ -83,6 +83,7 @@ void load_sprite_from_pic(char *filename, int width, int height, int frames) {
                 sprites.slices[sprites.spritecount][d][i].h = height;
             }
         }
+        printf("* Finished adding sprite %d!\n", sprites.spritecount);
         sprites.spritecount++;
     } else {
         printf("Big bad error while loading file: \"%s\": %s\n", filename, SDL_GetError());
@@ -94,6 +95,7 @@ void init_sprites(void) {
     load_sprite_from_pic("tower1.bmp",32,32,1);
     load_sprite_from_pic("enemy2.bmp",32,32,2);
     load_sprite_from_pic("tower2.bmp",32,32,8);
+    load_sprite_from_pic("enemy3.bmp",32,32,2);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {

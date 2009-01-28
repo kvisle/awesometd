@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
     }
     init_video();
     init_timers();
-    init_sprites();
     event_loop();
     return 0;
 }
