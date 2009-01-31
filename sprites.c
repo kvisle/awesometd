@@ -34,23 +34,25 @@ static const int level_batches[1] = {
 };
 
 static const struct monster monster_definitions[7] = {
-    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3 },
-    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6 },
-    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10 },
-    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20 },
-    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30 },
-    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60 },
-    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000 }
+    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1 },
+    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1 },
+    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1 },
+    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1 },
+    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1 },
+    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1 },
+    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1 }
 };
 
-const struct tower tower_definitions[2] = {
+const struct tower tower_definitions[3] = {
     { 0,0,1,0,1,5,5,0,50,0,100,0 },
-    { 0,0,3,0,1,50,30,10,100,0,50,1 }
+    { 0,0,3,0,1,50,30,10,100,0,50,1 },
+    { 0,0,5,0,1,25,5,0,50,0,200,2 }
 };
 
-static const struct projectile projectile_definitions[2] = {
-    { 0,0,1,0,10,0,3,0 },
-    { 0,0,1,0,1,0,100,0 }
+static const struct projectile projectile_definitions[3] = {
+    { 0,0,1,0,10,0,3,0,0 },
+    { 0,0,1,0,1,0,100,0,0 },
+    { 0,0,1,0,1,0,5,0,-0.25 }
 };
 
 static int level = 0;
@@ -96,6 +98,7 @@ void init_sprites(void) {
     load_sprite_from_pic("enemy2.bmp",32,32,2);
     load_sprite_from_pic("tower2.bmp",32,32,8);
     load_sprite_from_pic("enemy3.bmp",32,32,2);
+    load_sprite_from_pic("tower3.bmp",32,32,1);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
@@ -204,6 +207,11 @@ void move_projectile(void) {
                 projectiles[i].pos_y < (monsters[projectiles[i].targetmonster].pos_y + RECTSIZE_Y)
                 ) {
                     monsters[projectiles[i].targetmonster].cur_hp = monsters[projectiles[i].targetmonster].cur_hp-projectiles[i].damage;
+                    if ( projectiles[i].effect_speed < 1 ) {
+                        if ( monsters[projectiles[i].targetmonster].effect_speed == 1 )
+                            monsters[projectiles[i].targetmonster].effect_speed += projectiles[i].effect_speed;
+                        monsters[projectiles[i].targetmonster].last_ice_shot = SDL_GetTicks();
+                    }
                     monsters[projectiles[i].targetmonster].upcoming_damage -= projectiles[i].damage;
                     projectiles[i].damage = 0;
                     if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
@@ -242,7 +250,8 @@ void move_monster(void) {
                 draw_numbers();
                 monsters[i].cur_hp = 0;
             }
-            monsters[i].progress = monsters[i].progress + monsters[i].speed;
+            monsters[i].progress = monsters[i].progress + (monsters[i].speed*monsters[i].effect_speed);
+            if ( (monsters[i].last_ice_shot + 3000 ) < SDL_GetTicks() ) monsters[i].effect_speed = 1;
 
             while ( monsters[i].progress > 10 ) {
                 switch(monsters[i].direction) {

@@ -28,6 +28,8 @@ struct monster {
     int travelled;
     int score;
     int money;
+    Uint32 last_ice_shot;
+    float effect_speed;
 };
 
 struct tower {
@@ -59,6 +61,7 @@ struct projectile {
     int targetmonster;
     int damage; // If damage is 0, it's considered as inactive.
     int splash;
+    float effect_speed;
 };
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y);
@@ -76,6 +79,6 @@ void draw_tower(int x, int y);
 void draw_enemy(int x, int y);
 void draw_projectile(int x, int y);
 
-const struct tower tower_definitions[2];
+const struct tower tower_definitions[3];
 
 #endif /* __SPRITES_H__ */

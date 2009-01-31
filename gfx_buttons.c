@@ -5,17 +5,19 @@
 #include "gfx_charmap.h"
 
 SDL_Surface *buttonsurface;
-static SDL_Rect button_rects[2] = {
+static SDL_Rect button_rects[3] = {
     { 260, 430, 48, 48 },
-    { 308, 430, 48, 48 }
+    { 308, 430, 48, 48 },
+    { 356, 430, 48, 48 }
 };
 
-static const int button_count = 2;
+static const int button_count = 3;
 int towerbutton = 0;
-static int button_pressed[2] = { 1, 0 };
-static const char buttonhint[2][40] = {
+static int button_pressed[3] = { 1, 0, 0 };
+static const char buttonhint[3][40] = {
     "build pillbox",
-    "build artificial volcano"
+    "build artificial volcano",
+    "build freezer"
 };
 
 void init_buttons(void) {
