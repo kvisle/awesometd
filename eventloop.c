@@ -29,8 +29,6 @@ void event_loop(void) {
                     if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
                         if ( !is_path((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
                             add_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y),towerbutton);
-                        } else {
-                            printf("Trying to build a tower on a path?\n");
                         }
                     } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
                         press_button(eventqueue.button.x, eventqueue.button.y);

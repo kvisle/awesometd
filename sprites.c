@@ -303,15 +303,15 @@ void move_monster(void) {
                     break;
                 }
                 monsters[i].progress = monsters[i].progress - 10;
-                updaterect(old_x/RECTSIZE_X, old_y/RECTSIZE_Y);
-                updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
-                updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
-                updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
-                updaterect(get_cellx(monsters[i]), get_celly(monsters[i]));
-                updaterect((monsters[i].pos_x+31)/RECTSIZE_X,get_celly(monsters[i]));
-                updaterect((monsters[i].pos_x+31)/RECTSIZE_X,(monsters[i].pos_y+31)/RECTSIZE_Y);
-                updaterect(get_cellx(monsters[i]),(monsters[i].pos_y+31)/RECTSIZE_Y);
             }
+            updaterect(old_x/RECTSIZE_X, old_y/RECTSIZE_Y);
+            updaterect((old_x+31)/RECTSIZE_X,old_y/RECTSIZE_Y);
+            updaterect((old_x+31)/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+            updaterect(old_x/RECTSIZE_X,(old_y+31)/RECTSIZE_Y);
+            updaterect(get_cellx(monsters[i]), get_celly(monsters[i]));
+            updaterect((monsters[i].pos_x+31)/RECTSIZE_X,get_celly(monsters[i]));
+            updaterect((monsters[i].pos_x+31)/RECTSIZE_X,(monsters[i].pos_y+31)/RECTSIZE_Y);
+            updaterect(get_cellx(monsters[i]),(monsters[i].pos_y+31)/RECTSIZE_Y);
         }
     }
 }
