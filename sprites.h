@@ -15,6 +15,12 @@
 #define DIRECTION_S 2
 #define DIRECTION_W 3
 
+#define ALGORITHM_TRAVELLED_SHORTEST 0
+#define ALGORITHM_TRAVELLED_FARTHEST 1
+#define ALGORITHM_MOST_HP 2
+#define ALGORITHM_LEAST_HP 3
+#define ALGORITHM_FASTEST 4
+
 struct monster {
     int pos_x, pos_y; // Exact coordinates, not the cell-coordinates...
                     // We need the exact ones, because we want smooth movements.
@@ -30,6 +36,7 @@ struct monster {
     int money;
     Uint32 last_ice_shot;
     float effect_speed;
+    float upcoming_effect_speed;
 };
 
 struct tower {
@@ -44,6 +51,7 @@ struct tower {
     int reloadtimeleft;
     int range;
     int projectile;
+    int target_algorithm;
 };
 
 struct sprites {

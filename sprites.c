@@ -34,19 +34,19 @@ static const int level_batches[1] = {
 };
 
 static const struct monster monster_definitions[7] = {
-    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1 },
-    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1 },
-    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1 },
-    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1 },
-    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1 },
-    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1 },
-    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1 }
+    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1,1 },
+    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1,1 },
+    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1,1 },
+    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1,1 },
+    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1,1 },
+    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1,1 },
+    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1,1 }
 };
 
 const struct tower tower_definitions[3] = {
-    { 0,0,1,0,1,5,5,0,50,0,100,0 },
-    { 0,0,3,0,1,50,30,10,100,0,50,1 },
-    { 0,0,5,0,1,25,5,0,50,0,200,2 }
+    { 0,0,1,0,1,5,5,0,50,0,100,0,ALGORITHM_TRAVELLED_FARTHEST },
+    { 0,0,3,0,1,50,30,10,100,0,50,1,ALGORITHM_TRAVELLED_FARTHEST },
+    { 0,0,5,0,1,25,5,0,50,0,200,2,ALGORITHM_FASTEST }
 };
 
 static const struct projectile projectile_definitions[3] = {
@@ -213,6 +213,7 @@ void move_projectile(void) {
                         monsters[projectiles[i].targetmonster].last_ice_shot = SDL_GetTicks();
                     }
                     monsters[projectiles[i].targetmonster].upcoming_damage -= projectiles[i].damage;
+                    monsters[projectiles[i].targetmonster].upcoming_effect_speed -= projectiles[i].effect_speed;
                     projectiles[i].damage = 0;
                     if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 ) {
                         monsters[projectiles[i].targetmonster].cur_hp = 0;
@@ -254,6 +255,7 @@ void move_monster(void) {
             if ( (monsters[i].last_ice_shot + 3000 ) < SDL_GetTicks() ) monsters[i].effect_speed = 1;
 
             while ( monsters[i].progress > 10 ) {
+                monsters[i].travelled++;
                 switch(monsters[i].direction) {
                     case DIRECTION_N:
                         if ( is_path( get_cellx(monsters[i]), ((monsters[i].pos_y-1)/RECTSIZE_Y)) ) monsters[i].pos_y--;
@@ -429,6 +431,7 @@ void add_projectile(int pid, int mid, int tid) {
             projectiles[i].pos_y = (towers[tid].loc_y * RECTSIZE_Y) + (RECTSIZE_Y / 2);
             projectiles[i].targetmonster = mid;
             monsters[mid].upcoming_damage += projectiles[i].damage;
+            monsters[mid].upcoming_effect_speed += projectiles[i].effect_speed;
             return;
         }
     }
@@ -437,7 +440,6 @@ void add_projectile(int pid, int mid, int tid) {
 void shoot_towers(void) {
     int i,y;
     double k1,k2,h;
-    double shortest = 0;
 
     int target;
 
@@ -445,7 +447,6 @@ void shoot_towers(void) {
         if (towers[i].active == 1) {
             if (towers[i].reloadtimeleft == 0) {
                 target = -1;
-                shortest = 0;
                 for (y=0;y<MAX_MONSTERS;y++) {
                     if (monsters[y].cur_hp > 0 && monsters[y].cur_hp > monsters[y].upcoming_damage ) {
                         k1 = ((towers[i].loc_x*32)+16)-(monsters[y].pos_x+16);
@@ -454,8 +455,28 @@ void shoot_towers(void) {
                         h = (k1*k1) + (k2*k2);
 
                         if ( h < towers[i].range*towers[i].range ) {
-                            if ( shortest == 0 || shortest > h ) {
-                                shortest = h;
+                            if ( target > -1 ) {
+                                switch(towers[i].target_algorithm) {
+                                    case ALGORITHM_MOST_HP:
+                                        if ( monsters[y].cur_hp > monsters[target].cur_hp ) target = y;
+                                    break;
+                                    case ALGORITHM_LEAST_HP:
+                                        if ( monsters[y].cur_hp < monsters[target].cur_hp ) target = y;
+                                    break;
+                                    case ALGORITHM_FASTEST:
+                                        if ( 
+                                            (monsters[y].effect_speed*(monsters[y].speed*monsters[y].upcoming_effect_speed)) > 
+                                            (monsters[target].effect_speed*(monsters[target].speed*monsters[target].upcoming_effect_speed))
+                                           ) target = y;
+                                    break;
+                                    case ALGORITHM_TRAVELLED_SHORTEST:
+                                        if ( monsters[y].travelled < monsters[target].travelled ) target = y;
+                                    break;
+                                    case ALGORITHM_TRAVELLED_FARTHEST:
+                                        if ( monsters[y].travelled > monsters[target].travelled ) target = y;
+                                    break;
+                                }
+                            } else {
                                 target = y;
                             }
                         }
