@@ -1,8 +1,0 @@
-SDL.dll
-level.bmp
-leveltiles_old.bmp
-sprite1.bmp
-gfx/
-*.o
-atd
-enemy1_solid.bmp

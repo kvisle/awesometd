@@ -1,0 +1,4 @@
+*.o
+atd
+atd.exe
+SDL.dll
