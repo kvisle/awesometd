@@ -85,6 +85,15 @@ struct projectile projectiles[MAX_PROJECTILES];
 struct sprites sprites;
 
 
+void reset_everything(void) {
+    level = 0;
+    batch = 0;
+    monster = 0;
+    memset(&monsters, 0x00, sizeof(struct monster)*MAX_MONSTERS);
+    memset(&towers, 0x00, sizeof(struct tower)*MAX_TOWERS);
+    memset(&projectiles, 0x00, sizeof(struct projectile)*MAX_PROJECTILES);
+}
+
 void load_sprite_from_pic(char *filename, int width, int height, int frames) {
     int i,d;
     sprites.sprites[sprites.spritecount] = SDL_LoadBMP(filename);

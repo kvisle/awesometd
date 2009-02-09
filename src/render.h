@@ -26,6 +26,11 @@
 #define RECTSIZE_X  32
 #define RECTSIZE_Y  32
 
+#define SCREEN_MENU     1
+#define SCREEN_INGAME   2
+#define SCREEN_SCORE    3
+#define SCREEN_CREDITS  4
+
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define RMASK 0xff000000
 #define GMASK 0x00ff0000
@@ -46,10 +51,11 @@ struct updatefield {
 int init_video(void);
 void render(void);
 void updaterect(int x, int y);
+void update_all(void);
 int getrenders(void);
 SDL_Surface *screen;
 void draw_stuff_on_top(void);
 char costtext[8];
-
+int current_screen;
 
 #endif /* __RENDER_H__ */

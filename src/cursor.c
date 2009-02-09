@@ -29,9 +29,9 @@ static int mouse_x, mouse_y;
 static int cell_x, cell_y;
 
 void update_cursor(int x, int y) {
-    if ( cell_y > 12 ) {
+/*    if ( cell_y > 12 ) {
         draw_numbers();
-    }
+    }*/
     updaterect(cell_x,cell_y);
     mouse_x = x;
     mouse_y = y;

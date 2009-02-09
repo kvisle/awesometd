@@ -45,24 +45,38 @@ void event_loop(void) {
                     update_cursor(eventqueue.motion.x,eventqueue.motion.y);
                 break;
                 case SDL_MOUSEBUTTONDOWN:
-                    if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
-                        if ( !is_path((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
-                            add_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y),towerbutton);
-                        }
-                    } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
-                        press_button(eventqueue.button.x, eventqueue.button.y);
+                    switch(current_screen) {
+                        case SCREEN_MENU:
+                            printf("You're clicking in menu mode!\n");
+                            new_game();
+                        break;
+                        case SCREEN_INGAME:
+                            if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
+                                if ( !is_path((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
+                                    add_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y),towerbutton);
+                                }
+                            } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
+                                press_button(eventqueue.button.x, eventqueue.button.y);
+                        break;
+                    }
                 break;
                 case SDL_MOUSEBUTTONUP:
                 break;
                 case SDL_KEYDOWN:
-                    memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
-                    lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
-                    if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
-                        "iddqd", strlen("iddqd")) == 0)
-                        iddqd();
-                    if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
-                        "idkfa", strlen("idkfa")) == 0)
-                        idkfa();
+                    switch(current_screen) {
+                        case SCREEN_MENU:
+                        break;
+                        case SCREEN_INGAME:
+                            memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
+                            lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
+                            if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
+                                "iddqd", strlen("iddqd")) == 0)
+                                iddqd();
+                            if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
+                                "idkfa", strlen("idkfa")) == 0)
+                                idkfa();
+                        break;
+                    }
                 break;
                 case SDL_KEYUP:
                 break;
@@ -72,13 +86,15 @@ void event_loop(void) {
                             getrenders();
                         break;
                         case TIMER_GAMECYCLE:
-                            move_projectile();
-                            move_monster();
-                            if ( (gamecycle % 20) == 0 ) animate_sprites();
-                            if ( (gamecycle % 10) == 0 ) shoot_towers();
-                            if ( (gamecycle % 100) == 0 ) if ( spawn_monster() ) return;
-                            if ( gamecycle == 100 ) gamecycle = 0;
-                            gamecycle++;
+                            if ( current_screen == SCREEN_INGAME ) {
+                                move_projectile();
+                                move_monster();
+                                if ( (gamecycle % 20) == 0 ) animate_sprites();
+                                if ( (gamecycle % 10) == 0 ) shoot_towers();
+                                if ( (gamecycle % 100) == 0 ) if ( spawn_monster() ) return;
+                                if ( gamecycle == 100 ) gamecycle = 0;
+                                gamecycle++;
+                            }
                         break;
                         case TIMER_RENDER:
                             render();

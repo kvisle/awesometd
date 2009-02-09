@@ -31,7 +31,7 @@
 #include "timers.h"
 
 SDL_Surface *screen;
-static SDL_Surface *background;
+static SDL_Surface *background, *menubackground;
 
 // An array of integers representing the playfield grid ( X x Y ) ...
 // If set to 1, indicates that it should be updated. Usually set by
@@ -39,8 +39,9 @@ static SDL_Surface *background;
 static int field[VIDEOMODE_WIDTH/RECTSIZE_X][VIDEOMODE_HEIGHT/RECTSIZE_Y];
 static int rendercount = 0;
 static char fpstext[16] = "";
-static char recttext[24] = "";
 char costtext[8] = "    50";
+
+int current_screen = SCREEN_MENU;
 
 static struct updatefield updatefield;
 
@@ -49,18 +50,14 @@ int init_video(void) {
     screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, SDL_HWSURFACE);
     SDL_WM_SetCaption("Awesome Tower Defense 0.1","");
     background = SDL_CreateRGBSurface(SDL_HWSURFACE, VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, RMASK, GMASK, BMASK, AMASK);
-
+    menubackground = SDL_LoadBMP("menuscreen.bmp");
+    
     init_sprites();
     init_buttons();
 
     SDL_FillRect(background, NULL, SDL_MapRGB(background->format,0,0,0));
     load_level(background, 0);
-
-    update_score(0);
-    update_money(0);
-    update_lives(0);
-    draw_hint_text(screen);
-    draw_buttons(screen);
+    update_all();
 
     return 0;
 }
@@ -68,11 +65,6 @@ int init_video(void) {
 
 // DRAW STUFF!
 void render(void) {
-//    draw_text(screen, fpstext, 520, 0);
-
-    sprintf(recttext, "%11d rectupdates", updatefield.count);
-//    draw_text(screen, recttext, 0, 0);
-
     draw_stuff_on_top();
 
     if ( updatefield.count > 0 ) {
@@ -88,7 +80,7 @@ void render(void) {
 int getrenders(void) {
     int i = rendercount;
     sprintf(fpstext, "%11d fps", i);
-    draw_text(screen, fpstext, 520, 0);
+//    draw_text(screen, fpstext, 520, 0);
     rendercount = 0;
     return i;
 }
@@ -104,8 +96,22 @@ void updaterect(int x, int y) {
             updatefield.rects[updatefield.count].y = y * RECTSIZE_Y;
             updatefield.rects[updatefield.count].w = RECTSIZE_X;
             updatefield.rects[updatefield.count].h = RECTSIZE_Y;
-            SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
+            if ( current_screen == SCREEN_INGAME )
+                SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
+            if ( current_screen == SCREEN_MENU )
+                SDL_BlitSurface(menubackground, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
             updatefield.count++;
+        }
+    }
+}
+
+void update_all(void) {
+    int x, y;
+    if ( current_screen == SCREEN_INGAME ) SDL_BlitSurface(background, NULL, screen, NULL);
+    if ( current_screen == SCREEN_MENU ) SDL_BlitSurface(menubackground, NULL, screen, NULL);
+    for (x=0;x<20;x++) {
+        for (y=0;y<15;y++) {
+            updaterect(x,y);
         }
     }
 }
@@ -119,41 +125,52 @@ void draw_stuff_on_top(void) {
 
     int drawn_helptext = 0;
     int drawn_buttons = 0;
-    int drawn_numbers = 0;
 
     get_cursor_location(&m_x, &m_y);
 
-    draw_cursor(screen);
+    switch(current_screen) {
+        case SCREEN_MENU:
 
-    for (x=0;x<20;x++) {
-        for (y=0;y<15;y++) {
-            if ( x >= 8 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
-                drawn_helptext = 1;
-                draw_hint_text(screen);
-                drawn_buttons = 1;
-                draw_buttons(screen);
-                draw_text_color(screen,costtext,265,416,255,255,0);
+        break;
+        case SCREEN_INGAME:
+            draw_cursor(screen);
+
+            for (x=0;x<20;x++) {
+                for (y=0;y<15;y++) {
+                    if ( x >= 8 && y >= 13 && drawn_helptext == 0 && field[x][y] == 1 ) {
+                        drawn_helptext = 1;
+                        draw_hint_text(screen);
+                        drawn_buttons = 1;
+                        draw_buttons(screen);
+                        draw_text_color(screen,costtext,265,416,255,255,0);
+                    }
+                    if ( field[x][y] == 1 ) {
+                        draw_tower(x,y);
+                        draw_enemy(x,y);
+                        draw_projectile(x,y);
+                    }
+                }
             }
-            if ( field[x][y] == 1 ) {
-                draw_tower(x,y);
-                draw_enemy(x,y);
-                draw_projectile(x,y);
+            if ( field[3][0] == 1 ) {
+                SDL_Rect rect = { 3*RECTSIZE_X, 0*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
+                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
             }
-            if ( x >= 3 && x <= 9 && y >=13 && field[x][y] == 1 && drawn_numbers == 0 ) {
-                drawn_numbers = 1;
+            if ( field[19][2] == 1 ) {
+                SDL_Rect rect = { 19*RECTSIZE_X, 2*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
+                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
+            }
+            if ( field[17][0] == 1 || field[18][0] == 1 || field[19][0] == 1) {
+                draw_text(screen, fpstext, 520, 0);
+            }
+            if ( field[2][13] || field[3][13] || field[4][13] || field[5][13] || field[6][13] || field[7][13] || field[8][13] || field[9][13] ||
+                 field[2][14] || field[3][14] || field[4][14] || field[5][14] || field[6][14] || field[7][14] || field[8][14] || field[9][14] 
+//                || field[2][15] || field[3][15] || field[4][15] || field[5][15] || field[6][15] || field[7][15] || field[8][15] || field[9][15] 
+                 ) {
                 draw_numbers();
             }
-        }
-    }
-    if ( field[3][0] == 1 ) {
-        SDL_Rect rect = { 3*RECTSIZE_X, 0*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
-    }
-    if ( field[19][2] == 1 ) {
-        SDL_Rect rect = { 19*RECTSIZE_X, 2*RECTSIZE_Y, RECTSIZE_X, RECTSIZE_Y };
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format,0,0,0));
-    }
-    if ( field[17][0] == 1 || field[18][0] == 1 || field[19][0] == 1) {
-        draw_text(screen, fpstext, 520, 0);
+            if ( field[16][0] || field[17][0] || field[18][0] || field[19][0] ) 
+                draw_text(screen, fpstext, 520, 0);
+
+        break;
     }
 }
