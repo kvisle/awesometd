@@ -70,7 +70,7 @@ const struct tower tower_definitions[3] = {
 
 static const struct projectile projectile_definitions[3] = {
     { 0,0,1,0,10,0,3,0,0 },
-    { 0,0,1,0,1,0,100,0,0 },
+    { 0,0,1,0,1,0,100,50,0 },
     { 0,0,1,0,1,0,5,0,-0.25 }
 };
 
@@ -83,7 +83,6 @@ struct monster monsters[MAX_MONSTERS];
 struct tower towers[MAX_TOWERS];
 struct projectile projectiles[MAX_PROJECTILES];
 struct sprites sprites;
-
 
 void load_sprite_from_pic(char *filename, int width, int height, int frames) {
     int i,d;
@@ -226,6 +225,40 @@ void move_projectile(void) {
                 projectiles[i].pos_y < (monsters[projectiles[i].targetmonster].pos_y + RECTSIZE_Y)
                 ) {
                     monsters[projectiles[i].targetmonster].cur_hp = monsters[projectiles[i].targetmonster].cur_hp-projectiles[i].damage;
+                    if ( projectiles[i].splash > 0 ) {
+                        int m, k1, k2, h;
+                        float dmg, modifier, finaldmg;
+                        for (m=0;m<MAX_MONSTERS;m++) {
+                            if ( monsters[m].cur_hp > 0 && m != projectiles[i].targetmonster ) {
+                                k1 = (projectiles[i].pos_x+2)-(monsters[m].pos_x+16);
+                                k2 = (projectiles[i].pos_y+2)-(monsters[m].pos_y+16);
+
+                                h = (k1*k1)+(k2*k2);
+                                if ( h <= (projectiles[i].splash*projectiles[i].splash) ) {
+                                    dmg = (float)projectiles[i].damage*0.5;
+                                    modifier = (float)h / (projectiles[i].splash*projectiles[i].splash);
+                                    finaldmg = dmg * modifier;
+                                    monsters[m].cur_hp -= finaldmg;
+
+                                    if ( monsters[m].cur_hp <= 0 ) {
+                                        monsters[m].cur_hp = 0;                
+                                        for ( ax=(monsters[m].pos_x/RECTSIZE_X);ax<=((monsters[m].pos_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
+                                            for ( ay=(monsters[m].pos_y/RECTSIZE_Y);ay<=((monsters[m].pos_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
+                                                updaterect(ax,ay);
+                                            }
+                                        }
+                                        update_score(monsters[m].score);
+                                        update_money(monsters[m].money);
+                                        draw_numbers();
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+
                     if ( projectiles[i].effect_speed < 1 ) {
                         if ( monsters[projectiles[i].targetmonster].effect_speed == 1 )
                             monsters[projectiles[i].targetmonster].effect_speed += projectiles[i].effect_speed;
