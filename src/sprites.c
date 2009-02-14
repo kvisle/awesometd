@@ -236,7 +236,7 @@ void move_projectile(void) {
                                 h = (k1*k1)+(k2*k2);
                                 if ( h <= (projectiles[i].splash*projectiles[i].splash) ) {
                                     dmg = (float)projectiles[i].damage*0.5;
-                                    modifier = (float)h / (projectiles[i].splash*projectiles[i].splash);
+                                    modifier = (float)(projectiles[i].splash*projectiles[i].splash)/h;
                                     finaldmg = dmg * modifier;
                                     monsters[m].cur_hp -= finaldmg;
 
