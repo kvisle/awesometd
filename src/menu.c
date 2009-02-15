@@ -2,7 +2,7 @@
 #include "render.h"
 #include "game.h"
 #include "menu.h"
-
+#include "credits.h"
 
 #define MAX_OPTIONS 4
 
@@ -27,7 +27,7 @@ void draw_menu(void) {
     }
 }
 
-void click_menu(void) {
+int click_menu(void) {
     switch (selected) {
         case 0:
             new_game();
@@ -36,15 +36,21 @@ void click_menu(void) {
             printf("high scores is unimplemented...\n");
         break;
         case 2:
-            printf("credits is unimplemented...\n");
+            show_credits();
         break;
         case 3:
-            printf("QUIT?! :(( \n");
+            return 1;
         break;
     }
+    return 0;
 }
 
 void update_selection(int x, int y) {
     if ( x >= 400 && x <= 488 && y >= 200 && y <= (200+(MAX_OPTIONS*16)) )
         selected = (y-200)/16;
+}
+
+void show_menu(void) {
+    current_screen = SCREEN_MENU;
+    update_all();
 }

@@ -27,6 +27,7 @@
 #include "gfx_buttons.h"
 #include "level.h"
 #include "game.h"
+#include "menu.h"
 
 int gamecycle = 0;
 
@@ -34,7 +35,6 @@ static char lastkeys[32] = { 0 };
 
 void event_loop(void) {
     SDL_Event eventqueue;
-    int quit = 0;
     while(1) {
         while(SDL_WaitEvent(&eventqueue)) {
             switch(eventqueue.type) {
@@ -48,7 +48,10 @@ void event_loop(void) {
                 case SDL_MOUSEBUTTONDOWN:
                     switch(current_screen) {
                         case SCREEN_MENU:
-                            click_menu();
+                            if ( click_menu() ) return;
+                        break;
+                        case SCREEN_CREDITS:
+                            show_menu();
                         break;
                         case SCREEN_INGAME:
                             if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
@@ -106,6 +109,5 @@ void event_loop(void) {
             }
         }
         render();
-        if ( quit == 1 ) return;
     }
 }

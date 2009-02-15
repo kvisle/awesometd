@@ -29,6 +29,8 @@
 #include "level.h"
 #include "game.h"
 #include "timers.h"
+#include "menu.h"
+#include "credits.h"
 
 SDL_Surface *screen;
 static SDL_Surface *background, *menubackground;
@@ -98,7 +100,7 @@ void updaterect(int x, int y) {
             updatefield.rects[updatefield.count].h = RECTSIZE_Y;
             if ( current_screen == SCREEN_INGAME )
                 SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
-            if ( current_screen == SCREEN_MENU )
+            if ( current_screen == SCREEN_MENU || current_screen == SCREEN_CREDITS )
                 SDL_BlitSurface(menubackground, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
             updatefield.count++;
         }
@@ -127,6 +129,9 @@ void draw_stuff_on_top(void) {
     get_cursor_location(&m_x, &m_y);
 
     switch(current_screen) {
+        case SCREEN_CREDITS:
+            draw_credits();
+        break;
         case SCREEN_MENU:
             if (
                 field[12][6] || field[13][6] || field[14][6] || field[15][6] ||
