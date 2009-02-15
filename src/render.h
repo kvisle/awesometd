@@ -28,7 +28,7 @@
 
 #define SCREEN_MENU     1
 #define SCREEN_INGAME   2
-#define SCREEN_SCORE    3
+#define SCREEN_HIGHSCORES    3
 #define SCREEN_CREDITS  4
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN

@@ -3,6 +3,7 @@
 #include "game.h"
 #include "menu.h"
 #include "credits.h"
+#include "highscores.h"
 
 #define MAX_OPTIONS 4
 
@@ -33,7 +34,7 @@ int click_menu(void) {
             new_game();
         break;
         case 1:
-            printf("high scores is unimplemented...\n");
+            show_highscores();
         break;
         case 2:
             show_credits();

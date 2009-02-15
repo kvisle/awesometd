@@ -53,6 +53,9 @@ void event_loop(void) {
                         case SCREEN_CREDITS:
                             show_menu();
                         break;
+                        case SCREEN_HIGHSCORES:
+                            show_menu();
+                        break;
                         case SCREEN_INGAME:
                             if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
                                 if ( !is_path((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
