@@ -41,26 +41,28 @@ static const int level_monster[1][10][40] = {
         { 4,4,4,4,4,4,4,4,4,4,4,4,4,4,4 },
         { 5,5,5,5,5,5,5,5,5,5 },
         { 6,6,6,6,6,6,6,6,6,6,6,6,6,6,6 },
-        { 7 }
+        { 8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8 },
+        { 7,7,7,7,7 }
     }
 };
 
 static const int monster_batches[1][10] = {
-    { 10, 15, 30, 15, 10, 15, 1, 0, 0, 0 }
+    { 10, 15, 30, 15, 10, 15, 20, 5, 0, 0 }
 };
 
 static const int level_batches[1] = {
     10
 };
 
-static const struct monster monster_definitions[7] = {
+static const struct monster monster_definitions[8] = {
     { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1,1 },
     { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1,1 },
     { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1,1 },
     { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1,1 },
     { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1,1 },
     { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1,1 },
-    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1,1 }
+    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1,1 },
+    { 0,0,0,0,500,500,0,3,DIRECTION_S,0,0,200,50,0,1,1 }
 };
 
 const struct tower tower_definitions[3] = {
@@ -264,7 +266,8 @@ void move_projectile(void) {
                                                 updaterect(ax,ay);
                                             }
                                         }
-                                        update_score(monsters[m].score);
+                                        // rewarding the player for early kills.
+                                        update_score(monsters[m].score-(monsters[m].score*(monsters[m].travelled/1728.0f)));
                                         update_money(monsters[m].money);
                                         draw_numbers();
                                     }
@@ -291,7 +294,7 @@ void move_projectile(void) {
                             }
                         }
 
-                        update_score(monsters[projectiles[i].targetmonster].score);
+                        update_score(monsters[projectiles[i].targetmonster].score-(monsters[projectiles[i].targetmonster].score*(monsters[projectiles[i].targetmonster].travelled/1728.0f)));
                         update_money(monsters[projectiles[i].targetmonster].money);
                         draw_numbers();
                     }
