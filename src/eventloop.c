@@ -42,13 +42,13 @@ void event_loop(void) {
                     return;
                 break;
                 case SDL_MOUSEMOTION:
+                    if ( current_screen == SCREEN_MENU ) update_selection(eventqueue.motion.x,eventqueue.motion.y);
                     update_cursor(eventqueue.motion.x,eventqueue.motion.y);
                 break;
                 case SDL_MOUSEBUTTONDOWN:
                     switch(current_screen) {
                         case SCREEN_MENU:
-                            printf("You're clicking in menu mode!\n");
-                            new_game();
+                            click_menu();
                         break;
                         case SCREEN_INGAME:
                             if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {

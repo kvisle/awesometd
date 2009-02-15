@@ -511,6 +511,7 @@ void draw_text(SDL_Surface *s, const char *text, int x, int y) {
 }
 
 void draw_text_color(SDL_Surface *s, const char *text, int x, int y, int r, int g, int b) {
+    if ( charmap_inited == 0 ) init_gfx_charmap();
     int fontcolor = SDL_MapRGB(charmapsurface->format, 255, 255, 255);
     SDL_Color colors[256];
     memset(colors, 0, sizeof(colors));

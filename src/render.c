@@ -116,8 +116,6 @@ void update_all(void) {
     }
 }
 
-//10x13 = help-text
-
 void draw_stuff_on_top(void) {
     int x,y;
 
@@ -130,7 +128,13 @@ void draw_stuff_on_top(void) {
 
     switch(current_screen) {
         case SCREEN_MENU:
-
+            if (
+                field[12][6] || field[13][6] || field[14][6] || field[15][6] ||
+                field[12][7] || field[13][7] || field[14][7] || field[15][7] ||
+                field[12][8] || field[13][8] || field[14][8] || field[15][8]
+                ) {
+                draw_menu();
+            }
         break;
         case SCREEN_INGAME:
             draw_cursor(screen);
@@ -164,7 +168,6 @@ void draw_stuff_on_top(void) {
             }
             if ( field[2][13] || field[3][13] || field[4][13] || field[5][13] || field[6][13] || field[7][13] || field[8][13] || field[9][13] ||
                  field[2][14] || field[3][14] || field[4][14] || field[5][14] || field[6][14] || field[7][14] || field[8][14] || field[9][14] 
-//                || field[2][15] || field[3][15] || field[4][15] || field[5][15] || field[6][15] || field[7][15] || field[8][15] || field[9][15] 
                  ) {
                 draw_numbers();
             }

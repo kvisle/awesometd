@@ -20,6 +20,8 @@
 #ifndef __GFX_CHARMAP_H__
 #define __GFX_CHARMAP_H__
 
+#include <SDL.h>
+
 #define CHAR_COUNT 37
 #define CHAR_SIZE_X 8
 #define CHAR_SIZE_Y 8
