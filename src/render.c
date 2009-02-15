@@ -111,7 +111,7 @@ void updaterect(int x, int y) {
 void update_all(void) {
     int x, y;
     if ( current_screen == SCREEN_INGAME ) SDL_BlitSurface(background, NULL, screen, NULL);
-    if ( current_screen == SCREEN_MENU ) SDL_BlitSurface(menubackground, NULL, screen, NULL);
+    if ( current_screen == SCREEN_MENU || current_screen == SCREEN_HIGHSCORES ) SDL_BlitSurface(menubackground, NULL, screen, NULL);
     for (x=0;x<20;x++) {
         for (y=0;y<15;y++) {
             updaterect(x,y);

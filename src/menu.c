@@ -34,7 +34,7 @@ int click_menu(void) {
             new_game();
         break;
         case 1:
-            show_highscores();
+            show_highscores(SCORE_NOMESSAGE);
         break;
         case 2:
             show_credits();

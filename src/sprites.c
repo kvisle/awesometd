@@ -26,6 +26,7 @@
 #include "level.h"
 #include "settings.h"
 #include "game.h"
+#include "highscores.h"
 
 #define get_locy(__A) ((__A)/RECTSIZE_Y)
 #define get_locx(__A) ((__A)/RECTSIZE_X)
@@ -172,8 +173,8 @@ int spawn_monster(void) {
     }
 
     if ( batch == level_batches[level] ) {
-        printf("You won the level, grats! I haven't made a scoreboard or anything yet.\n");
-        return 1;
+        show_highscores(SCORE_WONMESSAGE);
+        return 0;
     }
 
     for (i=0;i<MAX_MONSTERS;i++) {
@@ -276,6 +277,7 @@ void move_monster(void) {
                 // TODO: This is a hardcoded way for me to detect if the monster has arrived at its end path
                 // This should be fixed to not put stupid limitations on the game.
                 update_lives(-1);
+                if ( current_screen != SCREEN_INGAME ) return;
                 draw_numbers();
                 monsters[i].cur_hp = 0;
             }

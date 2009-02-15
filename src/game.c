@@ -24,6 +24,7 @@
 #include "settings.h"
 #include "game.h"
 #include "sprites.h"
+#include "highscores.h"
 
 static int money = 200;
 static int score = 0;
@@ -62,7 +63,10 @@ void update_lives(int amount) {
     if ( lives < 0 ) {
         lives = 0;
     }
-    if ( lives == 0 ) game_over();
+    if ( lives == 0 ) { 
+        show_highscores(SCORE_LOSTMESSAGE);
+        return;
+    }
     sprintf(lifetext, "lives %6d", lives);
     updaterect(3,13);
 }

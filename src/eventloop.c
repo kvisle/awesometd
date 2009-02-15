@@ -73,6 +73,7 @@ void event_loop(void) {
                         case SCREEN_MENU:
                         break;
                         case SCREEN_INGAME:
+                            if (eventqueue.key.keysym.sym == SDLK_ESCAPE) show_menu();
                             memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
                             lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
                             if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
