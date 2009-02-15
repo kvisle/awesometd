@@ -23,6 +23,8 @@
 #include "gfx_charmap.h"
 #include "settings.h"
 #include "game.h"
+#include "sprites.h"
+#include "highscores.h"
 
 static int money = 200;
 static int score = 0;
@@ -31,6 +33,18 @@ char moneytext[20], scoretext[20], lifetext[20];
 
 int iddqd_enabled = 0;
 int idkfa_enabled = 0;
+
+void new_game(void) {
+    money = 200;
+    score = 0;
+    lives = 1;
+    update_score(0);
+    update_money(0);
+    update_lives(0);
+    reset_everything();
+    current_screen = SCREEN_INGAME;
+    update_all();
+}
 
 void update_money(int amount) {
     if (! idkfa_enabled) money += amount;
@@ -49,7 +63,10 @@ void update_lives(int amount) {
     if ( lives < 0 ) {
         lives = 0;
     }
-    if ( lives == 0 ) game_over();
+    if ( lives == 0 ) { 
+        show_highscores(SCORE_LOSTMESSAGE);
+        return;
+    }
     sprintf(lifetext, "lives %6d", lives);
     updaterect(3,13);
 }

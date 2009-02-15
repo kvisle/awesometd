@@ -1,4 +1,5 @@
 *.o
-atd
-atd.exe
+awesometd
+awesometd.exe
+gmon.out
 SDL.dll

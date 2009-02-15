@@ -28,5 +28,6 @@ int have_money(int amount);
 void game_over(void);
 void iddqd(void);
 void idkfa(void);
+void new_game(void);
 
 #endif /* __GAME_H__ */

@@ -91,6 +91,7 @@ struct projectile {
     float effect_speed;
 };
 
+void reset_everything(void);
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y);
 int spawn_monster(void);
 void move_monster(void);
