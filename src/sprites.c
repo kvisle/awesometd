@@ -27,8 +27,8 @@
 #include "settings.h"
 #include "game.h"
 
-#define get_locy(__A) ((__A)/RECTSIZE_Y)
 #define get_locx(__A) ((__A)/RECTSIZE_X)
+#define get_locy(__A) ((__A)/RECTSIZE_Y)
 #define get_cellx(__A) (((__A).pos_x)/RECTSIZE_X)
 #define get_celly(__A) (((__A).pos_y)/RECTSIZE_Y)
 
@@ -183,22 +183,29 @@ int spawn_monster(void) {
 
 void move_projectile(void) {
     int i, ax, ay;
-    float x, y, angle;
+    float x, y/*, angle*/;
     SDL_Rect projrect = { 0,0, 4, 4 };
 
     for (i=0;i<MAX_PROJECTILES;i++) {
         if ( monsters[projectiles[i].targetmonster].cur_hp <= 0 && projectiles[i].damage > 0 ) {
-            for ( ay = get_celly( projectiles[i] ); ay <= get_locy( projectiles[i].pos_y+projrect.h ); ay++ ) {
-                for ( ax = get_cellx( projectiles[i] ); ax <= get_locx( projectiles[i].pos_x+projrect.w ); ax++ ) {
+            for ( ay = get_celly( projectiles[i] ); ay <= get_locy( projectiles[i].pos_y + projrect.h ); ay++ ) {
+                for ( ax = get_cellx( projectiles[i] ); ax <= get_locx( projectiles[i].pos_x + projrect.w ); ax++ ) {
                     updaterect(ax,ay);
                 }
             }
             projectiles[i].damage = 0;
         } else if ( projectiles[i].damage > 0 ) {
 
-            angle = atan2(monsters[projectiles[i].targetmonster].pos_y+16 - projectiles[i].pos_y, monsters[projectiles[i].targetmonster].pos_x+16 - projectiles[i].pos_x);
+            /*angle = atan2(monsters[projectiles[i].targetmonster].pos_y+16 - projectiles[i].pos_y, monsters[projectiles[i].targetmonster].pos_x+16 - projectiles[i].pos_x);
             x = cos(angle);
-            y = sin(angle);
+            y = sin(angle);*/
+
+            // Calculate direction without trigonometric functions. Should be faster
+            float dx = monsters[projectiles[i].targetmonster].pos_x+16 - projectiles[i].pos_x;
+            float dy = monsters[projectiles[i].targetmonster].pos_y+16 - projectiles[i].pos_y;
+            float d = sqrt(dx*dx + dy*dy);
+            x = dx/d;
+            y = dy/d;
 
             for ( ay = get_celly( projectiles[i] ); ay <= get_locy(projectiles[i].pos_y + projrect.h); ay++ ) {
                 for ( ax = get_cellx( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
@@ -206,10 +213,8 @@ void move_projectile(void) {
                 }
             }
 
-            projectiles[i].pos_y += y * projectiles[i].speed;
-            projectiles[i].pos_x += x * projectiles[i].speed;
-            projrect.x = projectiles[i].pos_x;
-            projrect.y = projectiles[i].pos_y;
+            projrect.x = (projectiles[i].pos_y += y * projectiles[i].speed);
+            projrect.y = (projectiles[i].pos_x += x * projectiles[i].speed);
 
             for ( ay = get_celly( projectiles[i] ); ay <= get_locy(projectiles[i].pos_y + projrect.h); ay++ ) {
                 for ( ax = get_cellx( projectiles[i] ); ax <= get_locx(projectiles[i].pos_x + projrect.w); ax++ ) {
@@ -224,19 +229,21 @@ void move_projectile(void) {
                 projectiles[i].pos_y > monsters[projectiles[i].targetmonster].pos_y &&
                 projectiles[i].pos_y < (monsters[projectiles[i].targetmonster].pos_y + RECTSIZE_Y)
                 ) {
-                    monsters[projectiles[i].targetmonster].cur_hp = monsters[projectiles[i].targetmonster].cur_hp-projectiles[i].damage;
-                    if ( projectiles[i].splash > 0 ) {
+                    monsters[projectiles[i].targetmonster].cur_hp -= projectiles[i].damage;
+                    if ( projectiles[i].splash > 0 )
+                    {
                         int m, k1, k2, h;
                         float dmg, modifier, finaldmg;
-                        for (m=0;m<MAX_MONSTERS;m++) {
+                        for (m=0;m<MAX_MONSTERS;m++)
+                        {
                             if ( monsters[m].cur_hp > 0 && m != projectiles[i].targetmonster ) {
                                 k1 = (projectiles[i].pos_x+2)-(monsters[m].pos_x+16);
                                 k2 = (projectiles[i].pos_y+2)-(monsters[m].pos_y+16);
 
                                 h = (k1*k1)+(k2*k2);
                                 if ( h <= (projectiles[i].splash*projectiles[i].splash) ) {
-                                    dmg = (float)projectiles[i].damage*0.5;
-                                    modifier = (float)(projectiles[i].splash*projectiles[i].splash)/h;
+                                    dmg = 0.5f * projectiles[i].damage;
+                                    modifier = projectiles[i].splash*projectiles[i].splash/(float)h;
                                     finaldmg = dmg * modifier;
                                     monsters[m].cur_hp -= finaldmg;
 
@@ -251,8 +258,6 @@ void move_projectile(void) {
                                         update_money(monsters[m].money);
                                         draw_numbers();
                                     }
-
-
                                 }
                             }
                         }
@@ -303,7 +308,7 @@ void move_monster(void) {
                 draw_numbers();
                 monsters[i].cur_hp = 0;
             }
-            monsters[i].progress = monsters[i].progress + (monsters[i].speed*monsters[i].effect_speed);
+            monsters[i].progress += (monsters[i].speed*monsters[i].effect_speed);
             if ( (monsters[i].last_ice_shot + 3000 ) < SDL_GetTicks() ) monsters[i].effect_speed = 1;
 
             while ( monsters[i].progress > 10 ) {

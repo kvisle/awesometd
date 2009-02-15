@@ -43,4 +43,4 @@ $(TARGET): $(OBJS)
 all: $(TARGET)
 
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -f $(OBJS) $(TARGET)
