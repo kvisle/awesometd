@@ -63,7 +63,7 @@ static SDL_Rect level_tiles[8] = {
 // c = east tile
 // d = south tile
 // e = west tile
-static const int tilepicker[2][2][2][2] = {{{{ 2,2 },{ 2,6 }},{{ 2,1 },{ 5,2 }}},{{{ 2,3 },{ 0,2 }},{{ 4,2 },{ 2,7 }}}};
+static const unsigned char tilepicker[2][2][2][2] = {{{{ 2,2 },{ 2,6 }},{{ 2,1 },{ 5,2 }}},{{{ 2,3 },{ 0,2 }},{{ 4,2 },{ 2,7 }}}};
 
 static SDL_Surface *tiles;
 
