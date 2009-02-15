@@ -35,7 +35,7 @@ static char lastkeys[32] = { 0 };
 void event_loop(void) {
     SDL_Event eventqueue;
     int quit = 0;
-    while(1) {
+    while(!quit) {
         while(SDL_WaitEvent(&eventqueue)) {
             switch(eventqueue.type) {
                 case SDL_QUIT:
@@ -90,6 +90,5 @@ void event_loop(void) {
             }
         }
         render();
-        if ( quit == 1 ) return;
     }
 }
