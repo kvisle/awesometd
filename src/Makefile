@@ -19,7 +19,12 @@ PLATFORM = LINUX
 
 OBJS = main.o render.o eventloop.o timers.o level.o sprites.o cursor.o gfx_charmap.o gfx_buttons.o game.o menu.o credits.o highscores.o
 
-CFLAGS = -ggdb -Wall -pg
+CFLAGS = -Wall -pipe
+ifdef RELEASE
+	CFLAGS += -march=native -O2 -fomit-frame-pointer -funroll-loops
+else
+	CFLAGS += -pg -ggdb -O0
+endif
 
 ifeq ($(PLATFORM),LINUX)
 	TARGET = awesometd
@@ -34,13 +39,15 @@ ifeq ($(PLATFORM),WIN32)
 	LDFLAGS += $(shell /home/trygve/sdl/SDL-1.2.13/bin/sdl-config --libs)
 endif
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
 all: $(TARGET)
+
+$(TARGET): $(OBJS) Makefile
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+
+%.o: %.c %.h Makefile
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(TARGET)
+
+.PHONY: all clean
