@@ -175,7 +175,7 @@ void select_tower(int x, int y) {
 
 void sell_tower(int tid) {
     towers[tid].active = 0;
-    update_money(towers[tid].price);
+    update_money((towers[tid].price/2));
     selected_tower = -1;
     updaterect(towers[tid].loc_x, towers[tid].loc_y);
     updaterect(8,0);
