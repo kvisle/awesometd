@@ -81,6 +81,8 @@ static int level = 0;
 static int batch = 0;
 static int monster = 0;
 
+int selected_tower = -1;
+char selected_tower_str[20] = "tower x";
 
 struct monster monsters[MAX_MONSTERS];
 struct tower towers[MAX_TOWERS];
@@ -154,6 +156,32 @@ void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
     } else {
         printf("ERR -- draw_sprite(): Sprite doesn't exist.\n");
     }
+}
+
+void select_tower(int x, int y) {
+    int i;
+    for (i=0;i<MAX_TOWERS;i++) {
+        if ( towers[i].active == 1 ) {
+            if ( towers[i].loc_x == x && towers[i].loc_y == y ) {
+                selected_tower = i;
+                sprintf(selected_tower_str, "tower %d", selected_tower);
+                updaterect(8,0);
+                return;
+            }
+        }
+    }
+}
+
+void sell_tower(int tid) {
+    towers[tid].active = 0;
+    update_money(towers[tid].price);
+    selected_tower = -1;
+    updaterect(towers[tid].loc_x, towers[tid].loc_y);
+    updaterect(8,0);
+}
+
+void tower_algorithm(int tid, int aid) {
+    towers[tid].target_algorithm = aid;
 }
 
 int spawn_monster(void) {
@@ -438,6 +466,10 @@ void draw_tower(int x, int y) {
         if ( towers[i].active == 1 ) {
             if ( towers[i].loc_x == x && towers[i].loc_y == y ) {
                 updaterect(x,y);
+                if ( selected_tower == i ) {
+                    SDL_Rect trect = { towers[i].loc_x*32, towers[i].loc_y*32,32,32 };
+                    SDL_FillRect(screen, &trect, SDL_MapRGB(screen->format, 0,0,255) );
+                }
                 draw_sprite(screen,towers[i].spid, towers[i].frameno, DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
                 draw_reload(screen,towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
                 return;

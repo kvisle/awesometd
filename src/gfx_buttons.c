@@ -23,24 +23,56 @@
 #include "sprites.h"
 #include "gfx_charmap.h"
 
-SDL_Surface *buttonsurface;
+SDL_Surface *buttonsurface, *buttonsurface2;
 static SDL_Rect button_rects[3] = {
     { 260, 430, 48, 48 },
     { 308, 430, 48, 48 },
     { 356, 430, 48, 48 }
 };
+static SDL_Rect button_rects2[6] = {
+    { 256, 8, 24, 24 },
+    { 304, 8, 24, 24 },
+    { 328, 8, 24, 24 },
+    { 352, 8, 24, 24 },
+    { 376, 8, 24, 24 },
+    { 400, 8, 24, 24 }
+};
 
 static const int button_count = 3;
+static const int button2_count = 6;
 int towerbutton = 0;
+int button2 = 0;
+int button2tooltip = -1;
 static int button_pressed[3] = { 1, 0, 0 };
 static const char buttonhint[3][40] = {
     "build pillbox",
     "build artificial volcano",
     "build freezer"
 };
+static const char buttonhint2[6][33] = {
+    "sell tower                     ",
+    "shoot enemy travelled the least",
+    "shoot enemy travelled farthest ",
+    "shoot enemy with most hp       ",
+    "shoot enemy with least hp      ",
+    "shoot the fastest enemy        "
+};
+
+void update_tooltip(int x, int y) {
+    int i;
+    for (i=0;i<button2_count;i++) {
+        if ( x > button_rects2[i].x && x < (button_rects2[i].x+button_rects2[i].w) &&
+             y > button_rects2[i].y && y < (button_rects2[i].y+button_rects2[i].h) ) {
+            button2tooltip = i;
+            return;
+        }
+    }
+    button2tooltip = -1;
+}
 
 void init_buttons(void) {
     buttonsurface = SDL_LoadBMP("buttonbar.bmp");
+    buttonsurface2 = SDL_LoadBMP("buttonbar2.bmp");
 }
 
 void draw_buttons(SDL_Surface *s) {
@@ -60,6 +92,26 @@ void draw_buttons(SDL_Surface *s) {
     }
 }
 
+void draw_buttons2(SDL_Surface *s) {
+    int i;
+    SDL_Rect rect = { 0,0,24,24 };
+
+    for(i=8;i<=13;i++)
+        updaterect(i,0);
+
+    if ( selected_tower == -1 ) return;
+
+    if ( button2tooltip > -1 ) draw_text(screen, buttonhint2[button2tooltip], 256,0 );
+    else draw_text(screen, "                                 ", 256, 0 );
+
+    for (i=0;i<button2_count;i++) {
+        if (towers[selected_tower].target_algorithm == i) rect.x = 24;
+        else rect.x = 0;
+        rect.y = i*24;
+        SDL_BlitSurface(buttonsurface2,&rect, s, &button_rects2[i]);
+    }
+}
+
 void press_button(int x, int y) {
     int i, n;
     for (i=0;i<button_count;i++) {
@@ -69,6 +121,13 @@ void press_button(int x, int y) {
             sprintf(costtext, "%6d", tower_definitions[i].price);
             for (n=0;n<button_count;n++) { if (n != i ) button_pressed[n] = 0; }
             draw_buttons(screen);
+            return;
+        }
+    }
+    for (i=0;i<button2_count;i++) {
+        if ( x <= (button_rects2[i].x + button_rects2[i].w) && x >= button_rects2[i].x && y >= button_rects2[i].y && y <= (button_rects2[i].y + button_rects2[i].h) ) {
+            if ( i == 0 ) sell_tower(selected_tower);
+            else tower_algorithm(selected_tower, i);
             return;
         }
     }

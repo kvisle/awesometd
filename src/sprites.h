@@ -34,11 +34,11 @@
 #define DIRECTION_S 2
 #define DIRECTION_W 3
 
-#define ALGORITHM_TRAVELLED_SHORTEST 0
-#define ALGORITHM_TRAVELLED_FARTHEST 1
-#define ALGORITHM_MOST_HP 2
-#define ALGORITHM_LEAST_HP 3
-#define ALGORITHM_FASTEST 4
+#define ALGORITHM_TRAVELLED_SHORTEST 1
+#define ALGORITHM_TRAVELLED_FARTHEST 2
+#define ALGORITHM_MOST_HP 3
+#define ALGORITHM_LEAST_HP 4
+#define ALGORITHM_FASTEST 5
 
 struct monster {
     int pos_x, pos_y; // Exact coordinates, not the cell-coordinates...
@@ -106,7 +106,13 @@ void shoot_towers(void);
 void draw_tower(int x, int y);
 void draw_enemy(int x, int y);
 void draw_projectile(int x, int y);
-
+void select_tower(int x, int y);
+void sell_tower(int tid);
+void tower_algorithm(int tid, int aid);
 const struct tower tower_definitions[3];
+struct tower towers[MAX_TOWERS];
+int selected_tower;
+char selected_tower_str[20];
+
 
 #endif /* __SPRITES_H__ */

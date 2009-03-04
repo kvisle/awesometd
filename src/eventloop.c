@@ -43,6 +43,7 @@ void event_loop(void) {
                 break;
                 case SDL_MOUSEMOTION:
                     if ( current_screen == SCREEN_MENU ) update_selection(eventqueue.motion.x,eventqueue.motion.y);
+                    if ( current_screen == SCREEN_INGAME ) update_tooltip(eventqueue.motion.x,eventqueue.motion.y);
                     update_cursor(eventqueue.motion.x,eventqueue.motion.y);
                 break;
                 case SDL_MOUSEBUTTONDOWN:
@@ -59,7 +60,11 @@ void event_loop(void) {
                         case SCREEN_INGAME:
                             if ( (eventqueue.button.x/RECTSIZE_X) > 0 && (eventqueue.button.x/RECTSIZE_X) < 19 && (eventqueue.button.y/RECTSIZE_Y) > 0 && (eventqueue.button.y/RECTSIZE_Y) < 13 ) {
                                 if ( !is_path((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
-                                    add_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y),towerbutton);
+                                    if ( !has_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y)) ) {
+                                        add_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y),towerbutton);
+                                    } else {
+                                        select_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y));
+                                    }
                                 }
                             } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
                                 press_button(eventqueue.button.x, eventqueue.button.y);
