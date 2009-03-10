@@ -71,7 +71,6 @@ void update_lives(int amount) {
     updaterect(3,13);
 }
 int have_money(int amount) {
-    printf("do you have %d?\n",amount);
     if (idkfa_enabled) return 1;
     if ( money >= amount ) return 1;
     return 0;
