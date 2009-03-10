@@ -56,6 +56,7 @@ struct monster {
     Uint32 last_ice_shot;
     float effect_speed;
     float upcoming_effect_speed;
+    int exp_gainer;
 };
 
 struct tower {
@@ -71,6 +72,9 @@ struct tower {
     int range;
     int projectile;
     int target_algorithm;
+    int exp;
+    int max_exp;
+    int next_tower;
 };
 
 struct sprites {
@@ -89,6 +93,7 @@ struct projectile {
     int damage; // If damage is 0, it's considered as inactive.
     int splash;
     float effect_speed;
+    int owner;
 };
 
 void reset_everything(void);
@@ -109,10 +114,9 @@ void draw_projectile(int x, int y);
 void select_tower(int x, int y);
 void sell_tower(int tid);
 void tower_algorithm(int tid, int aid);
-const struct tower tower_definitions[3];
+const struct tower tower_definitions[9];
 struct tower towers[MAX_TOWERS];
 int selected_tower;
-char selected_tower_str[20];
-
+void upgrade_tower(int tid);
 
 #endif /* __SPRITES_H__ */

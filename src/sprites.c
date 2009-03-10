@@ -55,26 +55,38 @@ static const int level_batches[1] = {
 };
 
 static const struct monster monster_definitions[8] = {
-    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1,1 },
-    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1,1 },
-    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1,1 },
-    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1,1 },
-    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1,1 },
-    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1,1 },
-    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1,1 },
-    { 0,0,0,0,500,500,0,3,DIRECTION_S,0,0,200,50,0,1,1 }
+    { 0,0,0,0,15,15,0,4,DIRECTION_S,0,0,10,3,0,1,1,-1 },
+    { 0,0,4,0,20,20,0,5,DIRECTION_S,0,0,20,6,0,1,1,-1 },
+    { 0,0,0,0,50,50,0,4,DIRECTION_S,0,0,35,10,0,1,1,-1 },
+    { 0,0,0,0,100,100,0,3,DIRECTION_S,0,0,50,20,0,1,1,-1 },
+    { 0,0,4,0,150,150,0,5,DIRECTION_S,0,0,100,30,0,1,1,-1 },
+    { 0,0,0,0,200,200,0,6,DIRECTION_S,0,0,100,60,0,1,1,-1 },
+    { 0,0,2,0,2000,2000,0,7,DIRECTION_S,0,0,100000,1000,0,1,1,-1 },
+    { 0,0,0,0,500,500,0,3,DIRECTION_S,0,0,200,50,0,1,1,-1 }
 };
 
-const struct tower tower_definitions[3] = {
-    { 0,0,1,0,1,5,5,0,50,0,100,0,ALGORITHM_TRAVELLED_FARTHEST },
-    { 0,0,3,0,1,50,30,10,100,0,50,1,ALGORITHM_TRAVELLED_FARTHEST },
-    { 0,0,5,0,1,25,5,0,50,0,200,2,ALGORITHM_FASTEST }
+const struct tower tower_definitions[9] = {
+    { 0,0,1,0,1, 6,0,0, 50,0, 80,0,ALGORITHM_TRAVELLED_FARTHEST,0,10, 1 },
+    { 0,0,1,0,1, 5,0,0, 100,0, 100,1,ALGORITHM_TRAVELLED_FARTHEST,0,20, 2 },
+    { 0,0,1,0,1, 4,0,0, 200,0, 120,2,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 }, 
+    { 0,0,3,0,1, 50,0,0, 100,0, 75,3,ALGORITHM_TRAVELLED_FARTHEST,0,10, 4 },
+    { 0,0,3,0,1, 40,0,0, 200,0, 90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20, 5 },
+    { 0,0,3,0,1, 25,0,0, 400,0, 110,5,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 },
+    { 0,0,5,0,1, 25,0,0, 75,0, 100,6,ALGORITHM_FASTEST,0,10, 7 },
+    { 0,0,5,0,1, 20,0,0, 150,0, 125,7,ALGORITHM_FASTEST,0,20, 8 },
+    { 0,0,5,0,1, 15,0,0, 300,0, 150,8,ALGORITHM_FASTEST,0,0, 0 }
 };
 
-static const struct projectile projectile_definitions[3] = {
-    { 0,0,1,0,10,0,3,0,0 },
-    { 0,0,1,0,1,0,100,50,0 },
-    { 0,0,1,0,1,0,5,0,-0.25 }
+static const struct projectile projectile_definitions[9] = {
+    { 0,0,1,0, 7,0, 3, 0, 0,0 },
+    { 0,0,1,0, 7,0, 6, 0, 0,0 },
+    { 0,0,1,0, 7,0, 12, 0, -0.05,0 },
+    { 0,0,1,0, 1,0, 40, 50, 0,0 },
+    { 0,0,1,0, 2,0, 80, 50, 0,0 },
+    { 0,0,1,0, 2,0, 120, 50, 0,0 },
+    { 0,0,1,0, 3,0, 5, 0, -0.25,0 },
+    { 0,0,1,0, 3,0, 15, 0, -0.30,0 },
+    { 0,0,1,0, 3,0, 30, 0, -0.40,0 }
 };
 
 static int level = 0;
@@ -82,7 +94,6 @@ static int batch = 0;
 static int monster = 0;
 
 int selected_tower = -1;
-char selected_tower_str[20] = "tower x";
 
 struct monster monsters[MAX_MONSTERS];
 struct tower towers[MAX_TOWERS];
@@ -165,7 +176,6 @@ void select_tower(int x, int y) {
         if ( towers[i].active == 1 ) {
             if ( towers[i].loc_x == x && towers[i].loc_y == y ) {
                 selected_tower = i;
-                sprintf(selected_tower_str, "tower %d", selected_tower);
                 updaterect(8,0);
                 return;
             }
@@ -220,8 +230,6 @@ int spawn_monster(void) {
     return 0;
 }
 
-
-
 void move_projectile(void) {
     int i, ax, ay;
     float x, y/*, angle*/;
@@ -271,6 +279,8 @@ void move_projectile(void) {
                 projectiles[i].pos_y < (monsters[projectiles[i].targetmonster].pos_y + RECTSIZE_Y)
                 ) {
                     monsters[projectiles[i].targetmonster].cur_hp -= projectiles[i].damage;
+                    if ( towers[projectiles[i].owner].max_exp > 0 ) monsters[projectiles[i].targetmonster].exp_gainer = projectiles[i].owner;
+
                     if ( projectiles[i].splash > 0 )
                     {
                         int m, k1, k2, h;
@@ -287,6 +297,7 @@ void move_projectile(void) {
                                     modifier = projectiles[i].splash*projectiles[i].splash/(float)h;
                                     finaldmg = dmg * modifier;
                                     monsters[m].cur_hp -= finaldmg;
+                                    if ( towers[projectiles[i].owner].max_exp > 0 ) monsters[m].exp_gainer = projectiles[i].owner;
 
                                     if ( monsters[m].cur_hp <= 0 ) {
                                         monsters[m].cur_hp = 0;                
@@ -297,6 +308,12 @@ void move_projectile(void) {
                                         }
                                         // rewarding the player for early kills.
                                         update_score(monsters[m].score-(monsters[m].score*(monsters[m].travelled/1728.0f)));
+                                        if ( monsters[m].exp_gainer > -1 ) {
+                                            if ( towers[monsters[m].exp_gainer].next_tower > 0 ) towers[monsters[m].exp_gainer].exp++;
+                                            if ( towers[monsters[m].exp_gainer].exp >= towers[monsters[m].exp_gainer].max_exp && towers[monsters[m].exp_gainer].next_tower > 0 ) {
+                                                upgrade_tower(monsters[m].exp_gainer);
+                                            }
+                                        }
                                         update_money(monsters[m].money);
                                         draw_numbers();
                                     }
@@ -324,6 +341,12 @@ void move_projectile(void) {
                         }
 
                         update_score(monsters[projectiles[i].targetmonster].score-(monsters[projectiles[i].targetmonster].score*(monsters[projectiles[i].targetmonster].travelled/1728.0f)));
+                        if ( monsters[projectiles[i].targetmonster].exp_gainer > -1 ) {
+                            if ( towers[monsters[projectiles[i].targetmonster].exp_gainer].next_tower > 0 ) towers[monsters[projectiles[i].targetmonster].exp_gainer].exp++;
+                            if ( towers[monsters[projectiles[i].targetmonster].exp_gainer].exp >= towers[monsters[projectiles[i].targetmonster].exp_gainer].max_exp && towers[monsters[projectiles[i].targetmonster].exp_gainer].next_tower > 0) {
+                                upgrade_tower(monsters[projectiles[i].targetmonster].exp_gainer);
+                            }
+                        }
                         update_money(monsters[projectiles[i].targetmonster].money);
                         draw_numbers();
                     }
@@ -426,6 +449,10 @@ void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_Rect gray = { x+2,y+28,(28*cur/max),3 };
     SDL_FillRect(s, &gray, SDL_MapRGB(s->format,200,200,200));
 }
+void draw_exp(SDL_Surface *s, int x, int y, int cur, int max) {
+    SDL_Rect yellow = { x+2,y+25,(28*cur/max),3 };
+    SDL_FillRect(s, &yellow, SDL_MapRGB(s->format,255,255,0));
+}
 
 void draw_enemy(int x, int y) {
     int i;
@@ -473,6 +500,8 @@ void draw_tower(int x, int y) {
                 }
                 draw_sprite(screen,towers[i].spid, towers[i].frameno, DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
                 draw_reload(screen,towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
+                if ( towers[i].max_exp > 0 )
+                    draw_exp(screen,towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].exp, towers[i].max_exp);
                 return;
             }
         }
@@ -489,6 +518,14 @@ int has_tower(int x, int y) {
         }
     }
     return 0;
+}
+
+void upgrade_tower(int tid) {
+    struct tower tmptower = towers[tid];
+    towers[tid] = tower_definitions[tmptower.next_tower];
+    towers[tid].loc_x = tmptower.loc_x;
+    towers[tid].loc_y = tmptower.loc_y;
+    towers[tid].target_algorithm = tmptower.target_algorithm;
 }
 
 void add_tower(int x, int y, int type) {
@@ -534,6 +571,7 @@ void add_projectile(int pid, int mid, int tid) {
             projectiles[i].pos_x = (towers[tid].loc_x * RECTSIZE_X) + (RECTSIZE_X / 2);
             projectiles[i].pos_y = (towers[tid].loc_y * RECTSIZE_Y) + (RECTSIZE_Y / 2);
             projectiles[i].targetmonster = mid;
+            projectiles[i].owner = tid;
             monsters[mid].upcoming_damage += projectiles[i].damage;
             monsters[mid].upcoming_effect_speed += projectiles[i].effect_speed;
             return;
