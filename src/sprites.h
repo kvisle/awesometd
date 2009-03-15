@@ -120,4 +120,6 @@ int selected_tower;
 void upgrade_tower(int tid);
 void draw_numbers2(void);
 
+int batch;
+
 #endif /* __SPRITES_H__ */

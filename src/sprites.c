@@ -129,7 +129,7 @@ static const struct projectile projectile_definitions[9] = {
 };
 
 static int level = 0;
-static int batch = 0;
+int batch = 0;
 static int monster = 0;
 
 int selected_tower = -1;

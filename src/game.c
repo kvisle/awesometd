@@ -81,6 +81,12 @@ void draw_numbers(void) {
     draw_text(screen,lifetext,3*32,440);
     draw_numbers2(); // I _REALLY_ need to restructure the code of this app XD
 }
+void draw_highscore_stats(void) {
+    char line[46];
+    sprintf(line,    "you                         1     %2d   %6d", batch, score);
+    draw_text(screen,line,104,152);
+}
+
 SDL_Event go = { SDL_QUIT };
 void game_over(void) {
     printf("GAME OVER!!!!\n");

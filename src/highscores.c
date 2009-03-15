@@ -19,6 +19,7 @@
 #include "render.h"
 #include "highscores.h"
 #include "gfx_charmap.h"
+#include "game.h"
 
 int messageno = 0;
 
@@ -39,4 +40,7 @@ void draw_highscores(void) {
 
     draw_text(screen,"this is still not implemented",200,200);
     draw_text(screen,messages[messageno],200,250);
+    if ( messageno > 0 ) {
+        draw_highscore_stats();
+    }
 }

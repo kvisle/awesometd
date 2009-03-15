@@ -29,5 +29,6 @@ void game_over(void);
 void iddqd(void);
 void idkfa(void);
 void new_game(void);
+void draw_highscore_stats(void);
 
 #endif /* __GAME_H__ */
