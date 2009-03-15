@@ -59,7 +59,8 @@ static const int numcharmap[256] = {
     ['w'] = 33,
     ['x'] = 34,
     ['y'] = 35,
-    ['z'] = 36
+    ['z'] = 36,
+    ['-'] = 37
 };
 
 static const int charmap[CHAR_COUNT][CHAR_SIZE_Y][CHAR_SIZE_X] = {
@@ -432,6 +433,16 @@ static const int charmap[CHAR_COUNT][CHAR_SIZE_Y][CHAR_SIZE_X] = {
         { 1, 1, 1, 0, 0, 0, 0, 0 },
         { 1, 1, 1, 1, 1, 1, 1, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    {
+        { 0, 0, 0, 0, 0, 1, 1, 0 },
+        { 0, 0, 0, 0, 1, 1, 0, 0 },
+        { 0, 0, 0, 1, 1, 0, 0, 0 },
+        { 0, 0, 1, 1, 0, 0, 0, 0 },
+        { 0, 1, 1, 0, 0, 0, 0, 0 },
+        { 1, 1, 0, 0, 0, 0, 0, 0 },
+        { 1, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
 
@@ -472,7 +483,8 @@ SDL_Rect charmapslices[] = {
     { 264,0,CHAR_SIZE_X,CHAR_SIZE_Y },
     { 272,0,CHAR_SIZE_X,CHAR_SIZE_Y },
     { 280,0,CHAR_SIZE_X,CHAR_SIZE_Y },
-    { 288,0,CHAR_SIZE_X,CHAR_SIZE_Y }
+    { 288,0,CHAR_SIZE_X,CHAR_SIZE_Y },
+    { 296,0,CHAR_SIZE_X,CHAR_SIZE_Y }
 };
 
 static SDL_Surface *charmapsurface;

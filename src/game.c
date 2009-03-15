@@ -79,6 +79,7 @@ void draw_numbers(void) {
     draw_text(screen,moneytext,3*32,420);
     draw_text(screen,scoretext,3*32,430);
     draw_text(screen,lifetext,3*32,440);
+    draw_numbers2(); // I _REALLY_ need to restructure the code of this app XD
 }
 SDL_Event go = { SDL_QUIT };
 void game_over(void) {

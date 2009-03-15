@@ -118,5 +118,6 @@ const struct tower tower_definitions[9];
 struct tower towers[MAX_TOWERS];
 int selected_tower;
 void upgrade_tower(int tid);
+void draw_numbers2(void);
 
 #endif /* __SPRITES_H__ */

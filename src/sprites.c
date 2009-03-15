@@ -27,6 +27,7 @@
 #include "settings.h"
 #include "game.h"
 #include "highscores.h"
+#include "gfx_charmap.h"
 
 #define get_locx(__A) ((__A)/RECTSIZE_X)
 #define get_locy(__A) ((__A)/RECTSIZE_Y)
@@ -253,11 +254,11 @@ int spawn_monster(void) {
         }
         monster = 0;
         batch++;
-        return 0;
-    }
-
-    if ( batch == level_batches[level] ) {
-        show_highscores(SCORE_WONMESSAGE);
+        if ( batch == level_batches[level] ) {
+            show_highscores(SCORE_WONMESSAGE);
+            return 0;
+        }
+        draw_numbers();
         return 0;
     }
 
@@ -679,4 +680,10 @@ void shoot_towers(void) {
             }
         }
     }
+}
+
+void draw_numbers2(void) {
+    char batchtext[20];
+    sprintf(batchtext, "batch  %2d-%2d", batch+1, level_batches[level] );
+    draw_text(screen,batchtext,3*32,450);
 }
