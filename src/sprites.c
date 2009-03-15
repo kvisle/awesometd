@@ -88,14 +88,14 @@ static const struct monster monster_definitions[17] = {
 
 const struct tower tower_definitions[9] = {
     { 0,0,1,0,1, 5,0,0, 100,0, 80,0,ALGORITHM_TRAVELLED_FARTHEST,0,10, 1 },
-    { 0,0,1,0,1, 4,0,0, 200,0, 125,1,ALGORITHM_TRAVELLED_FARTHEST,0,20, 2 },
-    { 0,0,1,0,1, 3,0,0, 400,0, 200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 }, 
+    { 0,0,6,0,1, 4,0,0, 200,0, 125,1,ALGORITHM_TRAVELLED_FARTHEST,0,20, 2 },
+    { 0,0,9,0,1, 3,0,0, 400,0, 200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 }, 
     { 0,0,3,0,1, 40,0,0, 300,0, 75,3,ALGORITHM_TRAVELLED_FARTHEST,0,10, 4 },
-    { 0,0,3,0,1, 30,0,0, 600,0, 90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20, 5 },
-    { 0,0,3,0,1, 20,0,0, 900,0, 130,5,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 },
+    { 0,0,7,0,1, 30,0,0, 600,0, 90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20, 5 },
+    { 0,0,10,0,1, 20,0,0, 900,0, 130,5,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 },
     { 0,0,5,0,1, 10,0,0, 150,0, 100,6,ALGORITHM_FASTEST,0,10, 7 },
-    { 0,0,5,0,1, 7,0,0, 300,0, 125,7,ALGORITHM_FASTEST,0,20, 8 },
-    { 0,0,5,0,1, 5,0,0, 450,0, 150,8,ALGORITHM_FASTEST,0,0, 0 }
+    { 0,0,8,0,1, 7,0,0, 300,0, 125,7,ALGORITHM_FASTEST,0,20, 8 },
+    { 0,0,11,0,1, 5,0,0, 450,0, 150,8,ALGORITHM_FASTEST,0,0, 0 }
 };
 
 static const struct projectile projectile_definitions[9] = {
@@ -164,6 +164,12 @@ void init_sprites(void) {
     load_sprite_from_pic("tower2.bmp",32,32,8);
     load_sprite_from_pic("enemy3.bmp",32,32,2);
     load_sprite_from_pic("tower3.bmp",32,32,1);
+    load_sprite_from_pic("tower1-2.bmp",32,32,1);
+    load_sprite_from_pic("tower2-2.bmp",32,32,8);
+    load_sprite_from_pic("tower3-2.bmp",32,32,1);
+    load_sprite_from_pic("tower1-3.bmp",32,32,1);
+    load_sprite_from_pic("tower2-3.bmp",32,32,8);
+    load_sprite_from_pic("tower3-3.bmp",32,32,1);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
