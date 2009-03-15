@@ -58,6 +58,9 @@ Uint32 timeduserevent(Uint32 interval, void* param) {
 
 void mark_rendered(void) {
     if ( waitingforrender == 0 ) {
+        // This should never happen, but it _DID_ happen to me once, followed
+        // by the game freezing. If I had a bugzilla or simular set up, this
+        // should be in it.
         printf("WTF? waitingforrender == 0?!\n");
     }
     waitingforrender = 0;
