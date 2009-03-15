@@ -21,7 +21,7 @@
 #include "credits.h"
 #include "gfx_charmap.h"
 
-char credits[12][25] = {
+char* credits[] = {
     "code",
     "",
     "trygve vea",
