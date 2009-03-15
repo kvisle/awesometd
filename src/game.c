@@ -35,9 +35,9 @@ int iddqd_enabled = 0;
 int idkfa_enabled = 0;
 
 void new_game(void) {
-    money = 200;
+    money = 250;
     score = 0;
-    lives = 1;
+    lives = 20;
     update_score(0);
     update_money(0);
     update_lives(0);

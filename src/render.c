@@ -42,7 +42,7 @@ static SDL_Surface *background, *menubackground;
 static int field[VIDEOMODE_WIDTH/RECTSIZE_X][VIDEOMODE_HEIGHT/RECTSIZE_Y];
 static int rendercount = 0;
 static char fpstext[16] = "";
-char costtext[8] = "    50";
+char costtext[8] = "   100";
 
 int current_screen = SCREEN_MENU;
 
