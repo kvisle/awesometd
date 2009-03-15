@@ -62,6 +62,8 @@ void mark_rendered(void) {
         // by the game freezing. If I had a bugzilla or simular set up, this
         // should be in it.
         printf("WTF? waitingforrender == 0?!\n");
+        waitingforrender = 1;
+        return;
     }
     waitingforrender = 0;
 }
