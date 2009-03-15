@@ -22,7 +22,7 @@
 
 #include <SDL.h>
 
-#define MAX_SPRITES 8
+#define MAX_SPRITES 16
 #define MAX_FRAMES 8
 #define MAX_DIRECTIONS 4
 #define MAX_MONSTERS 50
