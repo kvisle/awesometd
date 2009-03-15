@@ -21,7 +21,7 @@
 #include "credits.h"
 #include "gfx_charmap.h"
 
-char credits[10][25] = {
+char credits[12][25] = {
     "code",
     "",
     "trygve vea",
@@ -31,7 +31,9 @@ char credits[10][25] = {
     "graphics",
     "",
     "trygve vea",
-    "lars erik thorsplass"
+    "lars erik thorsplass",
+    "pal kristian hamre",
+    "henrik nordvik"
 };
 
 void show_credits(void) {
@@ -41,7 +43,7 @@ void show_credits(void) {
 
 void draw_credits(void) {
     int i;
-    for (i=0;i<10;i++) {
+    for (i=0;i<12;i++) {
         draw_text(screen,credits[i],200,(200+(i*16)));
     }
 }
