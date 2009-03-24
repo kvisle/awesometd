@@ -78,7 +78,41 @@ void event_loop(void) {
                         case SCREEN_MENU:
                         break;
                         case SCREEN_INGAME:
-                            if (eventqueue.key.keysym.sym == SDLK_ESCAPE) show_menu();
+                            switch (eventqueue.key.keysym.sym) {
+                                case SDLK_ESCAPE:
+                                    show_menu();
+                                break;
+                                case SDLK_1:
+                                    press_buttonnumber(1);
+                                break;
+                                case SDLK_2:
+                                    press_buttonnumber(2);
+                                break;
+                                case SDLK_3:
+                                    press_buttonnumber(3);
+                                break;
+                                case SDLK_q:
+                                    if ( selected_tower > -1 ) tower_algorithm(selected_tower,1);
+                                break;
+                                case SDLK_w:
+                                    if ( selected_tower > -1 ) tower_algorithm(selected_tower,2);
+                                break;
+                                case SDLK_e:
+                                    if ( selected_tower > -1 ) tower_algorithm(selected_tower,3);
+                                break;
+                                case SDLK_r:
+                                    if ( selected_tower > -1 ) tower_algorithm(selected_tower,4);
+                                break;
+                                case SDLK_t:
+                                    if ( selected_tower > -1 ) tower_algorithm(selected_tower,5);
+                                break;
+                                case SDLK_s:
+                                    if ( selected_tower > -1 ) sell_tower(selected_tower);
+                                break;
+                                default:
+                                break;
+                            }
+
                             memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
                             lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
                             if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),

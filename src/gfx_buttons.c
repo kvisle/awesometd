@@ -112,6 +112,15 @@ void draw_buttons2(SDL_Surface *s) {
     }
 }
 
+void press_buttonnumber(int i) {
+    int n;
+    button_pressed[i-1] = 1;
+    towerbutton = ((i-1)*3);
+    sprintf(costtext, "%6d", tower_definitions[towerbutton].price);
+    for (n=0;n<button_count;n++) { if (n != (i-1) ) button_pressed[n] = 0; }
+    draw_buttons(screen);
+}
+
 void press_button(int x, int y) {
     int i, n;
     for (i=0;i<button_count;i++) {

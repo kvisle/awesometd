@@ -1,7 +1,7 @@
 Roadmap for AWESOME TOWER DEFENSE:
 
 0.3:
-    *   Hotkeys
+    X   Hotkeys
     *   New sprites for some of the towers.
     *   Different looks for the different kind of projectiles
     *   Put graphics inside the binary, to fix distribution issues.

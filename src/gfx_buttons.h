@@ -22,6 +22,7 @@
 
 void init_buttons(void);
 void press_button(int x, int y);
+void press_buttonnumber(int i);
 void draw_hint_text(SDL_Surface *s);
 void draw_buttons(SDL_Surface *s);
 void draw_buttons2(SDL_Surface *s);

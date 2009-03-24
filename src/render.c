@@ -51,7 +51,7 @@ static struct updatefield updatefield;
 // Some stuff we wanna do before we start drawing stuff.
 int init_video(void) {
     screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, SDL_HWSURFACE);
-    SDL_WM_SetCaption("Awesome Tower Defense 0.2","");
+    SDL_WM_SetCaption("Awesome Tower Defense 0.2+git","");
     background = SDL_CreateRGBSurface(SDL_HWSURFACE, VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, RMASK, GMASK, BMASK, AMASK);
     menubackground = SDL_LoadBMP("menuscreen.bmp");
     

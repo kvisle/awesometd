@@ -237,6 +237,7 @@ void sell_tower(int tid) {
 }
 
 void tower_algorithm(int tid, int aid) {
+    updaterect(8,0);
     towers[tid].target_algorithm = aid;
 }
 
