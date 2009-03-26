@@ -8,12 +8,15 @@ Roadmap for AWESOME TOWER DEFENSE:
     *   Fix icons and such.
     *   Fix documentation.
     *   Fix an ingame tutorial.
+    *   Make it possible for a tower to pause
 
 0.4:
     *   Draw a circle which indicates the range of the tower when selected, 
         and when you want to buy one.
     *   Code cleanups.
     *   New enemy sprites.
+    *   3 new towers.
+    *   25 new batches of enemies in level 1 (currently, out of 1)
 
 0.5:
     *   Implement local highscores.
@@ -22,4 +25,15 @@ Roadmap for AWESOME TOWER DEFENSE:
 
 0.6:
     *   Implement online highscore.
+    *   New level, 50 new batches.
 
+0.7:
+    *   Level editor.
+    *   New level, 50 new batches.
+
+0.8:
+
+0.9:
+
+1.0:
+    *   Feature complete at this point. Only bugfixes from now on.

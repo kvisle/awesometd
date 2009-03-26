@@ -17,7 +17,7 @@
 
 PLATFORM = LINUX
 
-OBJS = main.o render.o eventloop.o timers.o level.o sprites.o cursor.o gfx_charmap.o gfx_buttons.o game.o menu.o credits.o highscores.o
+OBJS = main.o render.o eventloop.o timers.o level.o sprites.o cursor.o gfx_charmap.o gfx_buttons.o game.o menu.o credits.o highscores.o tutorial.o
 
 CFLAGS = -Wall -pipe
 ifdef RELEASE

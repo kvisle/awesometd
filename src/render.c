@@ -32,6 +32,7 @@
 #include "menu.h"
 #include "credits.h"
 #include "highscores.h"
+#include "tutorial.h"
 
 SDL_Surface *screen;
 static SDL_Surface *background, *menubackground;
@@ -101,7 +102,7 @@ void updaterect(int x, int y) {
             updatefield.rects[updatefield.count].h = RECTSIZE_Y;
             if ( current_screen == SCREEN_INGAME )
                 SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
-            if ( current_screen == SCREEN_MENU || current_screen == SCREEN_CREDITS || current_screen == SCREEN_HIGHSCORES )
+            if ( current_screen == SCREEN_MENU || current_screen == SCREEN_CREDITS || current_screen == SCREEN_HIGHSCORES || current_screen == SCREEN_TUTORIAL )
                 SDL_BlitSurface(menubackground, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
             updatefield.count++;
         }
@@ -135,6 +136,9 @@ void draw_stuff_on_top(void) {
         break;
         case SCREEN_HIGHSCORES:
             draw_highscores();
+        break;
+        case SCREEN_TUTORIAL:
+            draw_tutorial();
         break;
         case SCREEN_MENU:
             if (

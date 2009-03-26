@@ -23,17 +23,19 @@
 #include "menu.h"
 #include "credits.h"
 #include "highscores.h"
+#include "tutorial.h"
 
-#define MAX_OPTIONS 4
+#define MAX_OPTIONS 5
 
-char options[4][12] = {
+static char options[MAX_OPTIONS][12] = {
     "new game",
     "high scores",
+    "tutorial",
     "credits",
     "quit"
 };
 
-int selected = 0;
+static int selected = 0;
 
 void draw_menu(void) {
     int i;
@@ -56,17 +58,20 @@ int click_menu(void) {
             show_highscores(SCORE_NOMESSAGE);
         break;
         case 2:
-            show_credits();
+            show_tutorial();
         break;
         case 3:
+            show_credits();
+        break;
+        case 4:
             return 1;
         break;
     }
     return 0;
 }
 
-void update_selection(int x, int y) {
-    if ( x >= 400 && x <= 488 && y >= 200 && y <= (200+(MAX_OPTIONS*16)) )
+void update_menu_selection(int x, int y) {
+    if ( x >= 400 && x <= 488 && y >= 200 && y < (200+(MAX_OPTIONS*16)) )
         selected = (y-200)/16;
 }
 

@@ -28,6 +28,7 @@
 #include "level.h"
 #include "game.h"
 #include "menu.h"
+#include "tutorial.h"
 
 int gamecycle = 0;
 
@@ -42,8 +43,9 @@ void event_loop(void) {
                     return;
                 break;
                 case SDL_MOUSEMOTION:
-                    if ( current_screen == SCREEN_MENU ) update_selection(eventqueue.motion.x,eventqueue.motion.y);
+                    if ( current_screen == SCREEN_MENU ) update_menu_selection(eventqueue.motion.x,eventqueue.motion.y);
                     if ( current_screen == SCREEN_INGAME ) update_tooltip(eventqueue.motion.x,eventqueue.motion.y);
+                    if ( current_screen == SCREEN_TUTORIAL ) update_tutorial_selection(eventqueue.motion.x,eventqueue.motion.y);
                     update_cursor(eventqueue.motion.x,eventqueue.motion.y);
                 break;
                 case SDL_MOUSEBUTTONDOWN:
@@ -55,6 +57,9 @@ void event_loop(void) {
                             show_menu();
                         break;
                         case SCREEN_HIGHSCORES:
+                            show_menu();
+                        break;
+                        case SCREEN_TUTORIAL:
                             show_menu();
                         break;
                         case SCREEN_INGAME:
