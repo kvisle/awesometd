@@ -94,6 +94,7 @@ struct projectile {
     int splash;
     float effect_speed;
     int owner;
+    Uint32 color;
 };
 
 void reset_everything(void);

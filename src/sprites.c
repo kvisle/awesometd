@@ -93,7 +93,7 @@ static const struct monster monster_definitions[25] = {
     { 0,0,0,0,1400,1400,0,7,DIRECTION_S,0,0,550,14,0,1,1,-1 },
     { 0,0,0,0,1600,1600,0,6,DIRECTION_S,0,0,600,15,0,1,1,-1 },
     { 0,0,0,0,1800,1800,0,6,DIRECTION_S,0,0,650,16,0,1,1,-1 },
-    { 0,0,0,0,2000,2000,0,8,DIRECTION_S,0,0,700,17,0,1,1,-1 }, //
+    { 0,0,0,0,2000,2000,0,8,DIRECTION_S,0,0,700,17,0,1,1,-1 },
     { 0,0,0,0,2250,2250,0,7,DIRECTION_S,0,0,750,18,0,1,1,-1 },
     { 0,0,0,0,2500,2500,0,7,DIRECTION_S,0,0,800,19,0,1,1,-1 },
     { 0,0,0,0,2750,2750,0,7,DIRECTION_S,0,0,850,20,0,1,1,-1 },
@@ -105,27 +105,27 @@ static const struct monster monster_definitions[25] = {
 };
 
 const struct tower tower_definitions[9] = {
-    { 0,0,1,0,1, 5,0,0, 100,0, 80,0,ALGORITHM_TRAVELLED_FARTHEST,0,10, 1 },
-    { 0,0,6,0,1, 4,0,0, 200,0, 125,1,ALGORITHM_TRAVELLED_FARTHEST,0,20, 2 },
-    { 0,0,9,0,1, 3,0,0, 400,0, 200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 }, 
-    { 0,0,3,0,1, 40,0,0, 300,0, 75,3,ALGORITHM_TRAVELLED_FARTHEST,0,10, 4 },
-    { 0,0,7,0,1, 30,0,0, 600,0, 90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20, 5 },
-    { 0,0,10,0,1, 20,0,0, 900,0, 130,5,ALGORITHM_TRAVELLED_FARTHEST,0,0, 0 },
-    { 0,0,5,0,1, 10,0,0, 150,0, 100,6,ALGORITHM_FASTEST,0,10, 7 },
-    { 0,0,8,0,1, 7,0,0, 300,0, 125,7,ALGORITHM_FASTEST,0,20, 8 },
-    { 0,0,11,0,1, 5,0,0, 450,0, 150,8,ALGORITHM_FASTEST,0,0, 0 }
+    { 0,0,1,0,1,5,0,0,100,0,80,0,ALGORITHM_TRAVELLED_FARTHEST,0,10,1 },
+    { 0,0,6,0,1,4,0,0,200,0,125,1,ALGORITHM_TRAVELLED_FARTHEST,0,20,2 },
+    { 0,0,9,0,1,3,0,0,400,0,200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0,0 }, 
+    { 0,0,3,0,1,40,0,0,300,0,75,3,ALGORITHM_TRAVELLED_FARTHEST,0,10,4 },
+    { 0,0,7,0,1,30,0,0,600,0,90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20,5 },
+    { 0,0,10,0,1,20,0,0,900,0,130,5,ALGORITHM_TRAVELLED_FARTHEST,0,0,0 },
+    { 0,0,5,0,1,10,0,0,150,0,100,6,ALGORITHM_FASTEST,0,10,7 },
+    { 0,0,8,0,1,7,0,0,300,0,125,7,ALGORITHM_FASTEST,0,20,8 },
+    { 0,0,11,0,1,5,0,0,450,0,150,8,ALGORITHM_FASTEST,0,0,0 }
 };
 
-static const struct projectile projectile_definitions[9] = {
-    { 0,0,1,0, 7,0, 5, 0, 0,0 },
-    { 0,0,1,0, 7,0, 10, 0, 0,0 },
-    { 0,0,1,0, 7,0, 25, 0, 0,0 },
-    { 0,0,1,0, 1,0, 90, 50, 0,0 },
-    { 0,0,1,0, 2,0, 180, 50, 0,0 },
-    { 0,0,1,0, 2,0, 360, 50, 0,0 },
-    { 0,0,1,0, 3,0, 5, 0, -0.25,0 },
-    { 0,0,1,0, 3,0, 7, 0, -0.30,0 },
-    { 0,0,1,0, 3,0, 10, 0, -0.40,0 }
+static struct projectile projectile_definitions[9] = {
+    { 0,0,1,0, 7,0, 5, 0, 0,0,0 },
+    { 0,0,1,0, 7,0, 10, 0, 0,0,0 },
+    { 0,0,1,0, 7,0, 25, 0, 0,0,0 },
+    { 0,0,1,0, 1,0, 90, 50, 0,0,0 },
+    { 0,0,1,0, 2,0, 180, 50, 0,0,0 },
+    { 0,0,1,0, 2,0, 360, 50, 0,0,0 },
+    { 0,0,1,0, 3,0, 5, 0, -0.25,0,0 },
+    { 0,0,1,0, 3,0, 7, 0, -0.30,0,0 },
+    { 0,0,1,0, 3,0, 10, 0, -0.40,0,0 }
 };
 
 static int level = 0;
@@ -188,6 +188,16 @@ void init_sprites(void) {
     load_sprite_from_pic("tower1-3.bmp",32,32,1);
     load_sprite_from_pic("tower2-3.bmp",32,32,8);
     load_sprite_from_pic("tower3-3.bmp",32,32,1);
+
+    projectile_definitions[0].color = SDL_MapRGB(screen->format, 128, 128, 128);
+    projectile_definitions[1].color = SDL_MapRGB(screen->format, 192, 192, 192);
+    projectile_definitions[2].color = SDL_MapRGB(screen->format, 255, 255, 255);
+    projectile_definitions[3].color = SDL_MapRGB(screen->format, 128, 0, 0);
+    projectile_definitions[4].color = SDL_MapRGB(screen->format, 192, 0, 0);
+    projectile_definitions[5].color = SDL_MapRGB(screen->format, 255, 0, 0);
+    projectile_definitions[6].color = SDL_MapRGB(screen->format, 0, 0, 128);
+    projectile_definitions[7].color = SDL_MapRGB(screen->format, 0, 0, 192);
+    projectile_definitions[8].color = SDL_MapRGB(screen->format, 0, 0, 255);
 }
 
 void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
@@ -517,7 +527,7 @@ void draw_projectile(int x, int y) {
         y2 = get_celly(projectiles[i]);
         if ( projectiles[i].damage > 0 && x2 == x && y2 == y ) {
             SDL_Rect projrect = { projectiles[i].pos_x, projectiles[i].pos_y, 4, 4 };
-            SDL_FillRect(screen,&projrect, SDL_MapRGB(screen->format, 0,0,255));
+            SDL_FillRect(screen,&projrect, projectiles[i].color);
         }
     }
 }
