@@ -28,5 +28,6 @@ void draw_buttons(SDL_Surface *s);
 void draw_buttons2(SDL_Surface *s);
 void update_tooltip(int x, int y);
 int towerbutton;
+SDL_Surface *buttonsurface, *buttonsurface2;
 
 #endif /* __GFX_BUTTONS_H__ */

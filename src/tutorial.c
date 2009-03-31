@@ -19,6 +19,7 @@
 #include "render.h"
 #include "tutorial.h"
 #include "gfx_charmap.h"
+#include "gfx_buttons.h"
 
 static int hoverchoice = 0;
 static char* tutorials[] = {
@@ -32,8 +33,27 @@ void show_tutorial(void) {
     current_screen = SCREEN_TUTORIAL;
     update_all();
 }
+
+static int sprites_loaded = 0;
+
+static SDL_Surface *tut_basic;
+static SDL_Rect tut_basic_rect = { 200,160,144,128 };
+static SDL_Surface *tut_upgrading;
+static SDL_Rect tut_upgrading_rect = { 480,160,144,128 };
+
+SDL_Rect tower_dst = { 200,232,24,24 };
+SDL_Rect tower_src = { 0,0,24,24 };
+
+void load_sprites(void) {
+    tut_basic = SDL_LoadBMP("tut_basic.bmp");
+    tut_upgrading = SDL_LoadBMP("tut_upgrading.bmp");
+    printf("sprites loaded!\n");
+    sprites_loaded = 1;
+}
+
 void draw_tutorial(void) {
     int i;
+    if ( sprites_loaded == 0 ) load_sprites();
     if ( redraw == 0 ) return;
     for (i=0;i<4;i++)
         if (hoverchoice != i) draw_text(screen,tutorials[i],16,160+(i*16));
@@ -44,6 +64,7 @@ void draw_tutorial(void) {
         case 0:
                             //#################################
                             //#####################################################
+            SDL_BlitSurface(tut_basic,NULL,screen,&tut_basic_rect);
             draw_text(screen,"enemies will move down a road, if",360,160);
             draw_text(screen,"they don't get killed before they",360,176);
             draw_text(screen,"get to the end you lose a life.",360,192);
@@ -60,6 +81,7 @@ void draw_tutorial(void) {
         case 1:
                             //#################################
                             //#####################################################
+            SDL_BlitSurface(tut_upgrading,NULL,screen,&tut_upgrading_rect);
             draw_text(screen,"when a tower makes a killing blow",200,160);
             draw_text(screen,"it earns experience. the yellow",200,176);
             draw_text(screen,"bar indicates how far it is from",200,192);
@@ -75,11 +97,32 @@ void draw_tutorial(void) {
         case 2:
                             //#################################
                             //#####################################################
+//            SDL_Rect tower_dst = { 200,232,24,24 };
+//            SDL_Rect tower_src = { 0,0,24,24 };
             draw_text(screen,"you can control how the towers determine which target",200,160);
             draw_text(screen,"to aim for. when you click a tower, a row of buttons",200,176);
-            draw_text(screen,"will appear on the top of the",360,192);
-            draw_text(screen,"screen. the buttons let you pick",360,208);
-            draw_text(screen,"between 5 algorithms. *",360,224);
+            draw_text(screen,"will appear on the top of the screen. the buttons let",200,192);
+            draw_text(screen,"you pick between 5 algorithms.",200,208);
+
+            tower_dst.y = 232; tower_src.y = 24;
+            SDL_BlitSurface(buttonsurface2,&tower_src,screen,&tower_dst);
+            draw_text(screen,"shoot enemy travelled the least",232,240);
+
+            tower_dst.y = tower_dst.y+32; tower_src.y = tower_src.y +24;
+            SDL_BlitSurface(buttonsurface2,&tower_src,screen,&tower_dst);
+            draw_text(screen,"shoot enemy travelled the farthest",232,272);
+
+            tower_dst.y = tower_dst.y+32; tower_src.y = tower_src.y +24;
+            SDL_BlitSurface(buttonsurface2,&tower_src,screen,&tower_dst);
+            draw_text(screen,"shoot enemy with most hp",232,304);
+
+            tower_dst.y = tower_dst.y+32; tower_src.y = tower_src.y +24;
+            SDL_BlitSurface(buttonsurface2,&tower_src,screen,&tower_dst);
+            draw_text(screen,"shoot enemy with least hp",232,336);
+
+            tower_dst.y = tower_dst.y+32; tower_src.y = tower_src.y +24;
+            SDL_BlitSurface(buttonsurface2,&tower_src,screen,&tower_dst);
+            draw_text(screen,"shoot the fastest enemy",232,368);
         break;
         case 3:
                 draw_text_color(screen,"1",232,160,0,255,255);
