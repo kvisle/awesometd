@@ -31,7 +31,7 @@
 #include "tutorial.h"
 
 int gamecycle = 0;
-
+static int game_paused = 0;
 static char lastkeys[32] = { 0 };
 
 void event_loop(void) {
@@ -114,6 +114,13 @@ void event_loop(void) {
                                 case SDLK_s:
                                     if ( selected_tower > -1 ) sell_tower(selected_tower);
                                 break;
+                                case SDLK_p:
+                                    if ( selected_tower > -1 ) toggle_shooting(selected_tower);
+                                break;
+                                case SDLK_SPACE:
+                                    if ( game_paused == 0 ) game_paused = 1;
+                                    else game_paused = 0;
+                                break;
                                 default:
                                 break;
                             }
@@ -137,7 +144,7 @@ void event_loop(void) {
                             getrenders();
                         break;
                         case TIMER_GAMECYCLE:
-                            if ( current_screen == SCREEN_INGAME ) {
+                            if ( current_screen == SCREEN_INGAME && game_paused == 0 ) {
                                 move_projectile();
                                 move_monster();
                                 if ( (gamecycle % 20) == 0 ) animate_sprites();

@@ -29,17 +29,18 @@ static SDL_Rect button_rects[3] = {
     { 308, 430, 48, 48 },
     { 356, 430, 48, 48 }
 };
-static SDL_Rect button_rects2[6] = {
+static SDL_Rect button_rects2[7] = {
     { 256, 8, 24, 24 },
     { 304, 8, 24, 24 },
     { 328, 8, 24, 24 },
     { 352, 8, 24, 24 },
     { 376, 8, 24, 24 },
-    { 400, 8, 24, 24 }
+    { 400, 8, 24, 24 },
+    { 448, 8, 24, 24 }
 };
 
 static const int button_count = 3;
-static const int button2_count = 6;
+static const int button2_count = 7;
 int towerbutton = 0;
 int button2 = 0;
 int button2tooltip = -1;
@@ -49,13 +50,14 @@ static const char buttonhint[3][40] = {
     "build artificial volcano",
     "build freezer"
 };
-static const char buttonhint2[6][33] = {
+static const char buttonhint2[7][33] = {
     "sell tower                     ",
     "shoot enemy travelled the least",
     "shoot enemy travelled farthest ",
     "shoot enemy with most hp       ",
     "shoot enemy with least hp      ",
-    "shoot the fastest enemy        "
+    "shoot the fastest enemy        ",
+    "toggle shooting                "
 };
 
 void update_tooltip(int x, int y) {
@@ -96,7 +98,7 @@ void draw_buttons2(SDL_Surface *s) {
     int i;
     SDL_Rect rect = { 0,0,24,24 };
 
-    for(i=8;i<=13;i++)
+    for(i=8;i<=15;i++)
         updaterect(i,0);
 
     if ( selected_tower == -1 ) return;
@@ -105,8 +107,13 @@ void draw_buttons2(SDL_Surface *s) {
     else draw_text(screen, "                                 ", 256, 0 );
 
     for (i=0;i<button2_count;i++) {
-        if (towers[selected_tower].target_algorithm == i) rect.x = 24;
-        else rect.x = 0;
+        if ( i < 6 ) {
+            if (towers[selected_tower].target_algorithm == i) rect.x = 24;
+            else rect.x = 0;
+        } else if ( i == 6 ) {
+            if (towers[selected_tower].paused == 1) rect.x = 24;
+            else rect.x = 0;
+        }
         rect.y = i*24;
         SDL_BlitSurface(buttonsurface2,&rect, s, &button_rects2[i]);
     }
@@ -136,6 +143,7 @@ void press_button(int x, int y) {
     for (i=0;i<button2_count;i++) {
         if ( x <= (button_rects2[i].x + button_rects2[i].w) && x >= button_rects2[i].x && y >= button_rects2[i].y && y <= (button_rects2[i].y + button_rects2[i].h) ) {
             if ( i == 0 ) sell_tower(selected_tower);
+            else if ( i == 6 ) toggle_shooting(selected_tower);
             else tower_algorithm(selected_tower, i);
             return;
         }

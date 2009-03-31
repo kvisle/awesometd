@@ -75,6 +75,7 @@ struct tower {
     int exp;
     int max_exp;
     int next_tower;
+    int paused;
 };
 
 struct sprites {
@@ -120,7 +121,7 @@ struct tower towers[MAX_TOWERS];
 int selected_tower;
 void upgrade_tower(int tid);
 void draw_numbers2(void);
-
+void toggle_shooting(int tower);
 int batch;
 
 #endif /* __SPRITES_H__ */

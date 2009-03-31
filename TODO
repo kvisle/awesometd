@@ -8,7 +8,8 @@ Roadmap for AWESOME TOWER DEFENSE:
     *   Fix icons and such.
     *   Fix documentation.
     *   Fix an ingame tutorial.
-    *   Make it possible for a tower to pause
+    X   Make it possible for a tower to pause
+    X   Make it possible to pause the game
 
 0.4:
     *   Draw a circle which indicates the range of the tower when selected, 

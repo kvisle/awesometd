@@ -26,12 +26,14 @@ static char* tutorials[] = {
     "upgrading towers",
     "targetting algorithm"
 };
+static int redraw = 1;
 void show_tutorial(void) {
     current_screen = SCREEN_TUTORIAL;
     update_all();
 }
 void draw_tutorial(void) {
     int i;
+    if ( redraw == 0 ) return;
     for (i=0;i<3;i++)
         if (hoverchoice != i) draw_text(screen,tutorials[i],16,160+(i*16));
         else draw_text_color(screen,tutorials[i],16,160+(i*16),255,255,0);
@@ -79,9 +81,13 @@ void draw_tutorial(void) {
             draw_text(screen,"between 5 algorithms. *",360,224);
         break;
     }
+    redraw = 0;
+    return;
 }
 
 void update_tutorial_selection(int x, int y) {
     if ( x >= 16 && x <= 176 && y >= 160 && y < (160+(16*3)) )
         hoverchoice = (y-160)/16;
+    redraw = 1;
+    return;
 }

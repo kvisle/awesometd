@@ -187,7 +187,7 @@ void draw_stuff_on_top(void) {
             if ( field[16][0] || field[17][0] || field[18][0] || field[19][0] ) 
                 draw_text(screen, fpstext, 520, 0);
 
-            if ( field[8][0] || field[9][0] || field[10][0] || field[11][0] || field[12][0] || field[13][0] ) {
+            if ( field[8][0] || field[9][0] || field[10][0] || field[11][0] || field[12][0] || field[13][0] || field[14][0] || field[15][0] ) {
                 draw_buttons2(screen);
             }
         break;
