@@ -31,7 +31,7 @@
 #include "tutorial.h"
 
 int gamecycle = 0;
-static int game_paused = 0;
+int game_paused = 0;
 static char lastkeys[32] = { 0 };
 
 void event_loop(void) {

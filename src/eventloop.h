@@ -20,6 +20,7 @@
 #ifndef __EVENTLOOP_H__
 #define __EVENTLOOP_H__
 
+int game_paused;
 void event_loop(void);
 
 #endif

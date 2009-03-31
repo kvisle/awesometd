@@ -24,7 +24,8 @@ static int hoverchoice = 0;
 static char* tutorials[] = {
     "basic gameplay",
     "upgrading towers",
-    "targetting algorithm"
+    "targetting algorithm",
+    "hotkeys"
 };
 static int redraw = 1;
 void show_tutorial(void) {
@@ -34,7 +35,7 @@ void show_tutorial(void) {
 void draw_tutorial(void) {
     int i;
     if ( redraw == 0 ) return;
-    for (i=0;i<3;i++)
+    for (i=0;i<4;i++)
         if (hoverchoice != i) draw_text(screen,tutorials[i],16,160+(i*16));
         else draw_text_color(screen,tutorials[i],16,160+(i*16),255,255,0);
 
@@ -80,13 +81,39 @@ void draw_tutorial(void) {
             draw_text(screen,"screen. the buttons let you pick",360,208);
             draw_text(screen,"between 5 algorithms. *",360,224);
         break;
+        case 3:
+                draw_text_color(screen,"1",232,160,0,255,255);
+            draw_text(screen,"build pillbox",280,160);
+                draw_text_color(screen,"2",232,176,0,255,255);
+            draw_text(screen,"build artificial volcano",280,176);
+                draw_text_color(screen,"3",232,192,0,255,255);
+            draw_text(screen,"build freezer",280,192);
+                draw_text_color(screen,"s",232,208,0,255,255);
+            draw_text(screen,"sell tower",280,208);
+                draw_text_color(screen,"q",232,224,0,255,255);
+            draw_text(screen,"shoot enemy travelled the least",280,224);
+                draw_text_color(screen,"w",232,240,0,255,255);
+            draw_text(screen,"shoot enemy travelled the farthest",280,240);
+                draw_text_color(screen,"e",232,256,0,255,255);
+            draw_text(screen,"shoot enemy with most hp",280,256);
+                draw_text_color(screen,"r",232,272,0,255,255);
+            draw_text(screen,"shoot enemy with least hp",280,272);
+                draw_text_color(screen,"t",232,288,0,255,255);
+            draw_text(screen,"shoot the fastest enemy",280,288);
+                draw_text_color(screen,"p",232,304,0,255,255);
+            draw_text(screen,"pause tower",280,304);
+                draw_text_color(screen,"space",232,320,0,255,255);
+            draw_text(screen,"pause the game",280,320);
+                draw_text_color(screen,"esc",232,336,0,255,255);
+            draw_text(screen,"quit to menu",280,336);
+        break;
     }
     redraw = 0;
     return;
 }
 
 void update_tutorial_selection(int x, int y) {
-    if ( x >= 16 && x <= 176 && y >= 160 && y < (160+(16*3)) )
+    if ( x >= 16 && x <= 176 && y >= 160 && y < (160+(16*4)) )
         hoverchoice = (y-160)/16;
     redraw = 1;
     return;

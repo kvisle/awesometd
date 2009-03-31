@@ -24,6 +24,7 @@
 #include "credits.h"
 #include "highscores.h"
 #include "tutorial.h"
+#include "eventloop.h"
 
 #define MAX_OPTIONS 5
 
@@ -77,5 +78,6 @@ void update_menu_selection(int x, int y) {
 
 void show_menu(void) {
     current_screen = SCREEN_MENU;
+    game_paused = 0;
     update_all();
 }
