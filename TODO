@@ -4,7 +4,7 @@ Roadmap for AWESOME TOWER DEFENSE:
     X   Hotkeys
     *   New sprites for some of the towers.
     X   Different looks for the different kind of projectiles
-    *   Put graphics inside the binary, to fix distribution issues.
+    X   Put graphics inside the binary, to fix distribution issues.
     *   Fix icons and such.
     *   Fix documentation.
     X   Fix an ingame tutorial.

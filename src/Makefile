@@ -18,6 +18,8 @@
 PLATFORM = LINUX
 
 OBJS = main.o render.o eventloop.o timers.o level.o sprites.o cursor.o gfx_charmap.o gfx_buttons.o game.o menu.o credits.o highscores.o tutorial.o
+OBJS += buttonbar2.o buttonbar.o enemy1.o enemy2.o enemy3.o leveltiles.o menuscreen.o minipause.o tower1-2.o tower1-3.o tower1.o tower2-2.o tower2-3.o tower2.o tower3-2.o tower3-3.o tower3.o tower4.o tut_basic.o tut_upgrading.o
+
 
 CFLAGS = -Wall -pipe
 ifdef RELEASE
@@ -46,6 +48,9 @@ $(TARGET): $(OBJS) Makefile
 
 %.o: %.c %.h Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.bmp
+	objcopy -I binary -O elf32-i386 -B i386 $< $@
 
 clean:
 	rm -f $(OBJS) $(TARGET)

@@ -34,6 +34,8 @@
 #include "highscores.h"
 #include "tutorial.h"
 
+extern char _binary_menuscreen_bmp_start;
+
 SDL_Surface *screen;
 static SDL_Surface *background, *menubackground;
 
@@ -54,7 +56,7 @@ int init_video(void) {
     screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, SDL_HWSURFACE);
     SDL_WM_SetCaption("Awesome Tower Defense 0.2+git","");
     background = SDL_CreateRGBSurface(SDL_HWSURFACE, VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, VIDEOMODE_DEPTH, RMASK, GMASK, BMASK, AMASK);
-    menubackground = SDL_LoadBMP("menuscreen.bmp");
+    menubackground = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_menuscreen_bmp_start,0x000e1036),0);
     
     init_sprites();
     init_buttons();

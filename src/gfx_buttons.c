@@ -23,6 +23,9 @@
 #include "sprites.h"
 #include "gfx_charmap.h"
 
+extern char _binary_buttonbar2_bmp_start;
+extern char _binary_buttonbar_bmp_start;
+
 SDL_Surface *buttonsurface, *buttonsurface2;
 static SDL_Rect button_rects[3] = {
     { 260, 430, 48, 48 },
@@ -73,8 +76,8 @@ void update_tooltip(int x, int y) {
 }
 
 void init_buttons(void) {
-    buttonsurface = SDL_LoadBMP("buttonbar.bmp");
-    buttonsurface2 = SDL_LoadBMP("buttonbar2.bmp");
+    buttonsurface = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_buttonbar_bmp_start,0x0000d836),0);
+    buttonsurface2 = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_buttonbar2_bmp_start,0x00007e36),0);
 }
 
 void draw_buttons(SDL_Surface *s) {

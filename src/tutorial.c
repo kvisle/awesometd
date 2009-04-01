@@ -21,6 +21,9 @@
 #include "gfx_charmap.h"
 #include "gfx_buttons.h"
 
+extern char _binary_tut_basic_bmp_start;
+extern char _binary_tut_upgrading_bmp_start;
+
 static int hoverchoice = 0;
 static char* tutorials[] = {
     "basic gameplay",
@@ -46,8 +49,8 @@ SDL_Rect tower_dst = { 200,232,24,24 };
 SDL_Rect tower_src = { 0,0,24,24 };
 
 void load_sprites(void) {
-    tut_basic = SDL_LoadBMP("tut_basic.bmp");
-    tut_upgrading = SDL_LoadBMP("tut_upgrading.bmp");
+    tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_tut_basic_bmp_start,0x0000d836),0);
+    tut_upgrading = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_tut_upgrading_bmp_start,0x0000d836),0);
     printf("sprites loaded!\n");
     sprites_loaded = 1;
 }
