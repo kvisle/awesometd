@@ -31,6 +31,7 @@ static char* tutorials[] = {
 static int redraw = 1;
 void show_tutorial(void) {
     current_screen = SCREEN_TUTORIAL;
+    redraw = 1;
     update_all();
 }
 
