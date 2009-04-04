@@ -1,0 +1,4 @@
+#include <windows.h>
+#define IDI_ICON 1
+IDI_ICON ICON DISCARDABLE "icon.ico"
+

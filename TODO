@@ -1,16 +1,5 @@
 Roadmap for AWESOME TOWER DEFENSE:
 
-0.3:
-    X   Hotkeys
-    *   New sprites for some of the towers.
-    X   Different looks for the different kind of projectiles
-    X   Put graphics inside the binary, to fix distribution issues.
-    *   Fix icons and such.
-    *   Fix documentation.
-    X   Fix an ingame tutorial.
-    X   Make it possible for a tower to pause
-    X   Make it possible to pause the game
-
 0.4:
     *   Draw a circle which indicates the range of the tower when selected, 
         and when you want to buy one.
