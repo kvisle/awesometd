@@ -34,6 +34,23 @@
 #define get_cellx(__A) (((__A).pos_x)/RECTSIZE_X)
 #define get_celly(__A) (((__A).pos_y)/RECTSIZE_Y)
 
+
+#ifdef WIN32
+extern char binary_enemy1_bmp_start;
+extern char binary_enemy2_bmp_start;
+extern char binary_enemy3_bmp_start;
+extern char binary_tower1_2_bmp_start;
+extern char binary_tower1_3_bmp_start;
+extern char binary_tower1_bmp_start;
+extern char binary_tower2_2_bmp_start;
+extern char binary_tower2_3_bmp_start;
+extern char binary_tower2_bmp_start;
+extern char binary_tower3_2_bmp_start;
+extern char binary_tower3_3_bmp_start;
+extern char binary_tower3_bmp_start;
+extern char binary_tower4_bmp_start;
+extern char binary_minipause_bmp_start;
+#else
 extern char _binary_enemy1_bmp_start;
 extern char _binary_enemy2_bmp_start;
 extern char _binary_enemy3_bmp_start;
@@ -48,6 +65,8 @@ extern char _binary_tower3_3_bmp_start;
 extern char _binary_tower3_bmp_start;
 extern char _binary_tower4_bmp_start;
 extern char _binary_minipause_bmp_start;
+#endif
+
 
 static const int level_monster[1][25][40] = {
     {
@@ -201,6 +220,21 @@ void load_sprite_from_pic(char *filename, int width, int height, int frames, int
 }
 
 void init_sprites(void) {
+#ifdef WIN32
+    load_sprite_from_pic(&binary_enemy1_bmp_start,32,32,2,0x6036);
+    load_sprite_from_pic(&binary_tower1_bmp_start,32,32,1,0x3036);
+    load_sprite_from_pic(&binary_enemy2_bmp_start,32,32,2,0x6036);
+    load_sprite_from_pic(&binary_tower2_bmp_start,32,32,8,0x18036);
+    load_sprite_from_pic(&binary_enemy3_bmp_start,32,32,2,0x6036);
+    load_sprite_from_pic(&binary_tower3_bmp_start,32,32,1,0x3036);
+    load_sprite_from_pic(&binary_tower1_2_bmp_start,32,32,1,0x3036);
+    load_sprite_from_pic(&binary_tower2_2_bmp_start,32,32,8,0x18036);
+    load_sprite_from_pic(&binary_tower3_2_bmp_start,32,32,1,0x3036);
+    load_sprite_from_pic(&binary_tower1_3_bmp_start,32,32,1,0x3036);
+    load_sprite_from_pic(&binary_tower2_3_bmp_start,32,32,8,0x18036);
+    load_sprite_from_pic(&binary_tower3_3_bmp_start,32,32,1,0x3036);
+    gfx_pause = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_minipause_bmp_start,0xf6),0);
+#else
     load_sprite_from_pic(&_binary_enemy1_bmp_start,32,32,2,0x6036);
     load_sprite_from_pic(&_binary_tower1_bmp_start,32,32,1,0x3036);
     load_sprite_from_pic(&_binary_enemy2_bmp_start,32,32,2,0x6036);
@@ -214,6 +248,7 @@ void init_sprites(void) {
     load_sprite_from_pic(&_binary_tower2_3_bmp_start,32,32,8,0x18036);
     load_sprite_from_pic(&_binary_tower3_3_bmp_start,32,32,1,0x3036);
     gfx_pause = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_minipause_bmp_start,0xf6),0);
+#endif
     SDL_SetColorKey(gfx_pause, SDL_SRCCOLORKEY, SDL_MapRGB(gfx_pause->format, 255,0,255));
 
     projectile_definitions[0].color = SDL_MapRGB(screen->format, 128, 128, 128);

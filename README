@@ -12,7 +12,6 @@ platforms/architectures:
 
     GNU/Linux 2.6 x86
     GNU/Linux 2.6 x86-64
+    Mac OS X x86
+    Mac OS X PPC
     Windows XP/Vista x86
-
-If anyone would test this on a Mac, and/or other architectures, I'd be very glad
-for any feedback I would get, in the form of results and/or patches :)
