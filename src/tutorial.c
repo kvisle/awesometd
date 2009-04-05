@@ -60,7 +60,7 @@ void draw_tutorial(void) {
     int i;
     if ( sprites_loaded == 0 ) load_sprites();
     if ( redraw == 0 ) return;
-    for (i=0;i<4;i++)
+    for (i=0;i<ARRAY_SIZE(tutorials);i++)
         if (hoverchoice != i) draw_text(screen,tutorials[i],16,160+(i*16));
         else draw_text_color(screen,tutorials[i],16,160+(i*16),255,255,0);
 

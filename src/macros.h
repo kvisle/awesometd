@@ -40,4 +40,7 @@
 
 #endif /* WIN32 */
 
+#define ELEMENT_SIZE(array) (sizeof((array)[0]))
+#define ARRAY_SIZE(array) (sizeof(array) / ELEMENT_SIZE(array))
+
 #endif /* __MACROS_H__ */

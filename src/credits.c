@@ -20,6 +20,7 @@
 #include "render.h"
 #include "credits.h"
 #include "gfx_charmap.h"
+#include "macros.h"
 
 static const char* credits[] = {
     "code",
@@ -43,7 +44,7 @@ void show_credits(void) {
 
 void draw_credits(void) {
     int i;
-    for (i=0;i<12;i++) {
+    for (i=0;i<ARRAY_SIZE(credits);i++) {
         draw_text(screen,credits[i],200,(200+(i*16)));
     }
 }
