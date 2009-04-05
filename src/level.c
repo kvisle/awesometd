@@ -19,6 +19,7 @@
 
 #include <SDL.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "level.h"
 #include "render.h"
@@ -73,7 +74,7 @@ static int currentlevel = 0;
 void load_level(SDL_Surface *bg, int lid) {
     int a,b,c,d,e;
     SDL_Rect *tile;
-    Uint32 black, green, brown;
+    uint32_t black, green, brown;
     black = SDL_MapRGB(bg->format,0,0,0);
     green = SDL_MapRGB(bg->format,0,128,0);
     brown = SDL_MapRGB(bg->format,128,64,0);

@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <stdint.h>
 #include <SDL.h>
 
 #include "gfx_charmap.h"
@@ -539,7 +540,7 @@ static SDL_Surface *charmapsurface;
 
 void init_gfx_charmap(void) {
     int i, x, y;
-    Uint32 color;
+    uint32_t color;
     SDL_Rect pixel = { 0, 0, 1, 1 };
     charmapsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, CHAR_SIZE_X*CHAR_COUNT, CHAR_SIZE_Y, 8, 255, 255, 255, 0);
     color = SDL_MapRGB(charmapsurface->format, 255,255,255);

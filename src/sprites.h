@@ -20,6 +20,7 @@
 #ifndef __SPRITES_H__
 #define __SPRITES_H__
 
+#include <stdint.h>
 #include <SDL.h>
 
 #define MAX_SPRITES 16
@@ -53,7 +54,7 @@ struct monster {
     int travelled;
     int score;
     int money;
-    Uint32 last_ice_shot;
+    uint32_t last_ice_shot;
     float effect_speed;
     float upcoming_effect_speed;
     int exp_gainer;
@@ -95,7 +96,7 @@ struct projectile {
     int splash;
     float effect_speed;
     int owner;
-    Uint32 color;
+    uint32_t color;
 };
 
 void reset_everything(void);

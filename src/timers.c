@@ -17,6 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <stdint.h>
 #include <SDL.h>
 
 #include "timers.h"
@@ -41,7 +42,7 @@ void init_timers(void) {
 
 static int waitingforrender = 0;
 
-Uint32 timedrenderevent(Uint32 interval, void* param) {
+uint32_t timedrenderevent(uint32_t interval, void* param) {
     SDL_Event *event = (SDL_Event*)param;
     if ( waitingforrender == 0 ) {
         SDL_PushEvent(event);
@@ -50,7 +51,7 @@ Uint32 timedrenderevent(Uint32 interval, void* param) {
     return interval;
 }
 
-Uint32 timeduserevent(Uint32 interval, void* param) {
+uint32_t timeduserevent(uint32_t interval, void* param) {
     SDL_Event *event = (SDL_Event*)param;
     SDL_PushEvent(event);
     return interval;
