@@ -25,7 +25,7 @@ OBJS += $(BMPS:%.bmp=%.o)
 
 CFLAGS = -Wall -pipe
 ifdef RELEASE
-	CFLAGS += -march=native -O2 -fomit-frame-pointer -funroll-loops
+	CFLAGS += -O2 -fomit-frame-pointer
 else
 	CFLAGS += -pg -ggdb -O0
 endif
