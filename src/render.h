@@ -54,9 +54,8 @@ void render(void);
 void updaterect(int x, int y);
 void update_all(void);
 int getrenders(void);
-SDL_Surface *screen;
-void draw_stuff_on_top(void);
-char costtext[8];
-int current_screen;
+extern SDL_Surface *screen;
+extern char costtext[8];
+extern int current_screen;
 
 #endif /* __RENDER_H__ */

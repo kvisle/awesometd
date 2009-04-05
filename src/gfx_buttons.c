@@ -24,7 +24,8 @@
 #include "gfx_charmap.h"
 #include "images.h"
 
-SDL_Surface *buttonsurface, *buttonsurface2;
+static SDL_Surface *buttonsurface;
+SDL_Surface *buttonsurface2;
 static SDL_Rect button_rects[3] = {
     { 260, 430, 48, 48 },
     { 308, 430, 48, 48 },
@@ -43,8 +44,7 @@ static SDL_Rect button_rects2[7] = {
 static const int button_count = 3;
 static const int button2_count = 7;
 int towerbutton = 0;
-int button2 = 0;
-int button2tooltip = -1;
+static int button2tooltip = -1;
 static int button_pressed[3] = { 1, 0, 0 };
 static const char buttonhint[3][40] = {
     "build pillbox",

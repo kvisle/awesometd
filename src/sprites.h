@@ -100,14 +100,11 @@ struct projectile {
 };
 
 void reset_everything(void);
-void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y);
 int spawn_monster(void);
 void move_monster(void);
 void move_projectile(void);
 void animate_sprites(void);
 void init_sprites(void);
-void draw_towers(void);
-void draw_health(SDL_Surface *s, int x, int y, int cur, int max);
 void add_tower(int x, int y, int type);
 int has_tower(int x, int y);
 void shoot_towers(void);
@@ -117,12 +114,11 @@ void draw_projectile(int x, int y);
 void select_tower(int x, int y);
 void sell_tower(int tid);
 void tower_algorithm(int tid, int aid);
-const struct tower tower_definitions[9];
-struct tower towers[MAX_TOWERS];
-int selected_tower;
-void upgrade_tower(int tid);
+extern const struct tower tower_definitions[9];
+extern struct tower towers[MAX_TOWERS];
+extern int selected_tower;
 void draw_numbers2(void);
 void toggle_shooting(int tower);
-int batch;
+extern int batch;
 
 #endif /* __SPRITES_H__ */

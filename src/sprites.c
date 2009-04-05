@@ -135,11 +135,11 @@ static int monster = 0;
 
 int selected_tower = -1;
 
-struct monster monsters[MAX_MONSTERS];
+static struct monster monsters[MAX_MONSTERS];
 struct tower towers[MAX_TOWERS];
-struct projectile projectiles[MAX_PROJECTILES];
-struct sprites sprites;
-SDL_Surface *gfx_pause;
+static struct projectile projectiles[MAX_PROJECTILES];
+static struct sprites sprites;
+static SDL_Surface *gfx_pause;
 
 void reset_everything(void) {
     level = 0;
@@ -160,7 +160,7 @@ void toggle_shooting(int tower) {
     return;
 }
 
-void load_sprite_from_pic(char *filename, int width, int height, int frames, int memsize) {
+static void load_sprite_from_pic(char *filename, int width, int height, int frames, int memsize) {
     int i,d;
     sprites.sprites[sprites.spritecount] = SDL_LoadBMP_RW(SDL_RWFromMem(filename,memsize),0);
     if ( sprites.sprites[sprites.spritecount] != NULL ) {
@@ -213,7 +213,7 @@ void init_sprites(void) {
     projectile_definitions[8].color = SDL_MapRGB(screen->format, 0, 0, 255);
 }
 
-void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
+static void draw_sprite(SDL_Surface *s, int spid, int fid, int rot, int x, int y) {
     int ax, ay;
     SDL_Rect dst = { x, y, RECTSIZE_X, RECTSIZE_Y };
     if ( spid < sprites.spritecount ) {
@@ -297,6 +297,14 @@ int spawn_monster(void) {
         }
     }
     return 0;
+}
+
+static void upgrade_tower(int tid) {
+    struct tower tmptower = towers[tid];
+    towers[tid] = tower_definitions[tmptower.next_tower];
+    towers[tid].loc_x = tmptower.loc_x;
+    towers[tid].loc_y = tmptower.loc_y;
+    towers[tid].target_algorithm = tmptower.target_algorithm;
 }
 
 void move_projectile(void) {
@@ -508,17 +516,17 @@ void move_monster(void) {
     }
 }
 
-void draw_health(SDL_Surface *s, int x, int y, int cur, int max) {
+static void draw_health(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_Rect green = { x+2,y,(28*cur/max),3 };
     SDL_Rect red = { x+2+green.w,y,28-green.w,3 };
     SDL_FillRect(s, &green, SDL_MapRGB(s->format,0,255,0));
     SDL_FillRect(s, &red, SDL_MapRGB(s->format, 255,0,0));
 }
-void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
+static void draw_reload(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_Rect gray = { x+2,y+28,(28*cur/max),3 };
     SDL_FillRect(s, &gray, SDL_MapRGB(s->format,200,200,200));
 }
-void draw_exp(SDL_Surface *s, int x, int y, int cur, int max) {
+static void draw_exp(SDL_Surface *s, int x, int y, int cur, int max) {
     SDL_Rect yellow = { x+2,y+25,(28*cur/max),3 };
     SDL_FillRect(s, &yellow, SDL_MapRGB(s->format,255,255,0));
 }
@@ -541,20 +549,6 @@ void draw_projectile(int x, int y) {
         if ( projectiles[i].damage > 0 && x2 == x && y2 == y ) {
             SDL_Rect projrect = { projectiles[i].pos_x, projectiles[i].pos_y, 4, 4 };
             SDL_FillRect(screen,&projrect, projectiles[i].color);
-        }
-    }
-}
-
-
-void draw_towers(void) {
-    int i;
-    for (i=0;i<MAX_TOWERS;i++) {
-        if ( towers[i].active == 1 ) {
-            SDL_Rect pause = { towers[i].loc_x+24, towers[i].loc_y+24, 8, 8 };
-            updaterect(towers[i].loc_x, towers[i].loc_y);
-            draw_sprite(screen,towers[i].spid, towers[i].frameno,DIRECTION_N,towers[i].loc_x*RECTSIZE_X,towers[i].loc_y*RECTSIZE_Y);
-            draw_reload(screen, towers[i].loc_x*RECTSIZE_X, towers[i].loc_y*RECTSIZE_Y, towers[i].reloadtimeleft, towers[i].reload);
-            SDL_BlitSurface(gfx_pause, NULL, screen, &pause);
         }
     }
 }
@@ -593,14 +587,6 @@ int has_tower(int x, int y) {
     return 0;
 }
 
-void upgrade_tower(int tid) {
-    struct tower tmptower = towers[tid];
-    towers[tid] = tower_definitions[tmptower.next_tower];
-    towers[tid].loc_x = tmptower.loc_x;
-    towers[tid].loc_y = tmptower.loc_y;
-    towers[tid].target_algorithm = tmptower.target_algorithm;
-}
-
 void add_tower(int x, int y, int type) {
     int i;
     if ( have_money(tower_definitions[type].price) == 1 ) {
@@ -636,7 +622,7 @@ void animate_sprites(void) {
     }
 }
 
-void add_projectile(int pid, int mid, int tid) {
+static void add_projectile(int pid, int mid, int tid) {
     int i;
     for (i=0;i<MAX_PROJECTILES;i++) {
         if ( projectiles[i].damage == 0 ) {

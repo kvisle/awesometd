@@ -491,7 +491,7 @@ static const int charmap[CHAR_COUNT][CHAR_SIZE_Y][CHAR_SIZE_X] = {
     }
 };
 
-SDL_Rect charmapslices[] = {
+static SDL_Rect charmapslices[] = {
     { 0,0,CHAR_SIZE_X,CHAR_SIZE_Y },
     { 8,0,CHAR_SIZE_X,CHAR_SIZE_Y },
     { 16,0,CHAR_SIZE_X,CHAR_SIZE_Y },
@@ -538,7 +538,7 @@ SDL_Rect charmapslices[] = {
 
 static SDL_Surface *charmapsurface;
 
-void init_gfx_charmap(void) {
+static void init_gfx_charmap(void) {
     int i, x, y;
     uint32_t color;
     SDL_Rect pixel = { 0, 0, 1, 1 };

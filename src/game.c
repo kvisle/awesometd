@@ -29,10 +29,10 @@
 static int money = 200;
 static int score = 0;
 static int lives = 1;
-char moneytext[20], scoretext[20], lifetext[20];
+static char moneytext[20], scoretext[20], lifetext[20];
 
-int iddqd_enabled = 0;
-int idkfa_enabled = 0;
+static int iddqd_enabled = 0;
+static int idkfa_enabled = 0;
 
 void new_game(void) {
     money = 250;
@@ -87,11 +87,6 @@ void draw_highscore_stats(void) {
     draw_text(screen,line,104,152);
 }
 
-SDL_Event go = { SDL_QUIT };
-void game_over(void) {
-    printf("GAME OVER!!!!\n");
-    SDL_PushEvent(&go);
-}
 void iddqd(void)
 {
     iddqd_enabled = 1;

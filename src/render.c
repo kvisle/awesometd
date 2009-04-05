@@ -67,61 +67,7 @@ int init_video(void) {
     return 0;
 }
 
-
-// DRAW STUFF!
-void render(void) {
-    draw_stuff_on_top();
-
-    if ( updatefield.count > 0 ) {
-        memset(&field, 0x00, sizeof(int)*(VIDEOMODE_WIDTH/RECTSIZE_X)*(VIDEOMODE_HEIGHT/RECTSIZE_Y));
-        SDL_UpdateRects(screen, updatefield.count, (SDL_Rect *) &updatefield.rects);
-        updatefield.count = 0;
-    }
-    mark_rendered();
-    rendercount++;
-}
-
-// Reports FPS
-int getrenders(void) {
-    int i = rendercount;
-    sprintf(fpstext, "%11d fps", i);
-//    draw_text(screen, fpstext, 520, 0);
-    rendercount = 0;
-    return i;
-}
-
-// Marks a cell in the grid as one who needs to be updated.
-// This function should be called before we draw any sprites in the cell, since
-// it will blit from the background surface if we have one.
-void updaterect(int x, int y) {
-    if ( x < 20 && y < 15 ) {
-        if ( field[x][y] == 0 ) {
-            field[x][y] = 1;
-            updatefield.rects[updatefield.count].x = x * RECTSIZE_X;
-            updatefield.rects[updatefield.count].y = y * RECTSIZE_Y;
-            updatefield.rects[updatefield.count].w = RECTSIZE_X;
-            updatefield.rects[updatefield.count].h = RECTSIZE_Y;
-            if ( current_screen == SCREEN_INGAME )
-                SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
-            if ( current_screen == SCREEN_MENU || current_screen == SCREEN_CREDITS || current_screen == SCREEN_HIGHSCORES || current_screen == SCREEN_TUTORIAL )
-                SDL_BlitSurface(menubackground, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
-            updatefield.count++;
-        }
-    }
-}
-
-void update_all(void) {
-    int x, y;
-    if ( current_screen == SCREEN_INGAME ) SDL_BlitSurface(background, NULL, screen, NULL);
-    if ( current_screen == SCREEN_MENU || current_screen == SCREEN_HIGHSCORES ) SDL_BlitSurface(menubackground, NULL, screen, NULL);
-    for (x=0;x<20;x++) {
-        for (y=0;y<15;y++) {
-            updaterect(x,y);
-        }
-    }
-}
-
-void draw_stuff_on_top(void) {
+static void draw_stuff_on_top(void) {
     int x,y;
 
     int m_x, m_y;
@@ -192,5 +138,58 @@ void draw_stuff_on_top(void) {
                 draw_buttons2(screen);
             }
         break;
+    }
+}
+
+// DRAW STUFF!
+void render(void) {
+    draw_stuff_on_top();
+
+    if ( updatefield.count > 0 ) {
+        memset(&field, 0x00, sizeof(int)*(VIDEOMODE_WIDTH/RECTSIZE_X)*(VIDEOMODE_HEIGHT/RECTSIZE_Y));
+        SDL_UpdateRects(screen, updatefield.count, (SDL_Rect *) &updatefield.rects);
+        updatefield.count = 0;
+    }
+    mark_rendered();
+    rendercount++;
+}
+
+// Reports FPS
+int getrenders(void) {
+    int i = rendercount;
+    sprintf(fpstext, "%11d fps", i);
+//    draw_text(screen, fpstext, 520, 0);
+    rendercount = 0;
+    return i;
+}
+
+// Marks a cell in the grid as one who needs to be updated.
+// This function should be called before we draw any sprites in the cell, since
+// it will blit from the background surface if we have one.
+void updaterect(int x, int y) {
+    if ( x < 20 && y < 15 ) {
+        if ( field[x][y] == 0 ) {
+            field[x][y] = 1;
+            updatefield.rects[updatefield.count].x = x * RECTSIZE_X;
+            updatefield.rects[updatefield.count].y = y * RECTSIZE_Y;
+            updatefield.rects[updatefield.count].w = RECTSIZE_X;
+            updatefield.rects[updatefield.count].h = RECTSIZE_Y;
+            if ( current_screen == SCREEN_INGAME )
+                SDL_BlitSurface(background, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
+            if ( current_screen == SCREEN_MENU || current_screen == SCREEN_CREDITS || current_screen == SCREEN_HIGHSCORES || current_screen == SCREEN_TUTORIAL )
+                SDL_BlitSurface(menubackground, &updatefield.rects[updatefield.count], screen, &updatefield.rects[updatefield.count]);
+            updatefield.count++;
+        }
+    }
+}
+
+void update_all(void) {
+    int x, y;
+    if ( current_screen == SCREEN_INGAME ) SDL_BlitSurface(background, NULL, screen, NULL);
+    if ( current_screen == SCREEN_MENU || current_screen == SCREEN_HIGHSCORES ) SDL_BlitSurface(menubackground, NULL, screen, NULL);
+    for (x=0;x<20;x++) {
+        for (y=0;y<15;y++) {
+            updaterect(x,y);
+        }
     }
 }

@@ -43,10 +43,10 @@ static SDL_Rect tut_basic_rect = { 200,160,144,128 };
 static SDL_Surface *tut_upgrading;
 static SDL_Rect tut_upgrading_rect = { 480,160,144,128 };
 
-SDL_Rect tower_dst = { 200,232,24,24 };
-SDL_Rect tower_src = { 0,0,24,24 };
+static SDL_Rect tower_dst = { 200,232,24,24 };
+static SDL_Rect tower_src = { 0,0,24,24 };
 
-void load_sprites(void) {
+static void load_sprites(void) {
     tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(tut_basic),IMAGE_SIZE(tut_basic)),0);
     tut_upgrading = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(tut_upgrading),IMAGE_SIZE(tut_upgrading)),0);
     printf("sprites loaded!\n");

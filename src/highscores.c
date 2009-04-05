@@ -21,9 +21,9 @@
 #include "gfx_charmap.h"
 #include "game.h"
 
-int messageno = 0;
+static int messageno = 0;
 
-char messages[3][50] = {
+static char messages[3][50] = {
     "",
     "you won the game",
     "you lost the game"

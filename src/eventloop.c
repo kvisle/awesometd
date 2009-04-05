@@ -30,7 +30,7 @@
 #include "menu.h"
 #include "tutorial.h"
 
-int gamecycle = 0;
+static int gamecycle = 0;
 int game_paused = 0;
 static char lastkeys[32] = { 0 };
 

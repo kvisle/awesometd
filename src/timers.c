@@ -23,8 +23,23 @@
 #include "timers.h"
 
 static SDL_TimerID render_id, report_fps_id, game_cycle_id;
-
 static SDL_Event render_t, report_fps_t, game_cycle_t;
+static int waitingforrender = 0;
+
+static uint32_t timedrenderevent(uint32_t interval, void* param) {
+    SDL_Event *event = (SDL_Event*)param;
+    if ( waitingforrender == 0 ) {
+        SDL_PushEvent(event);
+        waitingforrender = 1;
+    }
+    return interval;
+}
+
+static uint32_t timeduserevent(uint32_t interval, void* param) {
+    SDL_Event *event = (SDL_Event*)param;
+    SDL_PushEvent(event);
+    return interval;
+}
 
 void init_timers(void) {
     render_t.type = SDL_USEREVENT;
@@ -38,23 +53,6 @@ void init_timers(void) {
     game_cycle_t.type = SDL_USEREVENT;
     game_cycle_t.user.code = TIMER_GAMECYCLE;
     game_cycle_id = SDL_AddTimer(10, timeduserevent, &game_cycle_t);
-}
-
-static int waitingforrender = 0;
-
-uint32_t timedrenderevent(uint32_t interval, void* param) {
-    SDL_Event *event = (SDL_Event*)param;
-    if ( waitingforrender == 0 ) {
-        SDL_PushEvent(event);
-        waitingforrender = 1;
-    }
-    return interval;
-}
-
-uint32_t timeduserevent(uint32_t interval, void* param) {
-    SDL_Event *event = (SDL_Event*)param;
-    SDL_PushEvent(event);
-    return interval;
 }
 
 void mark_rendered(void) {
