@@ -187,35 +187,19 @@ void load_sprite_from_pic(char *filename, int width, int height, int frames, int
 }
 
 void init_sprites(void) {
-#ifdef WIN32
-    load_sprite_from_pic(&binary_enemy1_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&binary_tower1_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&binary_enemy2_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&binary_tower2_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&binary_enemy3_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&binary_tower3_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&binary_tower1_2_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&binary_tower2_2_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&binary_tower3_2_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&binary_tower1_3_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&binary_tower2_3_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&binary_tower3_3_bmp_start,32,32,1,0x3036);
-    gfx_pause = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_minipause_bmp_start,0xf6),0);
-#else
-    load_sprite_from_pic(&_binary_enemy1_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&_binary_tower1_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&_binary_enemy2_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&_binary_tower2_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&_binary_enemy3_bmp_start,32,32,2,0x6036);
-    load_sprite_from_pic(&_binary_tower3_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&_binary_tower1_2_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&_binary_tower2_2_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&_binary_tower3_2_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&_binary_tower1_3_bmp_start,32,32,1,0x3036);
-    load_sprite_from_pic(&_binary_tower2_3_bmp_start,32,32,8,0x18036);
-    load_sprite_from_pic(&_binary_tower3_3_bmp_start,32,32,1,0x3036);
-    gfx_pause = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_minipause_bmp_start,0xf6),0);
-#endif
+    load_sprite_from_pic(IMAGE_BUF(enemy1),32,32,2,IMAGE_SIZE(enemy1));
+    load_sprite_from_pic(IMAGE_BUF(tower1),32,32,1,IMAGE_SIZE(tower1));
+    load_sprite_from_pic(IMAGE_BUF(enemy2),32,32,2,IMAGE_SIZE(enemy2));
+    load_sprite_from_pic(IMAGE_BUF(tower2),32,32,8,IMAGE_SIZE(tower2));
+    load_sprite_from_pic(IMAGE_BUF(enemy3),32,32,2,IMAGE_SIZE(enemy3));
+    load_sprite_from_pic(IMAGE_BUF(tower3),32,32,1,IMAGE_SIZE(tower3));
+    load_sprite_from_pic(IMAGE_BUF(tower1_2),32,32,1,IMAGE_SIZE(tower1_2));
+    load_sprite_from_pic(IMAGE_BUF(tower2_2),32,32,8,IMAGE_SIZE(tower2_2));
+    load_sprite_from_pic(IMAGE_BUF(tower3_2),32,32,1,IMAGE_SIZE(tower3_2));
+    load_sprite_from_pic(IMAGE_BUF(tower1_3),32,32,1,IMAGE_SIZE(tower1_3));
+    load_sprite_from_pic(IMAGE_BUF(tower2_3),32,32,8,IMAGE_SIZE(tower2_3));
+    load_sprite_from_pic(IMAGE_BUF(tower3_3),32,32,1,IMAGE_SIZE(tower3_3));
+    gfx_pause = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(minipause),IMAGE_SIZE(minipause)),0);
     SDL_SetColorKey(gfx_pause, SDL_SRCCOLORKEY, SDL_MapRGB(gfx_pause->format, 255,0,255));
 
     projectile_definitions[0].color = SDL_MapRGB(screen->format, 128, 128, 128);

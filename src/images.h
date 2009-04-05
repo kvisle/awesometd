@@ -4,12 +4,20 @@
 #ifdef WIN32
 
 #define DEFIMAGE(image) \
-    extern char binary_ ## image ## _bmp_start;
+    extern char binary_ ## image ## _bmp_start; \
+    extern char binary_ ## image ## _bmp_end;
+
+#define IMAGE_BUF(image)    (&binary_ ## image ## _bmp_start)
+#define IMAGE_SIZE(image)   (&binary_ ## image ## _bmp_end - &binary_ ## image ## _bmp_start)
 
 #else /* ! WIN32 */
 
 #define DEFIMAGE(image) \
-    extern char _binary_ ## image ## _bmp_start;
+    extern char _binary_ ## image ## _bmp_start; \
+    extern char _binary_ ## image ## _bmp_end;
+
+#define IMAGE_BUF(image)    (&_binary_ ## image ## _bmp_start)
+#define IMAGE_SIZE(image)   (&_binary_ ## image ## _bmp_end - &_binary_ ## image ## _bmp_start)
 
 #endif /* WIN32 */
 

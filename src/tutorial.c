@@ -47,13 +47,8 @@ SDL_Rect tower_dst = { 200,232,24,24 };
 SDL_Rect tower_src = { 0,0,24,24 };
 
 void load_sprites(void) {
-#ifdef WIN32
-    tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_tut_basic_bmp_start,0x0000d836),0);
-    tut_upgrading = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_tut_upgrading_bmp_start,0x0000d836),0);
-#else
-    tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_tut_basic_bmp_start,0x0000d836),0);
-    tut_upgrading = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_tut_upgrading_bmp_start,0x0000d836),0);
-#endif
+    tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(tut_basic),IMAGE_SIZE(tut_basic)),0);
+    tut_upgrading = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(tut_upgrading),IMAGE_SIZE(tut_upgrading)),0);
     printf("sprites loaded!\n");
     sprites_loaded = 1;
 }

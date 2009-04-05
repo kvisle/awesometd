@@ -74,13 +74,8 @@ void update_tooltip(int x, int y) {
 }
 
 void init_buttons(void) {
-#ifdef WIN32
-    buttonsurface = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_buttonbar_bmp_start,0x0000d836),0);
-    buttonsurface2 = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_buttonbar2_bmp_start,0x00007e36),0);
-#else
-    buttonsurface = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_buttonbar_bmp_start,0x0000d836),0);
-    buttonsurface2 = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_buttonbar2_bmp_start,0x00007e36),0);
-#endif
+    buttonsurface = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(buttonbar),IMAGE_SIZE(buttonbar)),0);
+    buttonsurface2 = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(buttonbar2),IMAGE_SIZE(buttonbar2)),0);
 }
 
 void draw_buttons(SDL_Surface *s) {

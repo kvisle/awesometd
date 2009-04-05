@@ -78,11 +78,7 @@ void load_level(SDL_Surface *bg, int lid) {
     green = SDL_MapRGB(bg->format,0,128,0);
     brown = SDL_MapRGB(bg->format,128,64,0);
 
-#ifdef WIN32
-    tiles = SDL_LoadBMP_RW(SDL_RWFromMem(&binary_leveltiles_bmp_start,0x00010036),0);
-#else
-    tiles = SDL_LoadBMP_RW(SDL_RWFromMem(&_binary_leveltiles_bmp_start,0x00010036),0);
-#endif
+    tiles = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(leveltiles),IMAGE_SIZE(leveltiles)),0);
 
     SDL_Rect rect = { 0,0,RECTSIZE_X,RECTSIZE_Y};
     int x,y;
