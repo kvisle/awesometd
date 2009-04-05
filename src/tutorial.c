@@ -20,15 +20,7 @@
 #include "tutorial.h"
 #include "gfx_charmap.h"
 #include "gfx_buttons.h"
-
-
-#ifdef WIN32
-extern char binary_tut_basic_bmp_start;
-extern char binary_tut_upgrading_bmp_start;
-#else
-extern char _binary_tut_basic_bmp_start;
-extern char _binary_tut_upgrading_bmp_start;
-#endif
+#include "images.h"
 
 static int hoverchoice = 0;
 static char* tutorials[] = {

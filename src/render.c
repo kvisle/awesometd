@@ -33,12 +33,7 @@
 #include "credits.h"
 #include "highscores.h"
 #include "tutorial.h"
-
-#ifdef WIN32
-extern char binary_menuscreen_bmp_start;
-#else
-extern char _binary_menuscreen_bmp_start;
-#endif
+#include "images.h"
 
 SDL_Surface *screen;
 static SDL_Surface *background, *menubackground;

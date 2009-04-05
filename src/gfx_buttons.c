@@ -22,15 +22,7 @@
 #include "render.h"
 #include "sprites.h"
 #include "gfx_charmap.h"
-
-
-#ifdef WIN32
-extern char binary_buttonbar2_bmp_start;
-extern char binary_buttonbar_bmp_start;
-#else
-extern char _binary_buttonbar2_bmp_start;
-extern char _binary_buttonbar_bmp_start;
-#endif
+#include "images.h"
 
 SDL_Surface *buttonsurface, *buttonsurface2;
 static SDL_Rect button_rects[3] = {

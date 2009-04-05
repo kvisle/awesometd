@@ -28,45 +28,12 @@
 #include "game.h"
 #include "highscores.h"
 #include "gfx_charmap.h"
+#include "images.h"
 
 #define get_locx(__A) ((__A)/RECTSIZE_X)
 #define get_locy(__A) ((__A)/RECTSIZE_Y)
 #define get_cellx(__A) (((__A).pos_x)/RECTSIZE_X)
 #define get_celly(__A) (((__A).pos_y)/RECTSIZE_Y)
-
-
-#ifdef WIN32
-extern char binary_enemy1_bmp_start;
-extern char binary_enemy2_bmp_start;
-extern char binary_enemy3_bmp_start;
-extern char binary_tower1_2_bmp_start;
-extern char binary_tower1_3_bmp_start;
-extern char binary_tower1_bmp_start;
-extern char binary_tower2_2_bmp_start;
-extern char binary_tower2_3_bmp_start;
-extern char binary_tower2_bmp_start;
-extern char binary_tower3_2_bmp_start;
-extern char binary_tower3_3_bmp_start;
-extern char binary_tower3_bmp_start;
-extern char binary_tower4_bmp_start;
-extern char binary_minipause_bmp_start;
-#else
-extern char _binary_enemy1_bmp_start;
-extern char _binary_enemy2_bmp_start;
-extern char _binary_enemy3_bmp_start;
-extern char _binary_tower1_2_bmp_start;
-extern char _binary_tower1_3_bmp_start;
-extern char _binary_tower1_bmp_start;
-extern char _binary_tower2_2_bmp_start;
-extern char _binary_tower2_3_bmp_start;
-extern char _binary_tower2_bmp_start;
-extern char _binary_tower3_2_bmp_start;
-extern char _binary_tower3_3_bmp_start;
-extern char _binary_tower3_bmp_start;
-extern char _binary_tower4_bmp_start;
-extern char _binary_minipause_bmp_start;
-#endif
-
 
 static const int level_monster[1][25][40] = {
     {
