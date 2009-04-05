@@ -20,6 +20,8 @@
 #ifndef __GFX_BUTTONS_H__
 #define __GFX_BUTTONS_H__
 
+#include <SDL.h>
+
 void init_buttons(void);
 void press_button(int x, int y);
 void press_buttonnumber(int i);

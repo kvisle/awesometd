@@ -20,6 +20,8 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
+#include <SDL.h>
+
 void load_level(SDL_Surface *b, int lid);
 int is_path(int x, int y);
 
