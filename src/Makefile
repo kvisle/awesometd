@@ -18,7 +18,7 @@
 PLATFORM = LINUX
 
 SOURCES = credits.c game.c highscores.c menu.c timers.c cursor.c gfx_buttons.c level.c render.c tutorial.c eventloop.c gfx_charmap.c main.c sprites.c
-BMPS = buttonbar.bmp enemy3.bmp tower1-2.bmp tower2-3.bmp tower3.bmp buttonbar2.bmp leveltiles.bmp tower1-3.bmp tower2.bmp tower4.bmp enemy1.bmp menuscreen.bmp tower1.bmp tower3-2.bmp tut_basic.bmp enemy2.bmp minipause.bmp tower2-2.bmp tower3-3.bmp tut_upgrading.bmp
+BMPS = buttonbar.bmp enemy3.bmp tower1-2.bmp tower2-3.bmp tower3.bmp buttonbar2.bmp leveltiles.bmp tower1-3.bmp tower2.bmp enemy1.bmp menuscreen.bmp tower1.bmp tower3-2.bmp tut_basic.bmp enemy2.bmp minipause.bmp tower2-2.bmp tower3-3.bmp tut_upgrading.bmp
 
 OBJS = $(SOURCES:%.c=%.o)
 OBJS += $(BMPS:%.bmp=%.o)

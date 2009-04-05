@@ -22,7 +22,7 @@
 #include "render.h"
 #include "sprites.h"
 #include "gfx_charmap.h"
-#include "images.h"
+#include "macros.h"
 
 static SDL_Surface *buttonsurface;
 SDL_Surface *buttonsurface2;
@@ -60,6 +60,9 @@ static const char buttonhint2[7][33] = {
     "shoot the fastest enemy        ",
     "toggle shooting                "
 };
+
+DEFIMAGE(buttonbar)
+DEFIMAGE(buttonbar2)
 
 void update_tooltip(int x, int y) {
     int i;

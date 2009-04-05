@@ -20,7 +20,7 @@
 #include "tutorial.h"
 #include "gfx_charmap.h"
 #include "gfx_buttons.h"
-#include "images.h"
+#include "macros.h"
 
 static int hoverchoice = 0;
 static char* tutorials[] = {
@@ -45,6 +45,9 @@ static SDL_Rect tut_upgrading_rect = { 480,160,144,128 };
 
 static SDL_Rect tower_dst = { 200,232,24,24 };
 static SDL_Rect tower_src = { 0,0,24,24 };
+
+DEFIMAGE(tut_basic)
+DEFIMAGE(tut_upgrading)
 
 static void load_sprites(void) {
     tut_basic = SDL_LoadBMP_RW(SDL_RWFromMem(IMAGE_BUF(tut_basic),IMAGE_SIZE(tut_basic)),0);

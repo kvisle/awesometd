@@ -23,7 +23,7 @@
 
 #include "level.h"
 #include "render.h"
-#include "images.h"
+#include "macros.h"
 
 static const int levels[1][15][20] = {
     { // Level 1!
@@ -70,6 +70,8 @@ static const unsigned char tilepicker[2][2][2][2] = {{{{ 2,2 },{ 2,6 }},{{ 2,1 }
 static SDL_Surface *tiles;
 
 static int currentlevel = 0;
+
+DEFIMAGE(leveltiles)
 
 void load_level(SDL_Surface *bg, int lid) {
     int a,b,c,d,e;

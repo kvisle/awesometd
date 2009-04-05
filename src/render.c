@@ -33,7 +33,7 @@
 #include "credits.h"
 #include "highscores.h"
 #include "tutorial.h"
-#include "images.h"
+#include "macros.h"
 
 SDL_Surface *screen;
 static SDL_Surface *background, *menubackground;
@@ -49,6 +49,8 @@ char costtext[8] = "   100";
 int current_screen = SCREEN_MENU;
 
 static struct updatefield updatefield;
+
+DEFIMAGE(menuscreen)
 
 // Some stuff we wanna do before we start drawing stuff.
 int init_video(void) {

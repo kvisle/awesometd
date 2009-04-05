@@ -28,7 +28,7 @@
 #include "game.h"
 #include "highscores.h"
 #include "gfx_charmap.h"
-#include "images.h"
+#include "macros.h"
 
 #define get_locx(__A) ((__A)/RECTSIZE_X)
 #define get_locy(__A) ((__A)/RECTSIZE_Y)
@@ -140,6 +140,20 @@ struct tower towers[MAX_TOWERS];
 static struct projectile projectiles[MAX_PROJECTILES];
 static struct sprites sprites;
 static SDL_Surface *gfx_pause;
+
+DEFIMAGE(enemy1)
+DEFIMAGE(tower1)
+DEFIMAGE(enemy2)
+DEFIMAGE(tower2)
+DEFIMAGE(enemy3)
+DEFIMAGE(tower3)
+DEFIMAGE(tower1_2)
+DEFIMAGE(tower2_2)
+DEFIMAGE(tower3_2)
+DEFIMAGE(tower1_3)
+DEFIMAGE(tower2_3)
+DEFIMAGE(tower3_3)
+DEFIMAGE(minipause)
 
 void reset_everything(void) {
     level = 0;
