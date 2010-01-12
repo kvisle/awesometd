@@ -20,10 +20,10 @@
 #include <stdio.h>
 #include <SDL.h>
 
-//#include "timers.h"
-//#include "render.h"
-//#include "eventloop.h"
-//#include "sprites.h"
+#include "timers.h"
+#include "render.h"
+#include "eventloop.h"
+#include "sprites.h"
 
 
 int main(int argc, char *argv[]) {
@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
         printf("SDL_Init failed : %s\n", SDL_GetError());
         return 1;
     }
-//    init_video();
-//    init_timers();
-//    event_loop();
+    init_video();
+    init_timers();
+    event_loop();
     return 0;
 }
