@@ -17,29 +17,33 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <stdio.h>
 #include <SDL.h>
 
 #include "eventloop.h"
-#include "video.h"
 
-int main(int argc, char *argv[]) {
-    printf("======================================================\n"
-           " AWESOME TOWER DEFENSE\n"
-           "             by Trygve Vea <trygve.vea@gmail.com>\n"
-           "======================================================\n");
-    if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0 ) {
-        printf("SDL_Init failed : %s\n", SDL_GetError());
-        return 1;
+static char lastkeys[32] = { 0 };
+
+int EventLoop(void) {
+    SDL_Event eventqueue;
+    while(SDL_PollEvent(&eventqueue)) {
+        switch(eventqueue.type) {
+            case SDL_QUIT:
+                return -1;
+            break;
+            case SDL_KEYDOWN:
+				memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
+                lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
+                if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
+                    "iddqd", strlen("iddqd")) == 0)
+                    printf("/*iddqd();*/\n");
+				if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
+                     "idkfa", strlen("idkfa")) == 0)
+                     printf("/*idkfa();*/\n");
+            break;
+            default:
+			break;
+        }
     }
-	if (VideoInit()) return 1;
-	int last_draw = SDL_GetTicks();
-	while ( EventLoop() == 0 )
-	{
-		VideoDraw();
-        int t = (1000/FPS)-(SDL_GetTicks()-last_draw);
-        if ( t > 0 && t < 1000 ) SDL_Delay(t);
-		last_draw = SDL_GetTicks();
-	}
-    return 0;
+	return 0;
 }
+
