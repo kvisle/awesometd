@@ -1,0 +1,17 @@
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+autoscan.log
+config.h
+config.h.in
+config.log
+config.status
+configure
+configure.scan
+depcomp
+install-sh
+missing
+src/.deps/
+src/Makefile.in
+stamp-h1
