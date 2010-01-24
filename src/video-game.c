@@ -17,31 +17,16 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <stdio.h>
-#include <SDL.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
-#include "eventloop.h"
-#include "video.h"
+#include "video-game.h"
 #include "game.h"
 
-int main(int argc, char *argv[]) {
-    printf("======================================================\n"
-           " AWESOME TOWER DEFENSE\n"
-           "             by Trygve Vea <trygve.vea@gmail.com>\n"
-           "======================================================\n");
-    if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0 ) {
-        printf("SDL_Init failed : %s\n", SDL_GetError());
-        return 1;
-    }
-	if (VideoInit()) return 1;
-	int last_draw = SDL_GetTicks();
-	while ( EventLoop() == 0 )
-	{
-		GameStep();
-		VideoDraw();
-        int t = (1000/FPS)-(SDL_GetTicks()-last_draw);
-        if ( t > 0 && t < 1000 ) SDL_Delay(t);
-		last_draw = SDL_GetTicks();
-	}
-    return 0;
+void VideoGameDraw(void)
+{
+
 }

@@ -17,16 +17,21 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 #include <SDL.h>
 
 #include "video.h"
+#include "video-game.h"
 
 SDL_Surface *screen;
 
 int VideoInit(void) {
     screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, 
-							  VIDEOMODE_DEPTH, SDL_OPENGL|SDL_RESIZABLE);
+							  VIDEOMODE_DEPTH, SDL_OPENGL);
 	if (screen == NULL)
 	{
 		printf("Error when initializing video: %s\n", SDL_GetError());
@@ -38,5 +43,6 @@ int VideoInit(void) {
 
 void VideoDraw(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
+	VideoGameDraw();
 	SDL_GL_SwapBuffers();
 }
