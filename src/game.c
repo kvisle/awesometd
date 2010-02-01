@@ -17,16 +17,19 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include "level.h"
 #include "game.h"
 
 static int GameStepN = 0;
 
 void GameNew(void)
 {
+	LevelLoad("original.lvl");
 	GameStepN = 0;
 }
 
 void GameStep(void)
 {
+	if ( GameStepN == 0 ) GameNew();
 	GameStepN++;
 }
