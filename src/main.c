@@ -33,15 +33,15 @@ int main(int argc, char *argv[]) {
         printf("SDL_Init failed : %s\n", SDL_GetError());
         return 1;
     }
-	if (VideoInit()) return 1;
-	int last_draw = SDL_GetTicks();
-	while ( EventLoop() == 0 )
-	{
-		GameStep();
-		VideoDraw();
+    if (VideoInit()) return 1;
+    int last_draw = SDL_GetTicks();
+    while ( EventLoop() == 0 )
+    {
+        GameStep();
+        VideoDraw();
         int t = (1000/FPS)-(SDL_GetTicks()-last_draw);
         if ( t > 0 && t < 1000 ) SDL_Delay(t);
-		last_draw = SDL_GetTicks();
-	}
+        last_draw = SDL_GetTicks();
+    }
     return 0;
 }

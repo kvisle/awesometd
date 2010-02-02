@@ -21,6 +21,7 @@
 
 #include "eventloop.h"
 #include "video.h"
+#include "level.h"
 
 static char lastkeys[32] = { 0 };
 
@@ -31,23 +32,31 @@ int EventLoop(void) {
             case SDL_QUIT:
                 return -1;
             break;
-			case SDL_VIDEORESIZE:
-				VideoSetMode(eventqueue.resize.w,eventqueue.resize.h);
-			break;
+            case SDL_VIDEORESIZE:
+                VideoSetMode(eventqueue.resize.w,eventqueue.resize.h);
+            break;
             case SDL_KEYDOWN:
-				memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
+                memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
                 lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;
                 if (memcmp(lastkeys + sizeof(lastkeys) - strlen("iddqd"),
                     "iddqd", strlen("iddqd")) == 0)
                     printf("/*iddqd();*/\n");
-				if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
+                if (memcmp(lastkeys + sizeof(lastkeys) - strlen("idkfa"),
                      "idkfa", strlen("idkfa")) == 0)
                      printf("/*idkfa();*/\n");
+
+                switch(eventqueue.key.keysym.sym)
+                {
+                    case SDLK_UP: LevelCamera[1]--; break;
+                    case SDLK_DOWN: LevelCamera[1]++; break;
+                    case SDLK_RIGHT: LevelCamera[0]++; break;
+                    case SDLK_LEFT: LevelCamera[0]--; break;
+                }
             break;
             default:
-			break;
+            break;
         }
     }
-	return 0;
+    return 0;
 }
 

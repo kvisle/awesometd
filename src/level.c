@@ -24,61 +24,52 @@
 
 char *MapMalloc(int size)
 {
-	return malloc(size);
+    return malloc(size);
 }
 
 void MapFree(char *ptr)
 {
-	free(ptr);
+    free(ptr);
 }
 
 int LevelLoad(char *filename)
 {
-	int n,i = 0;
-	char *t_map;
-	FILE *f = fopen(filename, "r");
-	if ( fscanf(f,"%dx%d",&Level.w,&Level.h) != 2 ) return -1;
+    int n,i = 0;
+    char *t_map;
+    FILE *f = fopen(filename, "r");
+    if ( fscanf(f,"%dx%d",&Level.w,&Level.h) != 2 ) return -1;
 
-	printf("Brettet er %d x %d stort!\n",Level.w, Level.h);
-	t_map = MapMalloc(Level.w*Level.h);
+    printf("Brettet er %d x %d stort!\n",Level.w, Level.h);
+    t_map = MapMalloc(Level.w*Level.h);
 
-	while ( fscanf(f,"%d",&n) == 1 )
-	{
+    while ( fscanf(f,"%d",&n) == 1 )
+    {
         if ( i % (Level.w * Level.h ) == 0 && i > 0) {
             printf("brettet er for stort\n");
-			MapFree(t_map);
+            MapFree(t_map);
             return -1;
-		}
-		switch(n)
-		{
-			case 0: t_map[i] = 'X'; printf("X"); break;
-			case 1: t_map[i] = '.'; printf("."); break;
-			case 2: t_map[i] = 's'; printf("s"); break;
-			case 3: t_map[i] = 'e'; printf("e"); break;
-		}
-		i++;
-		if ( i % Level.w == 0 ) printf("\n");
-	}
-	if ( i % (Level.w * Level.h) == 0 )
-	{
-		printf("brettet er passe!\n");
-		Level.map = t_map;
-/*		int x,y;
-		for (y=0;y<Level.h;y++)
-		{
-			for (x=0;x<Level.w;x++)
-			{
-				printf("%c",t_map[x+(y*Level.w)]);
-			}
-			printf("\n");
-		}*/
-		return 0;
-	}
-	else
-	{
-		printf("brettet er for lite!\n");
-		MapFree(t_map);
-		return -1;
-	}
-	fclose(f);
+        }
+        switch(n)
+        {
+            case 0: t_map[i] = 'X'; printf("X"); break;
+            case 1: t_map[i] = '.'; printf("."); break;
+            case 2: t_map[i] = 's'; printf("s"); break;
+            case 3: t_map[i] = 'e'; printf("e"); break;
+        }
+        i++;
+        if ( i % Level.w == 0 ) printf("\n");
+    }
+    if ( i % (Level.w * Level.h) == 0 )
+    {
+        printf("brettet er passe!\n");
+        Level.map = t_map;
+        return 0;
+    }
+    else
+    {
+        printf("brettet er for lite!\n");
+        MapFree(t_map);
+        return -1;
+    }
+    fclose(f);
 }

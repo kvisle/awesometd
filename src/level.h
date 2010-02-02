@@ -24,9 +24,11 @@ int LevelLoad(char *filename);
 
 typedef struct level {
     int w, h;
-	char *map;
+    char *map;
 }t_Level;
 
 t_Level Level;
+
+int LevelCamera[2];
 
 #endif /* __LEVEL_H__ */

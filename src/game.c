@@ -24,12 +24,12 @@ static int GameStepN = 0;
 
 void GameNew(void)
 {
-	LevelLoad("original.lvl");
-	GameStepN = 0;
+    LevelLoad("original.lvl");
+    GameStepN = 0;
 }
 
 void GameStep(void)
 {
-	if ( GameStepN == 0 ) GameNew();
-	GameStepN++;
+    if ( GameStepN == 0 ) GameNew();
+    GameStepN++;
 }
