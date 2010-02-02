@@ -26,6 +26,7 @@
 
 #define FPS 60
 
+int VideoSetMode(int w, int h);
 int VideoInit(void);
 void VideoDraw(void);
 

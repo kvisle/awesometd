@@ -20,6 +20,7 @@
 #include <SDL.h>
 
 #include "eventloop.h"
+#include "video.h"
 
 static char lastkeys[32] = { 0 };
 
@@ -30,6 +31,9 @@ int EventLoop(void) {
             case SDL_QUIT:
                 return -1;
             break;
+			case SDL_VIDEORESIZE:
+				VideoSetMode(eventqueue.resize.w,eventqueue.resize.h);
+			break;
             case SDL_KEYDOWN:
 				memmove(lastkeys, lastkeys + 1, sizeof(lastkeys) - 1);
                 lastkeys[sizeof(lastkeys) - 1] = eventqueue.key.keysym.sym;

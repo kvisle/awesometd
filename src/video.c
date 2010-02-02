@@ -29,23 +29,28 @@
 
 SDL_Surface *screen;
 
-int VideoInit(void) {
-    screen = SDL_SetVideoMode(VIDEOMODE_WIDTH, VIDEOMODE_HEIGHT, 
-							  VIDEOMODE_DEPTH, SDL_OPENGL);
+int VideoSetMode(int w, int h) {
+    screen = SDL_SetVideoMode(w, h, 
+							  VIDEOMODE_DEPTH, SDL_OPENGL|SDL_RESIZABLE);
 	if (screen == NULL)
 	{
 		printf("Error when initializing video: %s\n", SDL_GetError());
 		return -1;
 	}
     SDL_WM_SetCaption("Awesome Tower Defense 0.4","");
-	glViewport(0,0,VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
+	glViewport(0,0,w,h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(  0.0, VIDEOMODE_WIDTH,
-		    VIDEOMODE_HEIGHT, 0.0,
+	glOrtho(  0.0, w,
+		        h, 0.0,
 			-10.0, 10.0);
 	glMatrixMode(GL_MODELVIEW);
     return 0;
+}
+
+int VideoInit(void)
+{
+	return VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
 }
 
 void VideoDraw(void) {
