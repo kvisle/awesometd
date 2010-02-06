@@ -22,6 +22,9 @@
 
 #include "video.h"
 
+#define CELL_SIZE_W 32
+#define CELL_SIZE_H 32
+
 void VideoGameDraw(void);
 
 #endif /* __VIDEO_GAME_H__ */

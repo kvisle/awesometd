@@ -38,9 +38,9 @@ void VideoGameDrawLevel(void)
     {
         GLfloat vcoords[] = {
              0.0, 0.0,
-            32.0, 0.0,
-            32.0,32.0,
-             0.0,32.0
+            CELL_SIZE_W, 0.0,
+            CELL_SIZE_W,CELL_SIZE_H,
+             0.0,CELL_SIZE_H
         };
         switch(Level.map[i-1])
         {
@@ -52,9 +52,36 @@ void VideoGameDrawLevel(void)
         glVertexPointer(2, GL_FLOAT, 0, vcoords);
         glEnableClientState(GL_VERTEX_ARRAY);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        glTranslatef(32.0f,0.0f,0.0f);
+        glTranslatef(CELL_SIZE_W,0.0f,0.0f);
         if ( i % Level.w == 0 && i > 0 ) 
-            glTranslatef(-32.0f*Level.w,32.0f,0.0f);
+            glTranslatef(-CELL_SIZE_W*Level.w,CELL_SIZE_H,0.0f);
+    }
+    glPopMatrix();
+}
+
+void VideoGameDrawCursor(void)
+{
+    int mx,my;
+    SDL_GetMouseState(&mx,&my);
+    glPushMatrix();
+    if ( mx-LevelCamera[0] >= 0 &&
+         my-LevelCamera[1] >= 0 &&
+         mx-LevelCamera[0] < CELL_SIZE_W*Level.w &&
+         my-LevelCamera[1] < CELL_SIZE_H*Level.h )
+    {
+        glTranslatef(LevelCamera[0]+(((mx-LevelCamera[0])/CELL_SIZE_W)*CELL_SIZE_W),
+                     LevelCamera[1]+(((my-LevelCamera[1])/CELL_SIZE_H)*CELL_SIZE_H),
+                     0.0);
+        GLfloat vcoords[] = {
+             0.0, 0.0,
+            CELL_SIZE_W, 0.0,
+            CELL_SIZE_W,CELL_SIZE_H,
+             0.0,CELL_SIZE_H
+        };
+        glColor4d(1.0f,1.0f,1.0f,0.5f);
+        glVertexPointer(2, GL_FLOAT, 0, vcoords);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
     glPopMatrix();
 }
@@ -62,4 +89,5 @@ void VideoGameDrawLevel(void)
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
+    VideoGameDrawCursor();
 }

@@ -45,6 +45,8 @@ int VideoSetMode(int w, int h) {
                 h, 0.0,
             -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     return 0;
 }
 
