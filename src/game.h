@@ -22,4 +22,17 @@
 
 void GameStep(void);
 
+typedef struct enemy {
+    int x,y;
+    int cur_hp, max_hp;
+    int speed;
+    int direction;
+    int progress;
+    struct enemy *next;
+}Enemy;
+
+typedef struct {
+    Enemy *EnemyList;
+}Gamedata;
+
 #endif /* __GAME_H__ */
