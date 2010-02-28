@@ -73,15 +73,47 @@ void EnemyFreeDead(void)
     }
 }
 
+void EnemyFreeAll(void)
+{
+    Enemy *e = gamedata.EnemyList;
+    while ( e != NULL )
+    {
+        e->cur_hp = 0;
+        e = e->next;
+    }
+    EnemyFreeDead();
+}
+
+void EnemyMove(void)
+{
+    Enemy *e = gamedata.EnemyList;
+    while ( e != NULL )
+    {
+        switch(Level.pf)
+        {
+            case PF_BOUNCE:
+//                printf("bounce!\n");
+                break;
+            case PF_LEE:
+                printf("lee\n");
+                break;
+        }
+        e = e->next;
+    }
+}
+
 void GameNew(void)
 {
+    // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     GameStepN = 0;
     memset(&gamedata, '\0', sizeof(Gamedata));
+    EnemyAdd(1);
 }
 
 void GameStep(void)
 {
     if ( GameStepN == 0 ) GameNew();
     GameStepN++;
+    EnemyMove();
 }

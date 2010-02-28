@@ -36,8 +36,16 @@ int LevelLoad(char *filename)
 {
     int n,i = 0;
     char *t_map;
+    enum Level_Pathfinding pf;
+
+    EnemyFreeAll();
+
     FILE *f = fopen(filename, "r");
-    if ( fscanf(f,"%dx%d",&Level.w,&Level.h) != 2 ) return -1;
+    if ( fscanf(f,"%dx%d",&Level.w,&Level.h) != 2 ) 
+    {
+        fclose(f);
+        return -1;
+    }
 
     printf("Brettet er %d x %d stort!\n",Level.w, Level.h);
     t_map = MapMalloc(Level.w*Level.h);
@@ -47,6 +55,7 @@ int LevelLoad(char *filename)
         if ( i % (Level.w * Level.h ) == 0 && i > 0) {
             printf("brettet er for stort\n");
             MapFree(t_map);
+            fclose(f);
             return -1;
         }
         switch(n)
@@ -59,17 +68,51 @@ int LevelLoad(char *filename)
         i++;
         if ( i % Level.w == 0 ) printf("\n");
     }
+    if ( fscanf(f,"pf %d\n",&n) == 1 )
+    {
+        switch(n)
+        {
+            case 0: pf = PF_BOUNCE; break;
+            case 1: pf = PF_LEE;    break;
+        }
+        printf("matched!\n");
+    }
+    else
+    {
+        // Falling back to PF_LEE as default pathfinding.
+        pf = PF_LEE;
+        printf("no match!\n");
+    }
+
+    int hp,speed;
+    while ( fscanf(f,"defe hp=%d speed=%d\n", &hp, &speed) == 2)
+    {
+        printf("Defined enemy:\n");
+        printf("\thp\t: %d\n",hp);
+        printf("\tspeed\t: %d\n",speed);
+        printf("\n");
+    }
+    int st;
+    while ( fscanf(f,"e id=%d st=%d\n", &n, &st) == 2 )
+    {
+        printf("Added enemy:\n");
+        printf("\tid\t: %d\n",n);
+        printf("\tst\t: %d\n",st);
+        printf("\n");
+    }
     if ( i % (Level.w * Level.h) == 0 )
     {
         printf("brettet er passe!\n");
         Level.map = t_map;
+        Level.pf = pf;
+        fclose(f);
         return 0;
     }
     else
     {
         printf("brettet er for lite!\n");
         MapFree(t_map);
+        fclose(f);
         return -1;
     }
-    fclose(f);
 }

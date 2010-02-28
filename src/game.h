@@ -28,11 +28,14 @@ typedef struct enemy {
     int speed;
     int direction;
     int progress;
+    int spawn_in;
     struct enemy *next;
 }Enemy;
 
 typedef struct {
     Enemy *EnemyList;
 }Gamedata;
+
+void EnemyFreeAll(void);
 
 #endif /* __GAME_H__ */

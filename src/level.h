@@ -22,9 +22,15 @@
 
 int LevelLoad(char *filename);
 
+enum Level_Pathfinding {
+    PF_BOUNCE,
+    PF_LEE
+};
+
 typedef struct level {
     int w, h;
     char *map;
+    enum Level_Pathfinding pf;
 }t_Level;
 
 t_Level Level;
