@@ -20,86 +20,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
 
 #include "level.h"
 #include "game.h"
 
 static int GameStepN = 0;
-static Gamedata gamedata;
+
+//static GSList *Gamedata.EnemyList;
 
 void EnemyAdd(int hp)
 {
-    Enemy *e;
-    if ( gamedata.EnemyList == 0 )
-    {
-        gamedata.EnemyList = malloc(sizeof(Enemy));
-        e = gamedata.EnemyList;
-        e->next = NULL;
-    }
-    else
-    {
-        int i = 0;
-        e = gamedata.EnemyList;
-        while ( e->next != NULL )
-        {
-            i++;
-            e = e->next;
-        }
-        e->next = malloc(sizeof(Enemy));
-        e->next->next = NULL;
-        e = e->next;
-    }
+    Enemy *e = malloc(sizeof(Enemy));
     e->cur_hp = hp;
+    Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
+}
+
+void EnemyFreeIfDead(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+    if ( e->cur_hp <= 0 ) {
+        Gamedata.EnemyList = g_slist_remove(Gamedata.EnemyList,e);
+        free(e);
+    }
 }
 
 void EnemyFreeDead(void)
 {
-    Enemy *e = gamedata.EnemyList;
-    Enemy *last = NULL;
-    Enemy *next;
-    while ( e != NULL )
-    {
-        next = e->next;
-        if ( e->cur_hp <= 0 )
-        {
-            if ( last == NULL ) gamedata.EnemyList = next;
-            else last->next = next;
-            free(e);
-        }
-        else {
-            last = e;
-        }
-        e = next;
-    }
+    g_slist_foreach(Gamedata.EnemyList,EnemyFreeIfDead,NULL);
+}
+
+void EnemyFree(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+    Gamedata.EnemyList = g_slist_remove(Gamedata.EnemyList,e);
+    free(e);
 }
 
 void EnemyFreeAll(void)
 {
-    Enemy *e = gamedata.EnemyList;
-    while ( e != NULL )
-    {
-        e->cur_hp = 0;
-        e = e->next;
-    }
-    EnemyFreeDead();
+    g_slist_foreach(Gamedata.EnemyList,EnemyFree,NULL);
 }
 
-void EnemyMove(void)
+void EnemyLoseHP(gpointer data, gpointer user_data)
 {
-    Enemy *e = gamedata.EnemyList;
-    while ( e != NULL )
-    {
-        switch(Level.pf)
-        {
-            case PF_BOUNCE:
-//                printf("bounce!\n");
-                break;
-            case PF_LEE:
-                printf("lee\n");
-                break;
-        }
-        e = e->next;
-    }
+    Enemy *e = (Enemy*) data;
+    // eh wat?
+}
+
+void EnemyMove(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+    printf("enemyhp: %d\n",e->cur_hp);
+}
+
+void EnemyPrint(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+    printf("The enemy has %d in hp!\n",e->cur_hp);
 }
 
 void GameNew(void)
@@ -107,13 +85,16 @@ void GameNew(void)
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     GameStepN = 0;
-    memset(&gamedata, '\0', sizeof(Gamedata));
     EnemyAdd(1);
+    EnemyAdd(42);
+    EnemyAdd(52);
+    g_slist_foreach(Gamedata.EnemyList,EnemyPrint,NULL);
 }
 
 void GameStep(void)
 {
     if ( GameStepN == 0 ) GameNew();
     GameStepN++;
-    EnemyMove();
+    g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
+    EnemyFreeDead();
 }

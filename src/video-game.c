@@ -86,8 +86,14 @@ void VideoGameDrawCursor(void)
     glPopMatrix();
 }
 
+void VideoGameDrawEnemy(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
+    g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
     VideoGameDrawCursor();
 }

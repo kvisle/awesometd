@@ -20,6 +20,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include <glib.h>
+
 void GameStep(void);
 
 typedef struct enemy {
@@ -29,13 +31,14 @@ typedef struct enemy {
     int direction;
     int progress;
     int spawn_in;
-    struct enemy *next;
 }Enemy;
 
-typedef struct {
-    Enemy *EnemyList;
-}Gamedata;
+struct gamedata{
+    GSList *EnemyList;
+};
 
 void EnemyFreeAll(void);
+
+struct gamedata Gamedata;
 
 #endif /* __GAME_H__ */

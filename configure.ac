@@ -15,6 +15,7 @@ AC_PROG_CC
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lGL':
 PKG_CHECK_MODULES([SDL],[sdl])
+PKG_CHECK_MODULES([GLIB],[glib-2.0])
 AC_CHECK_LIB([GL], [main])
 # FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [main])
