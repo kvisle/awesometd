@@ -72,6 +72,12 @@ void EnemyMove(gpointer data, gpointer user_data)
 //    printf("enemyhp: %d\n",e->cur_hp);
 }
 
+void EnemySpawn(void)
+{
+    printf("WAVE!\n");
+    return;
+}
+
 void EnemyPrint(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
@@ -106,6 +112,18 @@ void WavePrint(gpointer data, gpointer user_data)
     printf("Wave starts in %d ticks.\n",w->start);
 }
 
+void WaveMove(gpointer data, gpointer user_data)
+{
+    Wave *w = (Wave*)data;
+    if ( w->start == 0 && w->blowup > 10 ) return;
+    if ( w->start > 0 ) w->start--;
+    else {
+        w->blowup++;
+        return;
+    }
+    if ( w->start == 0 ) EnemySpawn();
+}
+
 void GameNew(void)
 {
     Gamedata.EnemyTemplates = g_hash_table_new(g_direct_hash,g_int_equal);
@@ -125,5 +143,6 @@ void GameStep(void)
     if ( Gamedata.GameStepN == 0 ) GameNew();
     Gamedata.GameStepN++;
     g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
+    g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
     EnemyFreeDead();
 }

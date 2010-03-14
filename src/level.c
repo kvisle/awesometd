@@ -115,11 +115,14 @@ int LevelLoad(char *filename)
                 if ( g_pattern_match_simple("start",keys[y]) )
                     w->start = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("intervals",keys[y]) )
-                    w->intervals = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&intervals,&error);
+                    w->intervals = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
+                                                               &intervals,&error);
                 if ( g_pattern_match_simple("types",keys[y]) )
-                    w->types = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&types,&error);
+                    w->types = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
+                                                           &types,&error);
             }
-            printf("Wave starts at tick %d. Got %d intervals and %d types.\n",w->start,intervals,types);
+            printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
+                   w->start,intervals,types);
             WaveAdd(w);
         }
         g_strfreev(keys);
@@ -128,4 +131,6 @@ int LevelLoad(char *filename)
     Level.map = map;
     Level.w = w;
     Level.h = h;
+    LevelCamera[0] = 0;
+    LevelCamera[1] = 64;
 }

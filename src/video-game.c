@@ -91,18 +91,35 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
     Enemy *e = (Enemy*)data;
 }
 
+void VideoGameDrawWaveOSD(void)
+{
+    glPushMatrix();
+    glTranslatef(32.0f,16.0f,0.0f);
+    GLfloat vcoords[] = {
+        0.0f, 0.0f,
+        128.0f, 0.0f,
+        128.0f, 32.0f,
+        0.0f, 32.0f
+    };
+    glColor4d(1.0f,0.0f,0.0f,1.0f);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_LINE_LOOP,0,4);
+    glPopMatrix();
+}
+
 void VideoGameDrawWave(gpointer data, gpointer user_data)
 {
     Wave *w = (Wave*)data;
     glPushMatrix();
-    glTranslatef(w->start-Gamedata.GameStepN,0.0f,0.0f);
+    glTranslatef(w->start+32.0f,16.0f,0.0f);
     GLfloat vcoords[] = {
-        0.0, 0.0,
-        50.0, 0.0,
-        50.0, 20.0,
-        0.0, 20.0
+        1.0-w->blowup, 1.0-w->blowup,
+        127.0+w->blowup, 1.0-w->blowup,
+        127.0+w->blowup, 31.0+w->blowup,
+        1.0-w->blowup, 31.0+w->blowup
     };
-    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    glColor4d(1.0f,1.0f,1.0f,1.0f-(0.1f*w->blowup));
     glVertexPointer(2, GL_FLOAT, 0, vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
@@ -113,6 +130,7 @@ void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
+    VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
     VideoGameDrawCursor();
 }
