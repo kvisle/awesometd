@@ -44,10 +44,10 @@ void VideoGameDrawLevel(void)
         };
         switch(Level.map[i-1])
         {
-            case 'X': glColor4d( 0.0f, 1.0f, 0.0f, 1.0f); break;
-            case '.': glColor4d( 0.5f,0.25f, 0.0f, 1.0f); break;
-            case 's': glColor4d( 1.0f, 0.0f, 0.0f, 1.0f); break;
-            case 'e': glColor4d( 0.0f, 0.0f, 1.0f, 1.0f); break;
+            case 0: glColor4d( 0.0f, 1.0f, 0.0f, 1.0f); break;
+            case 1: glColor4d( 0.5f,0.25f, 0.0f, 1.0f); break;
+            case 2: glColor4d( 1.0f, 0.0f, 0.0f, 1.0f); break;
+            case 3: glColor4d( 0.0f, 0.0f, 1.0f, 1.0f); break;
         }
         glVertexPointer(2, GL_FLOAT, 0, vcoords);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -91,9 +91,28 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
     Enemy *e = (Enemy*)data;
 }
 
+void VideoGameDrawWave(gpointer data, gpointer user_data)
+{
+    Wave *w = (Wave*)data;
+    glPushMatrix();
+    glTranslatef(w->start-Gamedata.GameStepN,0.0f,0.0f);
+    GLfloat vcoords[] = {
+        0.0, 0.0,
+        50.0, 0.0,
+        50.0, 20.0,
+        0.0, 20.0
+    };
+    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
+    g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
     VideoGameDrawCursor();
 }

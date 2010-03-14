@@ -17,10 +17,12 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "level.h"
+#include "game.h"
 
 char *MapMalloc(int size)
 {
@@ -34,85 +36,96 @@ void MapFree(char *ptr)
 
 int LevelLoad(char *filename)
 {
-    int n,i = 0;
-    char *t_map;
-    enum Level_Pathfinding pf;
+    GKeyFile *keyfile;
+    GError *error = NULL;
+    gsize c1, c2;
+    gint i,y;
+    gchar **groups, **keys;
+
+    gint *map,w,h;
+    gchar *mapname;
 
     EnemyFreeAll();
 
-    FILE *f = fopen(filename, "r");
-    if ( fscanf(f,"%dx%d",&Level.w,&Level.h) != 2 ) 
+    keyfile = g_key_file_new();
+
+    if ( !g_key_file_load_from_file(keyfile,filename,G_KEY_FILE_NONE,&error) )
     {
-        fclose(f);
+        printf("Unable to load level because: %s\n", error->message);
         return -1;
     }
+    groups = g_key_file_get_groups(keyfile,&c1);
 
-    printf("Brettet er %d x %d stort!\n",Level.w, Level.h);
-    t_map = MapMalloc(Level.w*Level.h);
-
-    while ( fscanf(f,"%d",&n) == 1 )
+    for (i=0;i<c1;i++)
     {
-        if ( i % (Level.w * Level.h ) == 0 && i > 0) {
-            printf("brettet er for stort\n");
-            MapFree(t_map);
-            fclose(f);
-            return -1;
-        }
-        switch(n)
+//        printf("groupname: %s\n", groups[i]);
+        keys = g_key_file_get_keys(keyfile,groups[i],&c2,&error);
+        if ( g_pattern_match_simple("LevelHeader",groups[i]) )
         {
-            case 0: t_map[i] = 'X'; printf("X"); break;
-            case 1: t_map[i] = '.'; printf("."); break;
-            case 2: t_map[i] = 's'; printf("s"); break;
-            case 3: t_map[i] = 'e'; printf("e"); break;
+            gsize mapsize = 0;
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("width",keys[y]) )
+                    w = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("height",keys[y]) )
+                    h = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("map",keys[y]) )
+                    map = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&mapsize,&error);
+                if ( g_pattern_match_simple("name",keys[y]) )
+                    mapname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+            }
+//            printf("Width: %d, Height: %d\n",w,h);
+//            printf("The map contained %d elements! (%d * %d = %d)\n",(int)mapsize,w,h,w*h);
+//            printf("The map is named '%s'\n",mapname);
+//          TODO: We shouldn't assume that the map is valid.
         }
-        i++;
-        if ( i % Level.w == 0 ) printf("\n");
-    }
-    if ( fscanf(f,"pf %d\n",&n) == 1 )
-    {
-        switch(n)
+        else if ( g_pattern_match_simple("Enemy_*",groups[i]) )
         {
-            case 0: pf = PF_BOUNCE; break;
-            case 1: pf = PF_LEE;    break;
-        }
-        printf("matched!\n");
-    }
-    else
-    {
-        // Falling back to PF_LEE as default pathfinding.
-        pf = PF_LEE;
-        printf("no match!\n");
-    }
+            Enemy e;
+            int id;
+            sscanf(groups[i],"Enemy_%d",&id);
+//            printf("Processing enemy-template (#%d)...\n",id);
 
-    int hp,speed;
-    while ( fscanf(f,"defe hp=%d speed=%d\n", &hp, &speed) == 2)
-    {
-        printf("Defined enemy:\n");
-        printf("\thp\t: %d\n",hp);
-        printf("\tspeed\t: %d\n",speed);
-        printf("\n");
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("name",keys[y]) )
+                    e.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("speed",keys[y]) )
+                    e.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("maxhp",keys[y]) )
+                    e.max_hp = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("gfx",keys[y]) )
+                    printf(""); 
+                    // ^ At this point we will look up in a hashtable of loaded graphics. If we
+                    // have a key corresponding to the name described here, we will use that.
+                    // Otherwise, we will fall back to a default graphic.
+            }
+            EnemyTemplateAdd(id,&e);
+        }
+        else if ( g_pattern_match_simple("Wave_*",groups[i]) )
+        {
+            int id;
+            gsize intervals, types;
+            Wave *w = g_malloc(sizeof(Wave));
+            sscanf(groups[i],"Wave_%d",&id);
+            printf("Processing wave... (#%d)\n",id);
+
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("start",keys[y]) )
+                    w->start = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("intervals",keys[y]) )
+                    w->intervals = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&intervals,&error);
+                if ( g_pattern_match_simple("types",keys[y]) )
+                    w->types = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&types,&error);
+            }
+            printf("Wave starts at tick %d. Got %d intervals and %d types.\n",w->start,intervals,types);
+            WaveAdd(w);
+        }
+        g_strfreev(keys);
     }
-    int st;
-    while ( fscanf(f,"e id=%d st=%d\n", &n, &st) == 2 )
-    {
-        printf("Added enemy:\n");
-        printf("\tid\t: %d\n",n);
-        printf("\tst\t: %d\n",st);
-        printf("\n");
-    }
-    if ( i % (Level.w * Level.h) == 0 )
-    {
-        printf("brettet er passe!\n");
-        Level.map = t_map;
-        Level.pf = pf;
-        fclose(f);
-        return 0;
-    }
-    else
-    {
-        printf("brettet er for lite!\n");
-        MapFree(t_map);
-        fclose(f);
-        return -1;
-    }
+    g_strfreev(groups);
+    Level.map = map;
+    Level.w = w;
+    Level.h = h;
 }

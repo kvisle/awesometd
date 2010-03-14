@@ -25,8 +25,6 @@
 #include "level.h"
 #include "game.h"
 
-static int GameStepN = 0;
-
 //static GSList *Gamedata.EnemyList;
 
 void EnemyAdd(int hp)
@@ -71,7 +69,7 @@ void EnemyLoseHP(gpointer data, gpointer user_data)
 void EnemyMove(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
-    printf("enemyhp: %d\n",e->cur_hp);
+//    printf("enemyhp: %d\n",e->cur_hp);
 }
 
 void EnemyPrint(gpointer data, gpointer user_data)
@@ -80,21 +78,52 @@ void EnemyPrint(gpointer data, gpointer user_data)
     printf("The enemy has %d in hp!\n",e->cur_hp);
 }
 
+void EnemyTemplateAdd(int id,Enemy *e)
+{
+    gint *eid = g_malloc(sizeof(gint));
+    Enemy *et = g_malloc(sizeof(Enemy));
+    memcpy(et,e,sizeof(Enemy));
+    *eid = id;
+    g_hash_table_insert(Gamedata.EnemyTemplates,eid,et);
+}
+
+void EnemyTemplatePrint(gpointer key, gpointer value, gpointer user_data)
+{
+    gint *id = (gint*)key;
+    Enemy *e = (Enemy*)value;
+    printf("Template ID#%d\n",*id);
+    printf("\tMax HP: %d\n\tSpeed: %d\n\tName: %s\n",e->max_hp,e->speed,e->name);
+}
+
+void WaveAdd(Wave *w)
+{
+    Gamedata.WaveList = g_slist_insert(Gamedata.WaveList,w,-1);
+}
+
+void WavePrint(gpointer data, gpointer user_data)
+{
+    Wave *w = (Wave*)data;
+    printf("Wave starts in %d ticks.\n",w->start);
+}
+
 void GameNew(void)
 {
+    Gamedata.EnemyTemplates = g_hash_table_new(g_direct_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
-    GameStepN = 0;
-    EnemyAdd(1);
-    EnemyAdd(42);
-    EnemyAdd(52);
-    g_slist_foreach(Gamedata.EnemyList,EnemyPrint,NULL);
+    Gamedata.GameStepN = 0;
+//    EnemyAdd(1);
+//    EnemyAdd(42);
+//    EnemyAdd(52);
+//    g_slist_foreach(Gamedata.EnemyList,EnemyPrint,NULL);
+    g_hash_table_foreach(Gamedata.EnemyTemplates,EnemyTemplatePrint,NULL);
+    g_slist_foreach(Gamedata.WaveList,WavePrint,NULL);
 }
 
 void GameStep(void)
 {
-    if ( GameStepN == 0 ) GameNew();
-    GameStepN++;
+    if ( Gamedata.GameStepN == 0 ) GameNew();
+    Gamedata.GameStepN++;
     g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
     EnemyFreeDead();
 }

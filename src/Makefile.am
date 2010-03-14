@@ -4,4 +4,4 @@ awesometd_SOURCES = main.c eventloop.c video.c video-game.c game.c level.c
 awesometd_LDADD = -lGL -lGLU $(SDL_LIBS) $(GLIB_LIBS)
 
 awesometd_LDADD += -L/Developer/SDKs/MacOSX10.4u.sdk/usr/X11R6/lib/
-awesometd_CFLAGS = $(SDL_CFLAGS) $(GLIB_CFLAGS)
+awesometd_CFLAGS = -g $(SDL_CFLAGS) $(GLIB_CFLAGS)

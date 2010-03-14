@@ -20,6 +20,8 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
+#include <glib.h>
+
 int LevelLoad(char *filename);
 
 enum Level_Pathfinding {
@@ -29,7 +31,7 @@ enum Level_Pathfinding {
 
 typedef struct level {
     int w, h;
-    char *map;
+    gint *map;
     enum Level_Pathfinding pf;
 }t_Level;
 

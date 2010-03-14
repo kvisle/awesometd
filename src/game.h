@@ -31,13 +31,25 @@ typedef struct enemy {
     int direction;
     int progress;
     int spawn_in;
+    gchar *name;
 }Enemy;
+
+typedef struct wave {
+    gint start;
+    gint *intervals;
+    gint *types;
+}Wave;
 
 struct gamedata{
     GSList *EnemyList;
+    GHashTable *EnemyTemplates;
+    GSList *WaveList;
+    int GameStepN;
 };
 
 void EnemyFreeAll(void);
+void EnemyTemplateAdd(int id,Enemy *e);
+void WaveAdd(Wave *w);
 
 struct gamedata Gamedata;
 
