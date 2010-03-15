@@ -40,6 +40,7 @@ typedef struct wave {
     gint *types;
     gint enemies;
     gint blowup;
+    gint texid;
 }Wave;
 
 struct gamedata{

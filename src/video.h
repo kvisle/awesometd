@@ -20,6 +20,11 @@
 #ifndef __VIDEO_H__
 #define __VIDEO_H__
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 #include <SDL.h>
 
 #include "settings.h"
@@ -29,5 +34,6 @@
 int VideoSetMode(int w, int h);
 int VideoInit(void);
 void VideoDraw(void);
+GLuint VideoLoadTexture(char *filename);
 
 #endif /* __VIDEO_H__ */

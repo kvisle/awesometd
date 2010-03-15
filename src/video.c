@@ -23,6 +23,7 @@
 #include <GL/gl.h>
 #endif
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include "video.h"
 #include "video-game.h"
@@ -48,6 +49,28 @@ int VideoSetMode(int w, int h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     return 0;
+}
+
+GLuint VideoLoadTexture(char *filename)
+{
+    GLuint tex;
+    SDL_Surface *i = IMG_Load(filename);
+    if ( i )
+    {
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
+        SDL_FreeSurface(i);
+        return tex;
+    }
+    else
+    {
+        printf("IMG_Load: %s\n",IMG_GetError());
+        return NULL;
+    }
 }
 
 int VideoInit(void)

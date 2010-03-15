@@ -119,10 +119,22 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
         127.0+w->blowup, 32.0+w->blowup,
         1.0-w->blowup, 32.0+w->blowup
     };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    };
     glColor4d(1.0f,1.0f,1.0f,1.0f-(0.05f*w->blowup));
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, w->texid);
     glVertexPointer(2, GL_FLOAT, 0, vcoords);
+    glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 

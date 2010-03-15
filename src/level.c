@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "video.h"
 #include "level.h"
 #include "game.h"
 
@@ -124,6 +125,7 @@ int LevelLoad(char *filename)
             w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
                    w->start,intervals,types);
+            w->texid = VideoLoadTexture("../share/gfx/wave.png");
             WaveAdd(w);
         }
         g_strfreev(keys);
