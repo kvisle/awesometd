@@ -27,11 +27,25 @@
 
 //static GSList *Gamedata.EnemyList;
 
-void EnemyAdd(int hp)
+void EnemyPrint(gpointer data, gpointer user_data);
+void EnemyTemplatePrint(gpointer key, gpointer value, gpointer user_data);
+
+void EnemyAdd(gint id,gint delay)
 {
-    Enemy *e = malloc(sizeof(Enemy));
-    e->cur_hp = hp;
-    Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
+    Enemy *e;
+    Enemy *t = g_hash_table_lookup(Gamedata.EnemyTemplates,&id);
+    if ( t )
+    {
+        e = g_malloc(sizeof(Enemy));
+        memcpy(e,t,sizeof(Enemy));
+        Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
+        e->cur_hp = e->max_hp;
+        e->spawn_in = delay;
+    }
+    else
+    {
+        printf("Could not spawn undefined enemy.\n");
+    }
 }
 
 void EnemyFreeIfDead(gpointer data, gpointer user_data)
@@ -69,19 +83,35 @@ void EnemyLoseHP(gpointer data, gpointer user_data)
 void EnemyMove(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
+    if ( e->spawn_in > 0 )
+    {
+        e->spawn_in--;
+    }
+    else
+    {
+        return;
+    }
+    if ( e->spawn_in == 0 )
+    printf("Spawning enemy !\n");
+    
 //    printf("enemyhp: %d\n",e->cur_hp);
 }
 
-void EnemySpawn(void)
+void EnemySpawn(Wave *w)
 {
-    printf("WAVE!\n");
+    int i,interval = 0;
+    for (i=0;i<w->enemies;i++)
+    {
+        interval += w->intervals[i];
+        EnemyAdd(w->types[i],interval); 
+    }
     return;
 }
 
 void EnemyPrint(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
-    printf("The enemy has %d in hp!\n",e->cur_hp);
+    printf("The enemy has %d in hp - spawning in %d!\n",e->cur_hp, e->spawn_in);
 }
 
 void EnemyTemplateAdd(int id,Enemy *e)
@@ -115,18 +145,18 @@ void WavePrint(gpointer data, gpointer user_data)
 void WaveMove(gpointer data, gpointer user_data)
 {
     Wave *w = (Wave*)data;
-    if ( w->start == 0 && w->blowup > 10 ) return;
+    if ( w->start == 0 && w->blowup > 20 ) return;
     if ( w->start > 0 ) w->start--;
     else {
         w->blowup++;
         return;
     }
-    if ( w->start == 0 ) EnemySpawn();
+    if ( w->start == 0 ) EnemySpawn(w);
 }
 
 void GameNew(void)
 {
-    Gamedata.EnemyTemplates = g_hash_table_new(g_direct_hash,g_int_equal);
+    Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     Gamedata.GameStepN = 0;

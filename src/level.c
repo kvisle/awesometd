@@ -109,7 +109,7 @@ int LevelLoad(char *filename)
             Wave *w = g_malloc(sizeof(Wave));
             sscanf(groups[i],"Wave_%d",&id);
             printf("Processing wave... (#%d)\n",id);
-
+            w->blowup = 0;
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("start",keys[y]) )
@@ -121,6 +121,7 @@ int LevelLoad(char *filename)
                     w->types = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
                                                            &types,&error);
             }
+            w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
                    w->start,intervals,types);
             WaveAdd(w);

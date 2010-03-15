@@ -38,6 +38,7 @@ typedef struct wave {
     gint start;
     gint *intervals;
     gint *types;
+    gint enemies;
     gint blowup;
 }Wave;
 

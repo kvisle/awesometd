@@ -19,10 +19,10 @@ gfx=spr2
 
 [Wave_1]
 start=500
-intervals=5;5;5;5;5
+intervals=55;55;55;55;55
 types=1;1;1;1;1
 
 [Wave_2]
-start=629
-intervals=4;4;4;4;4
-types=2;2;2;2;2
+start=2000
+intervals=45;45;45;45;45;60
+types=2;2;2;2;2;4

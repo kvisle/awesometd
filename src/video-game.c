@@ -112,14 +112,14 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
 {
     Wave *w = (Wave*)data;
     glPushMatrix();
-    glTranslatef(w->start+32.0f,16.0f,0.0f);
+    glTranslatef((0.1*w->start)+32.0f,16.0f,0.0f);
     GLfloat vcoords[] = {
         1.0-w->blowup, 1.0-w->blowup,
         127.0+w->blowup, 1.0-w->blowup,
-        127.0+w->blowup, 31.0+w->blowup,
-        1.0-w->blowup, 31.0+w->blowup
+        127.0+w->blowup, 32.0+w->blowup,
+        1.0-w->blowup, 32.0+w->blowup
     };
-    glColor4d(1.0f,1.0f,1.0f,1.0f-(0.1f*w->blowup));
+    glColor4d(1.0f,1.0f,1.0f,1.0f-(0.05f*w->blowup));
     glVertexPointer(2, GL_FLOAT, 0, vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
