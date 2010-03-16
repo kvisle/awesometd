@@ -95,19 +95,53 @@ void EnemyMove(gpointer data, gpointer user_data)
         e->progress += e->speed;
         if ( e->progress > 100 )
         {
+            int x = e->x / 32 - 1;
+            int y = e->y / 32 - 1;
             switch(e->direction)
             {
                 case DIR_N:
                     e->y--;
+                    y = e->y / 32 - 1;
+                    if ( e->y % 32 == 0 && Level.map[(y-1)*Level.w+x] == 0 )
+                    {
+                        if ( Level.map[y*Level.w+(x-1)] == 1 )
+                            e->direction = DIR_W;
+                        else
+                            e->direction = DIR_E;
+                    }
                     break;
                 case DIR_E:
                     e->x++;
+                    x = e->x / 32 - 1;
+                    if ( e->x % 32 == 0 && Level.map[y*Level.w+(x+1)] == 0 )
+                    {
+                        if ( Level.map[(y-1)*Level.w+x] == 1 )
+                            e->direction = DIR_N;
+                        else
+                            e->direction = DIR_S;
+                    }
                     break;
                 case DIR_S:
                     e->y++;
+                    y = e->y / 32 - 1;
+                    if ( e->y % 32 && Level.map[(y+1)*Level.w+x] == 0 )
+                    {
+                        if ( Level.map[y*Level.w+(x+1)] == 1 )
+                            e->direction = DIR_E;
+                        else
+                            e->direction = DIR_W;
+                    }
                     break;
                 case DIR_W:
                     e->x--;
+                    x = e->x / 32 - 1;
+                    if ( e->x % 32 == 0 && Level.map[y*Level.w+(x-1)] == 0 )
+                    {
+                        if ( Level.map[(y+1)*Level.w+x] == 1 )
+                            e->direction = DIR_S;
+                        else
+                            e->direction = DIR_N;
+                    }
                     break;
             }
             e->progress -= 100;
