@@ -121,12 +121,32 @@ int LevelLoad(char *filename)
                 if ( g_pattern_match_simple("types",keys[y]) )
                     w->types = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
                                                            &types,&error);
+                if ( g_pattern_match_simple("sp",keys[y]) )
+                    w->sp = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
+                                                        &types,&error);
             }
             w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
                    w->start,intervals,types);
             w->texid = VideoLoadTexture("../share/gfx/wave.png");
             WaveAdd(w);
+        }
+        else if ( g_pattern_match_simple("Start_*",groups[i]) )
+        {
+            gint *id = g_malloc(sizeof(gint));
+            StartPosition *sp = g_malloc(sizeof(StartPosition));
+            sscanf(groups[i],"Start_%d",id);
+            printf("Processing start position... (#%d)\n",*id);
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("x",keys[y]) )
+                    sp->x = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("y",keys[y]) )
+                    sp->y = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("dir",keys[y]) )
+                    sp->dir = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+            }
+            g_hash_table_insert(Level.st,id,sp);
         }
         g_strfreev(keys);
     }

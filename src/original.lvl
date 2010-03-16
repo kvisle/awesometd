@@ -1,28 +1,49 @@
+# This is an example level.
+
+
+# All levels have a LevelHeader-group. This defines the following attributes:
+#
+# * width  (mandatory): Defines the width of the level.
+# * height (mandatory): Defines the height of the level.
+# * name              : Defines the name of the level.
+# * map    (mandatory): A list of semicolon separated integers, which outlines
+#                       the game map.
+# * pathfinding       : The pathfinding algorithm the level will use. Defaults
+#                       to 'bounce'.
+#
 [LevelHeader]
 width=18
 height=12
 name=Original Awesome Tower Defense
-map=0;0;2;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;1;1;3;0;0;1;0;0;0;1;1;1;1;1;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+map=0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;1;1;1;0;0;1;0;0;0;1;1;1;1;1;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
 pathfinding=bounce
+
+# Defines where the enemies will spawn.
+[Start_1]
+x=3
+y=0
+dir=1
 
 [Enemy_1]
 name=Brute
-speed=10
+speed=50
 maxhp=100
 gfx=spr1
 
 [Enemy_2]
 name=Bleh
-speed=12
+speed=40
 maxhp=80
 gfx=spr2
 
 [Wave_1]
 start=500
-intervals=55;55;55;55;55
+intervals=100;100;100;100;100
 types=1;1;1;1;1
+sp=1;1;1;1;1
 
 [Wave_2]
 start=2000
 intervals=45;45;45;45;45;60
 types=2;2;2;2;2;4
+sp=1;1;1;1;1;1

@@ -89,6 +89,20 @@ void VideoGameDrawCursor(void)
 void VideoGameDrawEnemy(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
+    glPushMatrix();
+    glTranslatef(LevelCamera[0]-32,LevelCamera[1]-32,0.0);
+    glTranslatef(e->x,e->y,0.0);
+    GLfloat vcoords[] = {
+        0.0f, 0.0f,
+        32.0f, 0.0f,
+        32.0f, 32.0f,
+        0.0f, 32.0f
+    };
+    glColor4d(1.0f,1.0f,0.0f,1.0f);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
 }
 
 void VideoGameDrawWaveOSD(void)
@@ -114,10 +128,10 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
     glPushMatrix();
     glTranslatef((0.1*w->start)+32.0f,16.0f,0.0f);
     GLfloat vcoords[] = {
-        1.0-w->blowup, 1.0-w->blowup,
-        127.0+w->blowup, 1.0-w->blowup,
-        127.0+w->blowup, 32.0+w->blowup,
-        1.0-w->blowup, 32.0+w->blowup
+        1.0-w->blowup, 1.0-(w->blowup*0.25),
+        127.0+w->blowup, 1.0-(w->blowup*0.25),
+        127.0+w->blowup, 32.0+(w->blowup*0.25),
+        1.0-w->blowup, 32.0+(w->blowup*0.25)
     };
     GLfloat tcoords[] = {
         0.0, 0.0,

@@ -30,7 +30,7 @@
 void EnemyPrint(gpointer data, gpointer user_data);
 void EnemyTemplatePrint(gpointer key, gpointer value, gpointer user_data);
 
-void EnemyAdd(gint id,gint delay)
+void EnemyAdd(gint id,gint delay,StartPosition *sp)
 {
     Enemy *e;
     Enemy *t = g_hash_table_lookup(Gamedata.EnemyTemplates,&id);
@@ -38,9 +38,12 @@ void EnemyAdd(gint id,gint delay)
     {
         e = g_malloc(sizeof(Enemy));
         memcpy(e,t,sizeof(Enemy));
-        Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
         e->cur_hp = e->max_hp;
         e->spawn_in = delay;
+        e->x = sp->x*32;
+        e->y = sp->y*32;
+        e->direction = sp->dir;
+        Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
     }
     else
     {
@@ -89,6 +92,26 @@ void EnemyMove(gpointer data, gpointer user_data)
     }
     else
     {
+        e->progress += e->speed;
+        if ( e->progress > 100 )
+        {
+            switch(e->direction)
+            {
+                case DIR_N:
+                    e->y--;
+                    break;
+                case DIR_E:
+                    e->x++;
+                    break;
+                case DIR_S:
+                    e->y++;
+                    break;
+                case DIR_W:
+                    e->x--;
+                    break;
+            }
+            e->progress -= 100;
+        }
         return;
     }
     if ( e->spawn_in == 0 )
@@ -100,10 +123,13 @@ void EnemyMove(gpointer data, gpointer user_data)
 void EnemySpawn(Wave *w)
 {
     int i,interval = 0;
+    StartPosition *sp;
     for (i=0;i<w->enemies;i++)
     {
+        if ( w->sp[i] > 0 )
+            sp = g_hash_table_lookup(Level.st,&(w->sp[i]));
         interval += w->intervals[i];
-        EnemyAdd(w->types[i],interval); 
+        EnemyAdd(w->types[i],interval,sp);
     }
     return;
 }
@@ -154,9 +180,17 @@ void WaveMove(gpointer data, gpointer user_data)
     if ( w->start == 0 ) EnemySpawn(w);
 }
 
+void StartPositionPrint(gpointer key, gpointer value, gpointer user_data)
+{
+    StartPosition *sp = (StartPosition*)value;
+    gint *k = (gint*)key;
+    printf("Key: %d, x:%d y:%d dir:%d\n",*k,sp->x,sp->y,sp->dir);
+}
+
 void GameNew(void)
 {
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
+    Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     Gamedata.GameStepN = 0;
@@ -166,6 +200,7 @@ void GameNew(void)
 //    g_slist_foreach(Gamedata.EnemyList,EnemyPrint,NULL);
     g_hash_table_foreach(Gamedata.EnemyTemplates,EnemyTemplatePrint,NULL);
     g_slist_foreach(Gamedata.WaveList,WavePrint,NULL);
+    g_hash_table_foreach(Level.st,StartPositionPrint,NULL);
 }
 
 void GameStep(void)

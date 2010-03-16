@@ -22,6 +22,11 @@
 
 #include <glib.h>
 
+#define DIR_E 0
+#define DIR_S 1
+#define DIR_W 2
+#define DIR_N 3
+
 void GameStep(void);
 
 typedef struct enemy {
@@ -31,6 +36,7 @@ typedef struct enemy {
     int direction;
     int progress;
     int spawn_in;
+    gint sp;
     gchar *name;
 }Enemy;
 
@@ -38,6 +44,7 @@ typedef struct wave {
     gint start;
     gint *intervals;
     gint *types;
+    gint *sp;
     gint enemies;
     gint blowup;
     gint texid;
