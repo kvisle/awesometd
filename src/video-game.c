@@ -25,6 +25,9 @@
 #include <GL/glu.h>
 #endif
 
+#include <glib.h>
+
+#include "video.h"
 #include "video-game.h"
 #include "game.h"
 #include "level.h"
@@ -152,11 +155,46 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
     glPopMatrix();
 }
 
+int VideoGameTextId;
+
+void VideoGameDrawText(gpointer data, gpointer user_data)
+{
+    VideoGameTextId++;
+    String *s = (String*)data;
+    glPushMatrix();
+    glTranslatef(100.0,400.0-(VideoGameTextId*20),0.0);
+    GLfloat vcoords[] = {
+        0.0, 0.0,
+        s->w, 0.0,
+        s->w, s->h,
+        0.0, s->h
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    };
+    glColor4d(1.0,1.0,1.0,(double)s->alpha/100);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,s->texid);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
+    VideoGameTextId = 0;
+    g_slist_foreach(Gamedata.TextList,VideoGameDrawText,NULL);
     VideoGameDrawCursor();
 }

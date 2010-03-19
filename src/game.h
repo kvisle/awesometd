@@ -20,6 +20,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "video.h"
 #include <glib.h>
 
 #define DIR_E 0
@@ -54,6 +55,7 @@ struct gamedata{
     GSList *EnemyList;
     GHashTable *EnemyTemplates;
     GSList *WaveList;
+    GSList *TextList;
     int GameStepN;
 };
 

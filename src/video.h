@@ -26,6 +26,9 @@
 #include <GL/gl.h>
 #endif
 #include <SDL.h>
+#include <SDL_ttf.h>
+
+#include <glib.h>
 
 #include "settings.h"
 
@@ -35,5 +38,16 @@ int VideoSetMode(int w, int h);
 int VideoInit(void);
 void VideoDraw(void);
 GLuint VideoLoadTexture(char *filename);
+
+typedef struct string {
+    GLuint texid;
+    int w,h;
+    int timeleft;
+    int alpha;
+}String;
+
+String * VideoLoadText(char *string, SDL_Color fg);
+
+TTF_Font *font;
 
 #endif /* __VIDEO_H__ */

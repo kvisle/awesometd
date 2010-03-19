@@ -24,6 +24,7 @@
 #endif
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "video.h"
 #include "video-game.h"
@@ -51,6 +52,29 @@ int VideoSetMode(int w, int h) {
     return 0;
 }
 
+String * VideoLoadText(char *string, SDL_Color fg)
+{
+    String *s = g_malloc(sizeof(String));
+    GLuint tex;
+    SDL_Surface *i = TTF_RenderUTF8_Blended(font,string,fg);
+    if ( i )
+    {
+        s->w = i->w;
+        s->h = i->h;
+        glGenTextures(1,&s->texid);
+        glBindTexture(GL_TEXTURE_2D,s->texid);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
+        SDL_FreeSurface(i);
+        return s;
+    }
+    else
+    {
+        return s;
+    }
+}
+
 GLuint VideoLoadTexture(char *filename)
 {
     GLuint tex;
@@ -69,12 +93,14 @@ GLuint VideoLoadTexture(char *filename)
     else
     {
         printf("IMG_Load: %s\n",IMG_GetError());
-        return NULL;
+        return 0;
     }
 }
 
 int VideoInit(void)
 {
+    TTF_Init();
+    font = TTF_OpenFont("/Library/Fonts/Tahoma.ttf",16);
     return VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
 }
 

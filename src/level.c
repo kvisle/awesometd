@@ -101,6 +101,7 @@ int LevelLoad(char *filename)
                     // have a key corresponding to the name described here, we will use that.
                     // Otherwise, we will fall back to a default graphic.
             }
+            e.progress = 0;
             EnemyTemplateAdd(id,&e);
         }
         else if ( g_pattern_match_simple("Wave_*",groups[i]) )

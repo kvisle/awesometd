@@ -27,6 +27,26 @@
 
 //static GSList *Gamedata.EnemyList;
 
+void MessageAdd(char *string)
+{
+    String *s = g_malloc(sizeof(String));
+    SDL_Color c = { 0, 128, 0, 255 };
+    printf("Message: %s\n",string);
+    s = VideoLoadText(string,c);
+    s->timeleft = 1000;
+    s->alpha = 100;
+    Gamedata.TextList = g_slist_insert(Gamedata.TextList,s,0);
+}
+
+void MessageDo(gpointer data, gpointer user_data)
+{
+    String *s = (String*)data;
+    if ( s->timeleft > 0 ) s->timeleft--;
+    else if ( s->timeleft == 0 && s->alpha > 0 ) s->alpha--;
+    else if ( s->timeleft == 0 && s->alpha == 0 ) Gamedata.TextList = g_slist_remove(Gamedata.TextList,data);
+    else return;
+}
+
 void EnemyPrint(gpointer data, gpointer user_data);
 void EnemyTemplatePrint(gpointer key, gpointer value, gpointer user_data);
 
@@ -149,7 +169,7 @@ void EnemyMove(gpointer data, gpointer user_data)
         return;
     }
     if ( e->spawn_in == 0 )
-    printf("Spawning enemy !\n");
+    MessageAdd("Spawning enemy !");
     
 //    printf("enemyhp: %d\n",e->cur_hp);
 }
@@ -158,6 +178,7 @@ void EnemySpawn(Wave *w)
 {
     int i,interval = 0;
     StartPosition *sp;
+    MessageAdd("Wave spawning!");
     for (i=0;i<w->enemies;i++)
     {
         if ( w->sp[i] > 0 )
@@ -225,6 +246,8 @@ void GameNew(void)
 {
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
+    MessageAdd("æøå");
+    MessageAdd("hylolz");
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     Gamedata.GameStepN = 0;
@@ -243,5 +266,6 @@ void GameStep(void)
     Gamedata.GameStepN++;
     g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
     g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
+    g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
     EnemyFreeDead();
 }
