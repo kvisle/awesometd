@@ -32,12 +32,15 @@
 #include "game.h"
 #include "level.h"
 
+#define SNAP_CAMERA_AT_W    128
+#define SNAP_CAMERA_AT_H    128
+
 void VideoGameSnapCamera(void)
 {
-    if ( LevelCamera[0] > screen->w - Level.w*16 ) LevelCamera[0] = screen->w - Level.w*16;
-    if ( LevelCamera[0] < -1*(Level.w*16) ) LevelCamera[0] = -1*(Level.w*16);
-    if ( LevelCamera[1] > screen->h - Level.h*16 ) LevelCamera[1] = screen->h - Level.h*16;
-    if ( LevelCamera[1] < -1*(Level.h*16) ) LevelCamera[1] = -1*(Level.h*16);
+    if ( LevelCamera[0] > screen->w - SNAP_CAMERA_AT_W )      LevelCamera[0] = screen->w - SNAP_CAMERA_AT_W;
+    if ( LevelCamera[0] < -1*((Level.w*32)-SNAP_CAMERA_AT_W)) LevelCamera[0] = -1*((Level.w*32)-SNAP_CAMERA_AT_W);
+    if ( LevelCamera[1] > screen->h - SNAP_CAMERA_AT_H )      LevelCamera[1] = screen->h - SNAP_CAMERA_AT_H;
+    if ( LevelCamera[1] < -1*((Level.h*32)-SNAP_CAMERA_AT_H)) LevelCamera[1] = -1*((Level.h*32)-SNAP_CAMERA_AT_H);
 }
 
 void VideoGameDrawLevel(void)
