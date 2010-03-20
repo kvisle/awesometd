@@ -21,6 +21,7 @@
 
 #include "eventloop.h"
 #include "video.h"
+#include "video-game.h"
 #include "level.h"
 
 static char lastkeys[32] = { 0 };
@@ -70,10 +71,7 @@ int EventLoop(void) {
                 {
                     LevelCamera[0] += eventqueue.motion.xrel;
                     LevelCamera[1] += eventqueue.motion.yrel;
-                    if ( LevelCamera[0] > screen->w - Level.w*16 ) LevelCamera[0] = screen->w - Level.w*16;
-                    if ( LevelCamera[0] < -1*(Level.w*16) ) LevelCamera[0] = -1*(Level.w*16);
-                    if ( LevelCamera[1] > screen->h - Level.h*16 ) LevelCamera[1] = screen->h - Level.h*16;
-                    if ( LevelCamera[1] < -1*(Level.h*16) ) LevelCamera[1] = -1*(Level.h*16);
+                    VideoGameSnapCamera();
                 }
             break;
             default:
