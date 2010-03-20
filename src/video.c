@@ -31,8 +31,6 @@
 #include "video.h"
 #include "video-game.h"
 
-GHashTable *TextureTable;
-
 static char *TextureDirectories[] = {
     "/usr/share/awesometd/textures",
     ".",
@@ -50,7 +48,8 @@ void VideoScanDirForTextures(char * dir)
         if ( g_pattern_match_simple("*.png",ent->d_name) )
         {
             gchar *key = g_strconcat(ent->d_name,NULL);
-            gchar *value = g_strconcat(dir,"/",ent->d_name,NULL);
+            Texture *value = g_malloc(sizeof(Texture));
+            value->filename = g_strconcat(dir,"/",ent->d_name,NULL);
             g_hash_table_insert(TextureTable,key,value);
         }
     }
@@ -102,25 +101,27 @@ String * VideoLoadText(char *string, SDL_Color fg)
     }
 }
 
-GLuint VideoLoadTexture(char *filename)
+Texture VideoLoadTexture(char *filename)
 {
-    GLuint tex;
+    Texture tex;
+    tex.filename = filename;
     SDL_Surface *i = IMG_Load(filename);
     if ( i )
     {
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D, tex);
+        glGenTextures(1, &tex.texid);
+        glBindTexture(GL_TEXTURE_2D, tex.texid);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0,
         GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
+        tex.frames = i->w/i->h;
         SDL_FreeSurface(i);
         return tex;
     }
     else
     {
         printf("IMG_Load: %s\n",IMG_GetError());
-        return 0;
+        return tex;
     }
 }
 

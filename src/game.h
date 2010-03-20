@@ -23,10 +23,10 @@
 #include "video.h"
 #include <glib.h>
 
-#define DIR_E 0
-#define DIR_S 1
-#define DIR_W 2
-#define DIR_N 3
+#define DIR_N 0
+#define DIR_E 1
+#define DIR_S 2
+#define DIR_W 3
 
 void GameStep(void);
 
@@ -37,8 +37,13 @@ typedef struct enemy {
     int direction;
     int progress;
     int spawn_in;
+    int frame;
     gint sp;
     gchar *name;
+    Texture *tex;
+    int moved;
+    int rotation;
+    int rotdir;
 }Enemy;
 
 typedef struct wave {
@@ -48,7 +53,7 @@ typedef struct wave {
     gint *sp;
     gint enemies;
     gint blowup;
-    gint texid;
+    Texture tex;
 }Wave;
 
 struct gamedata{

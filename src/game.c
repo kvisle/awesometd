@@ -67,6 +67,7 @@ void EnemyAdd(gint id,gint delay,StartPosition *sp)
         e->x = sp->x*32;
         e->y = sp->y*32;
         e->direction = sp->dir;
+        e->rotation = sp->dir * 90;
         Gamedata.EnemyList = g_slist_insert(Gamedata.EnemyList,e, -1);
     }
     else
@@ -126,7 +127,18 @@ void EnemyMove(gpointer data, gpointer user_data)
         e->spawn_in--;
     }
     else
-    {
+    {   
+        e->moved++;
+        if ( e->moved % 15 == 0 ) {
+            e->frame++;
+            if ( e->frame == e->tex->frames ) e->frame = 0;
+        }
+        if ( e->rotation != e->direction*90 )
+        {
+            e->rotation += e->rotdir*5;
+            if ( e->rotation == 360 ) e->rotation = 0;
+            if ( e->rotation < 0 ) e->rotation += 360;
+        }
         e->progress += e->speed;
         if ( e->progress > 100 )
         {
@@ -142,9 +154,15 @@ void EnemyMove(gpointer data, gpointer user_data)
                     if ( e->y % 32 == 0 && Level.map[(y-1)*Level.w+x] == 0 && y > 0 )
                     {
                         if ( Level.map[y*Level.w+(x-1)] == 1 )
+                        {
+                            e->rotdir = -1;
                             e->direction = DIR_W;
+                        }
                         else
+                        {
+                            e->rotdir = 1;
                             e->direction = DIR_E;
+                        }
                     }
                     break;
                 case DIR_E:
@@ -153,9 +171,15 @@ void EnemyMove(gpointer data, gpointer user_data)
                     if ( e->x % 32 == 0 && Level.map[y*Level.w+(x+1)] == 0 && x < Level.w-1)
                     {
                         if ( Level.map[(y-1)*Level.w+x] == 1 )
+                        {
+                            e->rotdir = -1;
                             e->direction = DIR_N;
+                        }
                         else
+                        {
+                            e->rotdir = 1;
                             e->direction = DIR_S;
+                        }
                     }
                     break;
                 case DIR_S:
@@ -164,9 +188,15 @@ void EnemyMove(gpointer data, gpointer user_data)
                     if ( e->y % 32 == 0 && Level.map[(y+1)*Level.w+x] == 0 && y < Level.h-1)
                     {
                         if ( Level.map[y*Level.w+(x+1)] == 1 )
+                        {
+                            e->rotdir = -1;
                             e->direction = DIR_E;
+                        }
                         else
+                        {
+                            e->rotdir = 1;
                             e->direction = DIR_W;
+                        }
                     }
                     break;
                 case DIR_W:
@@ -175,9 +205,15 @@ void EnemyMove(gpointer data, gpointer user_data)
                     if ( e->x % 32 == 0 && Level.map[y*Level.w+(x-1)] == 0 && x > 0)
                     {
                         if ( Level.map[(y+1)*Level.w+x] == 1 )
+                        {
+                            e->rotdir = -1;
                             e->direction = DIR_S;
+                        }
                         else
+                        {
+                            e->rotdir = 1;
                             e->direction = DIR_N;
+                        }
                     }
                     break;
             }
@@ -261,8 +297,6 @@ void GameNew(void)
 {
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
-    MessageAdd("æøå");
-    MessageAdd("hylolz");
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     Gamedata.GameStepN = 0;

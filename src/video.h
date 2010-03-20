@@ -34,10 +34,11 @@
 
 #define FPS 60
 
-int VideoSetMode(int w, int h);
-int VideoInit(void);
-void VideoDraw(void);
-GLuint VideoLoadTexture(char *filename);
+typedef struct texture {
+    GLuint texid;
+    gchar *filename;
+    int frames;
+}Texture;
 
 typedef struct string {
     GLuint texid;
@@ -46,9 +47,15 @@ typedef struct string {
     int alpha;
 }String;
 
+int VideoSetMode(int w, int h);
+int VideoInit(void);
+void VideoDraw(void);
+Texture VideoLoadTexture(char *filename);
+
 String * VideoLoadText(char *string, SDL_Color fg);
 SDL_Surface *screen;
 
 TTF_Font *font;
+GHashTable *TextureTable;
 
 #endif /* __VIDEO_H__ */

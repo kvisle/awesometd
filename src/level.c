@@ -96,12 +96,24 @@ int LevelLoad(char *filename)
                 if ( g_pattern_match_simple("maxhp",keys[y]) )
                     e.max_hp = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
-                    printf(""); 
-                    // ^ At this point we will look up in a hashtable of loaded graphics. If we
-                    // have a key corresponding to the name described here, we will use that.
-                    // Otherwise, we will fall back to a default graphic.
+                {
+                    gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    Texture *t = g_hash_table_lookup(TextureTable,tname);
+                    g_free(tname);
+                    if ( t )
+                    {
+                        if ( t->texid == 0 )
+                        {
+                            *t = VideoLoadTexture(t->filename);
+                        }
+                        e.tex = t;
+                    }
+                }
             }
+            e.frame = 0;
             e.progress = 0;
+            e.rotation = 0;
+            e.moved = 0;
             EnemyTemplateAdd(id,&e);
         }
         else if ( g_pattern_match_simple("Wave_*",groups[i]) )
@@ -129,7 +141,7 @@ int LevelLoad(char *filename)
             w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
                    w->start,intervals,types);
-            w->texid = VideoLoadTexture("../share/gfx/wave.png");
+            w->tex = VideoLoadTexture("../share/gfx/wave.png");
             WaveAdd(w);
         }
         else if ( g_pattern_match_simple("Start_*",groups[i]) )

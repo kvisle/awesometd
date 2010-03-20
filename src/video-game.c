@@ -93,18 +93,30 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
     glPushMatrix();
-    glTranslatef(LevelCamera[0]-32,LevelCamera[1]-32,0.0);
+    glTranslatef(LevelCamera[0]-16,LevelCamera[1]-16,0.0);
     glTranslatef(e->x,e->y,0.0);
     GLfloat vcoords[] = {
-        0.0f, 0.0f,
-        32.0f, 0.0f,
-        32.0f, 32.0f,
-        0.0f, 32.0f
+        -16.0f, -16.0f,
+        16.0f, -16.0f,
+        16.0f, 16.0f,
+        -16.0f, 16.0f
+    };
+    GLfloat tcoords[] = {
+        e->frame*(1.0/(float)e->tex->frames), 0.0,
+        e->frame*(1.0/(float)e->tex->frames)+(1.0/(float)e->tex->frames), 0.0,
+        e->frame*(1.0/(float)e->tex->frames)+(1.0/(float)e->tex->frames), 1.0,
+        e->frame*(1.0/(float)e->tex->frames), 1.0
     };
     glColor4d(1.0f,1.0f,0.0f,1.0f);
+    glRotated(e->rotation,0.0,0.0,1.0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,e->tex->texid);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
@@ -144,7 +156,7 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
     };
     glColor4d(1.0f,1.0f,1.0f,1.0f-(0.05f*w->blowup));
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, w->texid);
+    glBindTexture(GL_TEXTURE_2D, w->tex.texid);
     glVertexPointer(2, GL_FLOAT, 0, vcoords);
     glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);

@@ -22,7 +22,7 @@ pathfinding=bounce
 [Start_1]
 x=3
 y=0
-dir=1
+dir=2
 
 [End_1]
 x=19
@@ -32,13 +32,13 @@ y=2
 name=Brute
 speed=50
 maxhp=100
-gfx=spr1
+gfx=sprBrute.png
 
 [Enemy_2]
 name=Bleh
 speed=40
 maxhp=80
-gfx=spr2
+gfx=sprBug.png
 
 [Wave_1]
 start=500
@@ -50,6 +50,6 @@ sp=1;1;1;1;1
 [Wave_2]
 start=2000
 intervals=145;145;145;145;145;160
-types=2;2;2;2;2;4
-sp=1;1;1;1;1;1
+types=2;2;2;2;2
+sp=1;1;1;1;1
 
