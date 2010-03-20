@@ -149,12 +149,24 @@ int LevelLoad(char *filename)
             }
             g_hash_table_insert(Level.st,id,sp);
         }
+        else if ( g_pattern_match_simple("End_*",groups[i]) )
+        {
+            EndPosition *ep = g_malloc(sizeof(EndPosition));
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("x",keys[y]) )
+                    ep->x = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("y",keys[y]) )
+                    ep->y = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+            }
+            Level.ep = g_slist_insert(Level.ep,ep,-1);
+        }
         g_strfreev(keys);
     }
     g_strfreev(groups);
     Level.map = map;
     Level.w = w;
     Level.h = h;
-    LevelCamera[0] = 0;
+    LevelCamera[0] = 64;
     LevelCamera[1] = 64;
 }

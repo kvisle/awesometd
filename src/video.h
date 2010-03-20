@@ -47,6 +47,7 @@ typedef struct string {
 }String;
 
 String * VideoLoadText(char *string, SDL_Color fg);
+SDL_Surface *screen;
 
 TTF_Font *font;
 

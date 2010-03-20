@@ -29,8 +29,6 @@
 #include "video.h"
 #include "video-game.h"
 
-SDL_Surface *screen;
-
 int VideoSetMode(int w, int h) {
     screen = SDL_SetVideoMode(w, h, 
                               VIDEOMODE_DEPTH, SDL_OPENGL|SDL_RESIZABLE);
@@ -100,7 +98,12 @@ GLuint VideoLoadTexture(char *filename)
 int VideoInit(void)
 {
     TTF_Init();
+#ifdef __APPLE__
     font = TTF_OpenFont("/Library/Fonts/Tahoma.ttf",16);
+#else
+    font = TTF_OpenFont("/usr/share/wine/fonts/tahoma.ttf",16);
+#endif
+    TTF_SetFontStyle(font,TTF_STYLE_BOLD);
     return VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
 }
 

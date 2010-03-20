@@ -25,6 +25,8 @@
 
 static char lastkeys[32] = { 0 };
 
+static int moving = 0;
+
 int EventLoop(void) {
     SDL_Event eventqueue;
     while(SDL_PollEvent(&eventqueue)) {
@@ -51,6 +53,23 @@ int EventLoop(void) {
                     case SDLK_DOWN: LevelCamera[1]++; break;
                     case SDLK_RIGHT: LevelCamera[0]++; break;
                     case SDLK_LEFT: LevelCamera[0]--; break;
+                }
+            break;
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                switch(eventqueue.button.button)
+                {
+                    case SDL_BUTTON_RIGHT:
+                        if ( eventqueue.button.state == SDL_RELEASED ) moving = 0;
+                        else moving = 1;
+                    break;
+                }
+            break;
+            case SDL_MOUSEMOTION:
+                if ( moving )
+                {
+                    LevelCamera[0] += eventqueue.motion.xrel;
+                    LevelCamera[1] += eventqueue.motion.yrel;
                 }
             break;
             default:

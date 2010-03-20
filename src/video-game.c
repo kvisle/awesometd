@@ -162,7 +162,7 @@ void VideoGameDrawText(gpointer data, gpointer user_data)
     VideoGameTextId++;
     String *s = (String*)data;
     glPushMatrix();
-    glTranslatef(100.0,400.0-(VideoGameTextId*20),0.0);
+    glTranslatef(100.0,screen->h-100-(VideoGameTextId*20),0.0);
     GLfloat vcoords[] = {
         0.0, 0.0,
         s->w, 0.0,
@@ -188,13 +188,74 @@ void VideoGameDrawText(gpointer data, gpointer user_data)
     glPopMatrix();
 }
 
+void VideoGameCoverEdges(void)
+{
+    int i;
+    glPushMatrix();
+    glTranslatef(LevelCamera[0],LevelCamera[1],0.0);
+    GLfloat vcoords[] = {
+        -64.0, -64.0,
+        64.0+(32*Level.w), -64.0,
+        64.0+(32*Level.w), 0.0,
+        -64.0,0.0
+    };
+    GLfloat vcoords2[] = {
+        -64.0, Level.h*32,
+        64.0+(32*Level.w), Level.h*32,
+        64.0+(32*Level.w), Level.h*32+64.0,
+        -64.0,Level.h*32+64.0
+    };
+    GLfloat vcoords3[] = {
+        -64.0, 0.0,
+        0.0, 0.0,
+        0.0, Level.h*32,
+        -64.0, Level.h*32
+    };
+    GLfloat vcoords4[] = {
+        Level.w*32, 0.0,
+        Level.w*32+64, 0.0,
+        Level.w*32+64, Level.h*32,
+        Level.w*32, Level.h*32
+    };
+    glColor4d( 0.0f, 0.0f, 0.0f, 1.0f);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords2);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords3);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords4);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
+void VideoGameDrawToolbar(void)
+{
+    glPushMatrix();
+    glTranslatef(50.0,screen->h-64,0.0);
+    GLfloat vcoords[] = {
+        0.0, 0.0,
+        512.0, 0.0,
+        512.0, 64.0,
+        0.0, 64.0
+    };
+    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
+    VideoGameCoverEdges();
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
     VideoGameTextId = 0;
     g_slist_foreach(Gamedata.TextList,VideoGameDrawText,NULL);
     VideoGameDrawCursor();
+    VideoGameDrawToolbar();
 }

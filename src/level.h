@@ -32,10 +32,14 @@ enum Level_Pathfinding {
 typedef struct startposition {
     gint x,y,dir;
 }StartPosition;
+typedef struct endposition {
+    gint x,y;
+}EndPosition;
 
 typedef struct level {
     int w, h;
     GHashTable *st;
+    GSList *ep;
     gint *map;
     enum Level_Pathfinding pf;
 }t_Level;
