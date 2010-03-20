@@ -40,6 +40,12 @@ speed=40
 maxhp=80
 gfx=sprBug.png
 
+[Enemy_3]
+name=Tank
+speed=90
+maxhp=120
+gfx=sprTank.png
+
 [Wave_1]
 start=500
 start=100
@@ -49,7 +55,12 @@ sp=1;1;1;1;1
 
 [Wave_2]
 start=2000
-intervals=145;145;145;145;145;160
+intervals=145;145;145;145;145
 types=2;2;2;2;2
 sp=1;1;1;1;1
 
+[Wave_3]
+start=3000
+intervals=80;80;80;80;80;80;80
+types=3;3;3;3;3;3;3
+sp=1;1;1;1;1
