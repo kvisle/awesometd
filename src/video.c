@@ -22,12 +22,41 @@
 #else
 #include <GL/gl.h>
 #endif
+#include <dirent.h>
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
 #include "video.h"
 #include "video-game.h"
+
+GHashTable *TextureTable;
+
+static char *TextureDirectories[] = {
+    "/usr/share/awesometd/textures",
+    ".",
+    "NULL"
+};
+
+void VideoScanDirForTextures(char * dir)
+{
+    DIR *datadir;
+    struct dirent *ent;
+    if ((datadir = opendir(dir)) == NULL )
+        return;
+    while (( ent = readdir(datadir)) != NULL )
+    {
+        if ( g_pattern_match_simple("*.png",ent->d_name) )
+        {
+            gchar *key = g_strconcat(ent->d_name,NULL);
+            gchar *value = g_strconcat(dir,"/",ent->d_name,NULL);
+            g_hash_table_insert(TextureTable,key,value);
+        }
+    }
+    closedir(datadir);
+    return;
+}
 
 int VideoSetMode(int w, int h) {
     screen = SDL_SetVideoMode(w, h, 
@@ -97,6 +126,15 @@ GLuint VideoLoadTexture(char *filename)
 
 int VideoInit(void)
 {
+    int i;
+    char *h = getenv("HOME");
+    gchar *hgd = g_strconcat(h,"/.awesometd/textures",NULL);
+    TextureTable = g_hash_table_new(g_str_hash,g_str_equal);
+    for (i=0;!g_pattern_match_simple("NULL",TextureDirectories[i]);i++)
+        VideoScanDirForTextures(TextureDirectories[i]);
+    VideoScanDirForTextures(hgd);
+    g_free(hgd);
+
     TTF_Init();
 #ifdef __APPLE__
     font = TTF_OpenFont("/Library/Fonts/Tahoma.ttf",16);
