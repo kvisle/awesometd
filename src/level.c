@@ -25,16 +25,6 @@
 #include "level.h"
 #include "game.h"
 
-char *MapMalloc(int size)
-{
-    return malloc(size);
-}
-
-void MapFree(char *ptr)
-{
-    free(ptr);
-}
-
 int LevelLoad(char *filename)
 {
     GKeyFile *keyfile;
