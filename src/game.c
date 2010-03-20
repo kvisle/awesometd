@@ -43,7 +43,11 @@ void MessageDo(gpointer data, gpointer user_data)
     String *s = (String*)data;
     if ( s->timeleft > 0 ) s->timeleft--;
     else if ( s->timeleft == 0 && s->alpha > 0 ) s->alpha--;
-    else if ( s->timeleft == 0 && s->alpha == 0 ) Gamedata.TextList = g_slist_remove(Gamedata.TextList,data);
+    else if ( s->timeleft == 0 && s->alpha == 0 ) 
+    {
+        glDeleteTextures(1,&(s->texid));
+        Gamedata.TextList = g_slist_remove(Gamedata.TextList,data);
+    }
     else return;
 }
 
