@@ -33,6 +33,7 @@
 
 static char *TextureDirectories[] = {
     "/usr/share/awesometd/textures",
+    "../share/textures",
     ".",
     "NULL"
 };
