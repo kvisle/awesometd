@@ -253,27 +253,106 @@ void VideoGameCoverEdges(void)
     glPopMatrix();
 }
 
+void VideoGameDrawTower(gpointer data, gpointer user_data)
+{
+    Tower *t = (Tower*)data;
+    glPushMatrix();
+    glTranslatef(LevelCamera[0]+(t->x*32)-16,LevelCamera[0]+(t->y*32)-16,0.0);
+    GLfloat vcoords[] = {
+        -16.0, -16.0,
+        16.0, -16.0,
+        16.0, 16.0,
+        -16.0, 16.0,
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        0.5, 0.0,
+        0.5, 1.0,
+        0.0, 1.0
+    };
+    GLfloat tcoords_gun[] = {
+        0.5, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.5, 1.0,
+    };
+    glColor4d(1.0,1.0,1.0,1.0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,t->tex->texid);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glRotated(t->rotation,0.0,0.0,1.0);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords_gun);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
+void VideoGameDrawToolbarTowerButton(gpointer key, gpointer value, gpointer user_data)
+{
+    gint *id = key;
+    Tower *t = (Tower*)value;
+    glPushMatrix();
+    glTranslatef(50.0+(*id*64)+32,screen->h-32,0.0);
+    GLfloat vcoords[] = {
+        -32.0, -32.0,
+        32.0, -32.0,
+        32.0, 32.0,
+        -32.0, 32.0
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        0.5, 0.0,
+        0.5, 1.0,
+        0.0, 1.0
+    };
+    GLfloat tcoords_gun[] = {
+        0.5, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.5, 1.0
+    };
+    glColor4d(1.0,1.0,1.0,1.0f);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,t->tex->texid);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords_gun);
+    glRotated(290,0.0,0.0,1.0);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
 void VideoGameDrawToolbar(void)
 {
     glPushMatrix();
-    glTranslatef(50.0,screen->h-64,0.0);
+    glTranslatef(0.0,screen->h-64,0.0);
     GLfloat vcoords[] = {
         0.0, 0.0,
-        512.0, 0.0,
-        512.0, 64.0,
+        screen->w, 0.0,
+        screen->w, 64.0,
         0.0, 64.0
     };
-    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    glColor4d(0.0f,0.0f,0.0f,0.5f);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
     glPopMatrix();
+    g_hash_table_foreach(Gamedata.TowerTemplates,VideoGameDrawToolbarTowerButton,NULL);
 }
 
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
+    g_slist_foreach(Gamedata.TowerList,VideoGameDrawTower,NULL);
     VideoGameCoverEdges();
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);

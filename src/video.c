@@ -107,6 +107,7 @@ Texture VideoLoadTexture(char *filename)
 {
     Texture tex;
     tex.filename = filename;
+    printf("Loading texture: %s\n",filename);
     SDL_Surface *i = IMG_Load(filename);
     if ( i )
     {

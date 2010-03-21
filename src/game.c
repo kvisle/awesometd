@@ -293,9 +293,72 @@ void StartPositionPrint(gpointer key, gpointer value, gpointer user_data)
     printf("Key: %d, x:%d y:%d dir:%d\n",*k,sp->x,sp->y,sp->dir);
 }
 
+void TowerLocatedAt(gpointer data, gpointer user_data)
+{
+    gint *loc = (gint*)user_data;
+    Tower *t = (Tower*)data;
+    if ( t->x == loc[0] && t->y == loc[1] ) loc[2] = 1;
+}
+
+void TowerMove(gpointer data, gpointer user_data)
+{
+    Tower *t = (Tower*)data;
+    t->rotation++;
+    // TODO: We want to figure out which enemy we should aim for, and then
+    //       change t->rotation to the appropriate angle.
+}
+
+void TowerAdd(int id, int x, int y)
+{
+    if ( x > Level.w || x < 0 || y > Level.h || y < 0 ) return;
+
+    gint loc[] = { x,y,0 };
+    g_slist_foreach(Gamedata.TowerList,TowerLocatedAt,&loc);
+    if ( loc[2] == 1 )
+    {
+        MessageAdd("You can't build a tower on top of another tower!");
+        return;
+    }
+
+    Tower *t = g_hash_table_lookup(Gamedata.TowerTemplates,&id);
+    if ( t ) 
+    {
+        if ( Level.map[(x-1)+(y-1)*Level.w] != 0 ) {
+            MessageAdd("You can only build towers on grass.");
+            return;
+        }
+        // TODO: Check if we have enough money to buy the tower.
+        Tower *nt = g_malloc(sizeof(Tower));
+        memcpy(nt,t,sizeof(Tower));
+        nt->x = x;
+        nt->y = y;
+        Gamedata.TowerList = g_slist_insert(Gamedata.TowerList,nt,-1);
+    }
+    else
+    {
+        MessageAdd("Could not build tower (tower not found in hash table - this is a bug!)");
+    }
+}
+
+void TowerTemplateAdd(int id,Tower *t)
+{
+    gint *tid = g_malloc(sizeof(gint));
+    Tower *tt = g_malloc(sizeof(Tower));
+    memcpy(tt,t,sizeof(Tower));
+    *tid = id;
+    g_hash_table_insert(Gamedata.TowerTemplates,tid,tt);
+}
+void TowerTemplatePrint(gpointer key, gpointer value, gpointer user_data)
+{
+    Tower *t = (Tower*)value;
+    printf("Tower:\n\tname\t: %s\n\treload\t: %d\n",t->name,t->reloadtime);
+}
+
 void GameNew(void)
 {
+    Gamedata.TowerList = NULL;
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
+    Gamedata.TowerTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
@@ -307,6 +370,7 @@ void GameNew(void)
     g_hash_table_foreach(Gamedata.EnemyTemplates,EnemyTemplatePrint,NULL);
     g_slist_foreach(Gamedata.WaveList,WavePrint,NULL);
     g_hash_table_foreach(Level.st,StartPositionPrint,NULL);
+    g_hash_table_foreach(Gamedata.TowerTemplates,TowerTemplatePrint,NULL);
 }
 
 void GameStep(void)
@@ -314,6 +378,7 @@ void GameStep(void)
     if ( Gamedata.GameStepN == 0 ) GameNew();
     Gamedata.GameStepN++;
     g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
+    g_slist_foreach(Gamedata.TowerList,TowerMove,NULL);
     g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
     g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
     EnemyFreeDead();

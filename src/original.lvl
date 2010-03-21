@@ -19,15 +19,43 @@ map=0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;1;1;1;0;0;
 pathfinding=bounce
 
 # Defines where the enemies will spawn.
+# The top-left square in the game is x=1, y=1.
+# dir   = The direction the enemies will start to walk in. Being:
+#
+#           0 = North
+#           1 = East
+#           2 = South
+#           3 = West
 [Start_1]
 x=3
 y=0
 dir=2
 
+# When the enemies reach a End-square, you lose a life and the enemy is
+# removed from the game.
+# The top-left square in the game is x=1, y=1.
 [End_1]
 x=19
 y=2
 
+# Tower definitions; The towers appear on the toolbar in the order they are
+# added in this file.
+#
+# name      = A string naming the tower.
+# reloadtime= The amount of gameticks it takes the tower to reload.
+# gfx       = Which texture-file we should use for rendering this tower.
+[Tower_1]
+name=Pillbox
+reloadtime=100
+gfx=twrPillbox.png
+
+# Enemy-definitions.
+# name      = A string naming the enemy.
+# speed     = Each gamestep, speed is added to a counter. When this counter
+#             reaches 100, the enemy moves a pixel, and 100 gets subtracted
+#             from the counter.
+# maxhp     = The maximum amount of HP this enemy can have.
+# gfx       = Which texture-file we should use for rendering this enemy.
 [Enemy_1]
 name=Brute
 speed=50
@@ -46,9 +74,20 @@ speed=90
 maxhp=120
 gfx=sprTank.png
 
+# Wave definitions.
+# start = The gamestep the wave starts. There are approximatly 60 gamesteps
+#         per second.
+# intervals = A semicolon separated list of integers. These define the amount 
+#             of gamesteps between each enemy in the wave.
+# types     = A semicolon separated list of integers. These refer to the enemy-
+#             definitions above.
+# sp        = A semicolon separated list of integers. These refer to the start-
+#             position definitions above.
+#
+# The behaviour is undefined if the amount of intervals/types/sp are not the
+# same.
 [Wave_1]
 start=500
-start=100
 intervals=100;100;100;100;100
 types=1;1;1;1;1
 sp=1;1;1;1;1

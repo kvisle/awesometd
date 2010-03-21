@@ -63,7 +63,11 @@ int EventLoop(void) {
                     case SDL_BUTTON_RIGHT:
                         if ( eventqueue.button.state == SDL_RELEASED ) moving = 0;
                         else moving = 1;
-                    break;
+                        break;
+                    case SDL_BUTTON_LEFT:
+                        if ( eventqueue.button.state == SDL_RELEASED )
+                            TowerAdd(1,(eventqueue.button.x-LevelCamera[0])/32+1,(eventqueue.button.y-LevelCamera[1])/32+1);
+                        break;
                 }
             break;
             case SDL_MOUSEMOTION:

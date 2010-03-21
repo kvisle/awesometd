@@ -106,6 +106,37 @@ int LevelLoad(char *filename)
             e.moved = 0;
             EnemyTemplateAdd(id,&e);
         }
+        else if ( g_pattern_match_simple("Tower_*",groups[i]) )
+        {
+            Tower t;
+            int id;
+            sscanf(groups[i],"Tower_%d",&id);
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("name",keys[y]) )
+                    t.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("reloadtime",keys[y]) )
+                    t.reloadtime = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("gfx",keys[y]) )
+                {
+                    gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    Texture *tt = g_hash_table_lookup(TextureTable,tname);
+                    g_free(tname);
+                    if ( tt )
+                    {
+                        if ( tt->texid == 0 )
+                        {
+                            *tt = VideoLoadTexture(tt->filename);
+                        }
+                        t.tex = tt;
+                    }
+                }
+            }
+            t.frame = 0;
+            t.reloadtimeleft = 0;
+            t.rotation = 0;
+            TowerTemplateAdd(id,&t);
+        }
         else if ( g_pattern_match_simple("Wave_*",groups[i]) )
         {
             int id;

@@ -46,6 +46,17 @@ typedef struct enemy {
     int rotdir;
 }Enemy;
 
+typedef struct tower {
+    int x,y;
+    gchar *name;
+    int reloadtime;
+    int reloadtimeleft;
+    int price;
+    int frame;
+    int rotation;
+    Texture *tex;
+}Tower;
+
 typedef struct wave {
     gint start;
     gint *intervals;
@@ -58,7 +69,9 @@ typedef struct wave {
 
 struct gamedata{
     GSList *EnemyList;
+    GSList *TowerList;
     GHashTable *EnemyTemplates;
+    GHashTable *TowerTemplates;
     GSList *WaveList;
     GSList *TextList;
     int GameStepN;
@@ -66,6 +79,8 @@ struct gamedata{
 
 void EnemyFreeAll(void);
 void EnemyTemplateAdd(int id,Enemy *e);
+void TowerTemplateAdd(int id,Tower *t);
+void TowerAdd(int id, int x, int y);
 void WaveAdd(Wave *w);
 
 struct gamedata Gamedata;
