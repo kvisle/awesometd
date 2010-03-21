@@ -257,7 +257,7 @@ void VideoGameDrawTower(gpointer data, gpointer user_data)
 {
     Tower *t = (Tower*)data;
     glPushMatrix();
-    glTranslatef(LevelCamera[0]+(t->x*32)-16,LevelCamera[0]+(t->y*32)-16,0.0);
+    glTranslatef(LevelCamera[0]+(t->x*32)-16,LevelCamera[1]+(t->y*32)-16,0.0);
     GLfloat vcoords[] = {
         -16.0, -16.0,
         16.0, -16.0,
