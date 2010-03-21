@@ -22,8 +22,12 @@
 #include <string.h>
 #include <glib.h>
 
+#include <math.h>
+
 #include "level.h"
 #include "game.h"
+
+#define PI 3.14159265
 
 //static GSList *Gamedata.EnemyList;
 
@@ -300,12 +304,31 @@ void TowerLocatedAt(gpointer data, gpointer user_data)
     if ( t->x == loc[0] && t->y == loc[1] ) loc[2] = 1;
 }
 
+void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
+{
+    guint *ce = (guint*)user_data;
+    Enemy *e = (Enemy*)data;
+    gint k1 = (e->x-ce[0]) * (e->x-ce[0]);
+    gint k2 = (e->y-ce[1]) * (e->y-ce[1]);
+    guint h = sqrt(k1+k2);
+
+    if ( h < ce[2] ) {
+        ce[2] = h;
+        ce[3] = e->x;
+        ce[4] = e->y;
+        ce[5] = e->y-ce[1];
+    }
+
+//    printf("Checking distance between tower at %dx%d and enemy at %dx%d ( hypotenus: %d )\n",ce[0],ce[1],e->x,e->y,h);
+}
+
 void TowerMove(gpointer data, gpointer user_data)
 {
     Tower *t = (Tower*)data;
-    t->rotation++;
-    // TODO: We want to figure out which enemy we should aim for, and then
-    //       change t->rotation to the appropriate angle.
+    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+    g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&ce);
+    float angle = (float)(atan2((int)ce[4]-(int)ce[1],(int)ce[3]-(int)ce[0])*180)/PI;
+    t->rotation = angle+90;
 }
 
 void TowerAdd(int id, int x, int y)
