@@ -368,11 +368,31 @@ void VideoGameDrawToolbar(void)
     g_hash_table_foreach(Gamedata.TowerTemplates,VideoGameDrawToolbarTowerButton,NULL);
 }
 
+void VideoGameDrawProjectiles(gpointer data, gpointer used_data)
+{
+    Projectile *p = (Projectile*)data;
+    glPushMatrix();
+    glTranslatef(LevelCamera[0]+(p->x),LevelCamera[1]+(p->y),0.0);
+    GLfloat vcoords[] = {
+        -1.0, -4.0,
+        1.0, -4.0,
+        1.0, 4.0,
+        -1.0, 4.0
+    };
+    glColor4d(1.0,0.0,0.0,1.0);
+    glRotated(p->rotation,0.0,0.0,1.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
     g_slist_foreach(Gamedata.TowerList,VideoGameDrawTower,NULL);
+    g_slist_foreach(Gamedata.ProjectileList,VideoGameDrawProjectiles,NULL);
     VideoGameCoverEdges();
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);

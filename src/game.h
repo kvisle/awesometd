@@ -55,8 +55,20 @@ typedef struct tower {
     int frame;
     int rotation;
     int rotationgoal;
+    int range;
     Texture *tex;
 }Tower;
+
+typedef struct projectile {
+    int x,y;
+//    gchar *name;
+    int damage;
+    int type;
+    int speed;
+    int tx,ty;
+    int used;
+    int rotation;
+}Projectile;
 
 typedef struct wave {
     gint start;
@@ -71,6 +83,7 @@ typedef struct wave {
 struct gamedata{
     GSList *EnemyList;
     GSList *TowerList;
+    GSList *ProjectileList;
     GHashTable *EnemyTemplates;
     GHashTable *TowerTemplates;
     GSList *WaveList;

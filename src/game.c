@@ -297,6 +297,36 @@ void StartPositionPrint(gpointer key, gpointer value, gpointer user_data)
     printf("Key: %d, x:%d y:%d dir:%d\n",*k,sp->x,sp->y,sp->dir);
 }
 
+void ProjectileCheckHit(gpointer data, gpointer user_data)
+{
+    Enemy *e = (Enemy*)data;
+    Projectile *p = (Projectile*)user_data;
+    if ( p->x >= e->x-32 && p->y >= e->y-32 &&
+         p->x < e->x && p->y < e->y )
+    {
+        e->cur_hp--;
+        p->used = 1;
+    }
+}
+
+void ProjectileMove(gpointer data, gpointer user_data)
+{
+    Projectile *p = (Projectile*)data;
+    float dx = p->tx - p->x;
+    float dy = p->ty - p->y;
+    float d = sqrt(dx*dx + dy*dy);
+    float x = dx/d;
+    float y = dy/d;
+    p->x += x * p->speed;
+    p->y += y * p->speed;
+    p->tx += x*10;
+    p->ty += y*10;
+    g_slist_foreach(Gamedata.EnemyList,ProjectileCheckHit,p);
+    if ( p->x < 0 || p->x > Level.w*32 || p->y < 0 || p->y > Level.h*32 ) p->used++;
+    if ( p->used )
+        Gamedata.ProjectileList = g_slist_remove(Gamedata.ProjectileList,p);
+}
+
 void TowerLocatedAt(gpointer data, gpointer user_data)
 {
     gint *loc = (gint*)user_data;
@@ -336,7 +366,7 @@ void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
     gint k2 = (e->y-ce[1]) * (e->y-ce[1]);
     guint h = sqrt(k1+k2);
 
-    if ( h < ce[2] )
+    if ( h < ce[2] && h < ce[5] )
     {
         ce[2] = h;
         ce[3] = e->x;
@@ -348,9 +378,9 @@ void TowerMove(gpointer data, gpointer user_data)
 {
     int i;
     Tower *t = (Tower*)data;
-    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff };
+    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, t->range };
     g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&ce);
-    if ( t->reloadtimeleft > 0 ) t->reloadtime--;
+    if ( t->reloadtimeleft > 0 ) t->reloadtimeleft--;
     if ( ce[3] != 0xffffffff )
     {
         float angle = (float)(atan2((int)ce[4]-(int)ce[1],(int)ce[3]-(int)ce[0])*180)/PI;
@@ -369,9 +399,22 @@ void TowerMove(gpointer data, gpointer user_data)
 
         if ( number1 > number2 ) t->rotation += rotate;
         else t->rotation -= rotate;
+        if ( t->rotation >= 270 ) t->rotation -= 360;
+        else if ( t->rotation < -90 ) t->rotation += 360;
     }
-    if ( t->rotation >= 270 ) t->rotation -= 360;
-    else if ( t->rotation < -90 ) t->rotation += 360;
+    else if ( t->reloadtimeleft == 0 && ce[2] < 0xffffffff )
+    {
+        t->reloadtimeleft = t->reloadtime;
+        Projectile *p = g_malloc(sizeof(Projectile));
+        p->x = ce[0]-16;
+        p->y = ce[1]-16;
+        p->tx = ce[3]-16;
+        p->ty = ce[4]-16;
+        p->speed = 5;
+        p->used = 0;
+        p->rotation = t->rotationgoal;
+        Gamedata.ProjectileList = g_slist_insert(Gamedata.ProjectileList,p,0);
+    }
 }
 
 void TowerAdd(int id, int x, int y)
@@ -442,6 +485,7 @@ void GameStep(void)
     Gamedata.GameStepN++;
     g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
     g_slist_foreach(Gamedata.TowerList,TowerMove,NULL);
+    g_slist_foreach(Gamedata.ProjectileList,ProjectileMove,NULL);
     g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
     g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
     EnemyFreeDead();

@@ -117,6 +117,8 @@ int LevelLoad(char *filename)
                     t.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("reloadtime",keys[y]) )
                     t.reloadtime = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("range",keys[y]) )
+                    t.range = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
                     gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);

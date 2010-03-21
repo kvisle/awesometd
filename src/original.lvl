@@ -43,10 +43,12 @@ y=2
 #
 # name      = A string naming the tower.
 # reloadtime= The amount of gameticks it takes the tower to reload.
+# range     = The range of the tower.
 # gfx       = Which texture-file we should use for rendering this tower.
 [Tower_1]
 name=Pillbox
-reloadtime=100
+reloadtime=10
+range=100
 gfx=twrPillbox.png
 
 # Enemy-definitions.
