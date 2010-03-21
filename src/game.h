@@ -54,6 +54,7 @@ typedef struct tower {
     int price;
     int frame;
     int rotation;
+    int rotationgoal;
     Texture *tex;
 }Tower;
 

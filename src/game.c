@@ -304,6 +304,30 @@ void TowerLocatedAt(gpointer data, gpointer user_data)
     if ( t->x == loc[0] && t->y == loc[1] ) loc[2] = 1;
 }
 
+void TowerCheckForWeakestEnemy(gpointer data, gpointer user_data)
+{
+    guint *ce = (guint*)user_data;
+    Enemy *e = (Enemy*)data;
+    if ( (guint)e->cur_hp < ce[2] )
+    {
+        ce[2] = e->cur_hp;
+        ce[3] = e->x;
+        ce[4] = e->y;
+    }
+}
+
+void TowerCheckForStrongestEnemy(gpointer data, gpointer user_data)
+{
+    guint *ce = (guint*)user_data;
+    Enemy *e = (Enemy*)data;
+    if ( (guint)e->cur_hp > ce[2] || ce[2] == 0xffffffff )
+    {
+        ce[2] = e->cur_hp;
+        ce[3] = e->x;
+        ce[4] = e->y;
+    }
+}
+
 void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
 {
     guint *ce = (guint*)user_data;
@@ -312,23 +336,42 @@ void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
     gint k2 = (e->y-ce[1]) * (e->y-ce[1]);
     guint h = sqrt(k1+k2);
 
-    if ( h < ce[2] ) {
+    if ( h < ce[2] )
+    {
         ce[2] = h;
         ce[3] = e->x;
         ce[4] = e->y;
-        ce[5] = e->y-ce[1];
     }
-
-//    printf("Checking distance between tower at %dx%d and enemy at %dx%d ( hypotenus: %d )\n",ce[0],ce[1],e->x,e->y,h);
 }
 
 void TowerMove(gpointer data, gpointer user_data)
 {
+    int i;
     Tower *t = (Tower*)data;
-    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff };
     g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&ce);
-    float angle = (float)(atan2((int)ce[4]-(int)ce[1],(int)ce[3]-(int)ce[0])*180)/PI;
-    t->rotation = angle+90;
+    if ( t->reloadtimeleft > 0 ) t->reloadtime--;
+    if ( ce[3] != 0xffffffff )
+    {
+        float angle = (float)(atan2((int)ce[4]-(int)ce[1],(int)ce[3]-(int)ce[0])*180)/PI;
+        t->rotationgoal = angle+90;
+    }
+    if ( t->rotationgoal != t->rotation )
+    {
+        int rotate = 3;
+        int number1 = (t->rotation+90) - (t->rotationgoal+90);
+        if ( number1 < 0 ) number1 += 360;
+        int number2 = (t->rotationgoal+90) - (t->rotation+90);
+        if ( number2 < 0 ) number2 += 360;
+
+
+        if ( abs(number1-number2) < 3 ) rotate = abs(number1-number2);
+
+        if ( number1 > number2 ) t->rotation += rotate;
+        else t->rotation -= rotate;
+    }
+    if ( t->rotation >= 270 ) t->rotation -= 360;
+    else if ( t->rotation < -90 ) t->rotation += 360;
 }
 
 void TowerAdd(int id, int x, int y)
@@ -355,6 +398,7 @@ void TowerAdd(int id, int x, int y)
         memcpy(nt,t,sizeof(Tower));
         nt->x = x;
         nt->y = y;
+        nt->rotationgoal = nt->rotation = (rand() % 360)-90;
         Gamedata.TowerList = g_slist_insert(Gamedata.TowerList,nt,-1);
     }
     else
@@ -386,10 +430,6 @@ void GameNew(void)
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
     Gamedata.GameStepN = 0;
-//    EnemyAdd(1);
-//    EnemyAdd(42);
-//    EnemyAdd(52);
-//    g_slist_foreach(Gamedata.EnemyList,EnemyPrint,NULL);
     g_hash_table_foreach(Gamedata.EnemyTemplates,EnemyTemplatePrint,NULL);
     g_slist_foreach(Gamedata.WaveList,WavePrint,NULL);
     g_hash_table_foreach(Level.st,StartPositionPrint,NULL);
