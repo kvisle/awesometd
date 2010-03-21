@@ -112,6 +112,18 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
         16.0f, 16.0f,
         -16.0f, 16.0f
     };
+    GLfloat greencoords[] = {
+        -14.0f, 12.0f,
+        -14.0f+(((float)e->cur_hp/(float)e->max_hp)*28), 12.0f,
+        -14.0f+(((float)e->cur_hp/(float)e->max_hp)*28), 15.0f,
+        -14.0f, 15.0f
+    };
+    GLfloat redcoords[] = {
+        14.0f, 12.0f,
+        14.0f-((((float)e->max_hp-e->cur_hp)/(float)e->max_hp)*28), 12.0f,
+        14.0f-((((float)e->max_hp-e->cur_hp)/(float)e->max_hp)*28), 15.0f,
+        14.0f, 15.0f
+    };
     GLfloat tcoords[] = {
         e->frame*(1.0/(float)e->tex->frames), 0.0,
         e->frame*(1.0/(float)e->tex->frames)+(1.0/(float)e->tex->frames), 0.0,
@@ -119,6 +131,7 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
         e->frame*(1.0/(float)e->tex->frames), 1.0
     };
     glColor4d(1.0f,1.0f,0.0f,1.0f);
+    glPushMatrix();
     glRotated(e->rotation,0.0,0.0,1.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,e->tex->texid);
@@ -127,7 +140,14 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
     glDisable(GL_TEXTURE_2D);
+    glColor4d(0.0f,1.0f,0.0f,1.0f);
+    glVertexPointer(2,GL_FLOAT,0,greencoords);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glColor4d(1.0f,0.0f,0.0f,1.0f);
+    glVertexPointer(2,GL_FLOAT,0,redcoords);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
     glPopMatrix();
 }
 
