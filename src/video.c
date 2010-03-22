@@ -51,6 +51,7 @@ void VideoScanDirForTextures(char * dir)
             gchar *key = g_strconcat(ent->d_name,NULL);
             Texture *value = g_malloc(sizeof(Texture));
             value->filename = g_strconcat(dir,"/",ent->d_name,NULL);
+            value->texid = 0;
             g_hash_table_insert(TextureTable,key,value);
         }
     }
