@@ -141,11 +141,7 @@ int VideoInit(void)
     g_free(hgd);
 
     TTF_Init();
-#ifdef __APPLE__
-    font = TTF_OpenFont("/Library/Fonts/Tahoma.ttf",16);
-#else
-    font = TTF_OpenFont("/usr/share/wine/fonts/tahoma.ttf",16);
-#endif
+    font = TTF_OpenFont("../share/fonts/font.ttf",16);
     TTF_SetFontStyle(font,TTF_STYLE_BOLD);
     return VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
 }
