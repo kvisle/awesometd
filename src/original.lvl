@@ -17,6 +17,7 @@ height=12
 name=Original Awesome Tower Defense
 map=0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;1;1;1;0;0;1;0;0;0;1;1;1;1;1;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;0;0;0;0;1;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;1;1;1;1;1;1;1;1;1;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
 pathfinding=bounce
+money=100
 
 # Defines where the enemies will spawn.
 # The top-left square in the game is x=1, y=1.
@@ -50,6 +51,7 @@ name=Pillbox
 reloadtime=10
 range=100
 gfx=twrPillbox.png
+price=20
 
 # Enemy-definitions.
 # name      = A string naming the enemy.
@@ -61,20 +63,26 @@ gfx=twrPillbox.png
 [Enemy_1]
 name=Brute
 speed=50
-maxhp=100
+maxhp=50
 gfx=sprBrute.png
+score=40
+money=5
 
 [Enemy_2]
 name=Bleh
 speed=40
 maxhp=80
 gfx=sprBug.png
+score=50
+money=6
 
 [Enemy_3]
 name=Tank
 speed=90
 maxhp=120
 gfx=sprTank.png
+score=60
+money=7
 
 # Wave definitions.
 # start = The gamestep the wave starts. There are approximatly 60 gamesteps

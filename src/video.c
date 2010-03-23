@@ -38,6 +38,8 @@ static char *TextureDirectories[] = {
     "NULL"
 };
 
+static String *Numbers;
+
 void VideoScanDirForTextures(char * dir)
 {
     DIR *datadir;
@@ -81,16 +83,19 @@ int VideoSetMode(int w, int h) {
     return 0;
 }
 
-String * VideoLoadText(char *string, SDL_Color fg)
+String * VideoLoadText(char *str, SDL_Color fg, int ft)
 {
+    TTF_Font *f;
     String *s = g_malloc(sizeof(String));
-    GLuint tex;
-    SDL_Surface *i = TTF_RenderUTF8_Blended(font,string,fg);
+    s->texid = 0;
+    if ( ft == 0 ) f = font;
+    else f = monofont;
+    SDL_Surface *i = TTF_RenderUTF8_Blended(f,str,fg);
     if ( i )
     {
         s->w = i->w;
         s->h = i->h;
-        glGenTextures(1,&s->texid);
+        glGenTextures(1,&(s->texid));
         glBindTexture(GL_TEXTURE_2D,s->texid);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
@@ -110,6 +115,7 @@ Texture VideoLoadTexture(char *filename)
     tex.filename = filename;
     printf("Loading texture: %s\n",filename);
     SDL_Surface *i = IMG_Load(filename);
+    glEnable(GL_TEXTURE_2D);
     if ( i )
     {
         glGenTextures(1, &tex.texid);
@@ -142,8 +148,49 @@ int VideoInit(void)
 
     TTF_Init();
     font = TTF_OpenFont("../share/fonts/font.ttf",16);
+    monofont = TTF_OpenFont("../share/fonts/mono.ttf",24);
     TTF_SetFontStyle(font,TTF_STYLE_BOLD);
-    return VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
+    
+    int x = VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
+    SDL_Color tc = { 255, 255, 255 };
+    Numbers = VideoLoadText("0123456789",tc,1);
+    return x;
+}
+
+void VideoDrawNumber(int x, int y, int val)
+{
+    int i;
+    char string[9];
+    sprintf(string,"%8d",val);
+    GLfloat vcoords[] = {
+        0.0, 0.0,
+        14.4, 0.0,
+        14.4, 25.0,
+        0.0, 25.0
+    };
+    glPushMatrix();
+    glTranslatef(x,y,0.0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,Numbers->texid);
+    glColor4d(1.0,1.0,1.0,1.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    for (i=0;i<8;i++)
+    {
+        glTranslatef(-15.0,0.0,0.0);
+        int num = string[7-i]-48;
+        if ( num > 9 || num < 0 ) break;
+        GLfloat tcoords[] = {
+            num*0.1, 0.0,
+            0.1+(num*0.1), 0.0,
+            0.1+(num*0.1), 1.0,
+            num*0.1, 1.0
+        };
+        glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+        glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    }
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
 }
 
 void VideoDraw(void) {

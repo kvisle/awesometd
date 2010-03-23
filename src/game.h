@@ -44,6 +44,8 @@ typedef struct enemy {
     int moved;
     int rotation;
     int rotdir;
+    int score;
+    int money;
 }Enemy;
 
 typedef struct tower {
@@ -89,6 +91,8 @@ struct gamedata{
     GSList *WaveList;
     GSList *TextList;
     int GameStepN;
+    int money;
+    int score;
 };
 
 void EnemyFreeAll(void);

@@ -33,10 +33,10 @@
 
 void MessageAdd(char *string)
 {
-    String *s = g_malloc(sizeof(String));
+    String *s;// = g_malloc(sizeof(String));
     SDL_Color c = { 255,255,255,255 };
     printf("Message: %s\n",string);
-    s = VideoLoadText(string,c);
+    s = VideoLoadText(string,c,0);
     s->timeleft = 1000;
     s->alpha = 100;
     Gamedata.TextList = g_slist_insert(Gamedata.TextList,s,0);
@@ -306,6 +306,11 @@ void ProjectileCheckHit(gpointer data, gpointer user_data)
     {
         e->cur_hp--;
         p->used = 1;
+        if ( e->cur_hp <= 0 )
+        {
+            Gamedata.score += e->score;
+            Gamedata.money += e->money;
+        }
     }
 }
 
@@ -436,7 +441,12 @@ void TowerAdd(int id, int x, int y)
             MessageAdd("You can only build towers on grass.");
             return;
         }
-        // TODO: Check if we have enough money to buy the tower.
+        if ( Gamedata.money < t->price )
+        {
+            MessageAdd("You can't afford to build this tower now.");
+            return;
+        }
+        Gamedata.money -= t->price;
         Tower *nt = g_malloc(sizeof(Tower));
         memcpy(nt,t,sizeof(Tower));
         nt->x = x;
@@ -469,6 +479,8 @@ void GameNew(void)
     Gamedata.TowerList = NULL;
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Gamedata.TowerTemplates = g_hash_table_new(g_int_hash,g_int_equal);
+    Gamedata.money = 0;
+    Gamedata.score = 0;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");

@@ -51,11 +51,11 @@ int VideoSetMode(int w, int h);
 int VideoInit(void);
 void VideoDraw(void);
 Texture VideoLoadTexture(char *filename);
+String * VideoLoadText(char *string, SDL_Color fg,int ft);
+void VideoDrawNumber(int x, int y, int val);
 
-String * VideoLoadText(char *string, SDL_Color fg);
 SDL_Surface *screen;
-
-TTF_Font *font;
+TTF_Font *font, *monofont;
 GHashTable *TextureTable;
 
 #endif /* __VIDEO_H__ */

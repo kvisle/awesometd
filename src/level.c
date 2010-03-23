@@ -64,6 +64,8 @@ int LevelLoad(char *filename)
                     map = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&mapsize,&error);
                 if ( g_pattern_match_simple("name",keys[y]) )
                     mapname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("money",keys[y]) )
+                    Gamedata.money = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
             }
 //            printf("Width: %d, Height: %d\n",w,h);
 //            printf("The map contained %d elements! (%d * %d = %d)\n",(int)mapsize,w,h,w*h);
@@ -85,6 +87,10 @@ int LevelLoad(char *filename)
                     e.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("maxhp",keys[y]) )
                     e.max_hp = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("score",keys[y]) )
+                    e.score = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("money",keys[y]) )
+                    e.money = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
                     gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
@@ -119,6 +125,8 @@ int LevelLoad(char *filename)
                     t.reloadtime = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("range",keys[y]) )
                     t.range = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("price",keys[y]) )
+                    t.price = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
                     gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);

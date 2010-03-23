@@ -400,4 +400,6 @@ void VideoGameDraw(void)
     g_slist_foreach(Gamedata.TextList,VideoGameDrawText,NULL);
     VideoGameDrawCursor();
     VideoGameDrawToolbar();
+    VideoDrawNumber(screen->w-64,screen->h-60,Gamedata.money);
+    VideoDrawNumber(screen->w-64,screen->h-30,Gamedata.score);
 }
