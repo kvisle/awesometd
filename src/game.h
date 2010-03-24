@@ -48,6 +48,17 @@ typedef struct enemy {
     int money;
 }Enemy;
 
+typedef struct projectile {
+    int x,y;
+    gchar *name;
+    int damage;
+    int type;
+    int speed;
+    int tx,ty;
+    int used;
+    int rotation;
+}Projectile;
+
 typedef struct tower {
     int x,y;
     gchar *name;
@@ -59,18 +70,8 @@ typedef struct tower {
     int rotationgoal;
     int range;
     Texture *tex;
+    Projectile *projectile;
 }Tower;
-
-typedef struct projectile {
-    int x,y;
-//    gchar *name;
-    int damage;
-    int type;
-    int speed;
-    int tx,ty;
-    int used;
-    int rotation;
-}Projectile;
 
 typedef struct wave {
     gint start;
@@ -88,6 +89,7 @@ struct gamedata{
     GSList *ProjectileList;
     GHashTable *EnemyTemplates;
     GHashTable *TowerTemplates;
+    GHashTable *ProjectileTemplates;
     GSList *WaveList;
     GSList *TextList;
     int GameStepN;

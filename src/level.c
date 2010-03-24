@@ -112,11 +112,29 @@ int LevelLoad(char *filename)
             e.moved = 0;
             EnemyTemplateAdd(id,&e);
         }
+        else if ( g_pattern_match_simple("Projectile_*",groups[i]) )
+        {
+            Projectile p;
+            int id;
+            sscanf(groups[i],"Projectile_%d",&id);
+
+            for (y=0;y<c2;y++)
+            {
+                if ( g_pattern_match_simple("name",keys[y]) )
+                    p.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("speed",keys[y]) )
+                    p.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("damage",keys[y]) )
+                    p.damage = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+            }
+            ProjectileTemplateAdd(id,&p);
+        }
         else if ( g_pattern_match_simple("Tower_*",groups[i]) )
         {
             Tower t;
             int id;
             sscanf(groups[i],"Tower_%d",&id);
+            printf("Address for t.projectile: %x\n",t.projectile);
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
@@ -127,6 +145,11 @@ int LevelLoad(char *filename)
                     t.range = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("price",keys[y]) )
                     t.price = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("projectile",keys[y]) )
+                {
+                    gint z = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                    t.projectile = g_hash_table_lookup(Gamedata.ProjectileTemplates,&z);
+                }
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
                     gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
@@ -142,6 +165,7 @@ int LevelLoad(char *filename)
                     }
                 }
             }
+            printf("Address for t.projectile: %x\n",t.projectile);
             t.frame = 0;
             t.reloadtimeleft = 0;
             t.rotation = 0;

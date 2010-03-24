@@ -250,6 +250,17 @@ void EnemyPrint(gpointer data, gpointer user_data)
     printf("The enemy has %d in hp - spawning in %d!\n",e->cur_hp, e->spawn_in);
 }
 
+void ProjectileTemplateAdd(int id,Projectile *p)
+{
+    gint *pid = g_malloc(sizeof(gint));
+    Projectile *pt = g_malloc(sizeof(Projectile));
+    memcpy(pt,p,sizeof(Projectile));
+    *pid = id;
+    printf("inserting\n");
+    g_hash_table_insert(Gamedata.ProjectileTemplates,pid,pt);
+    printf("inserted\n");
+}
+
 void EnemyTemplateAdd(int id,Enemy *e)
 {
     gint *eid = g_malloc(sizeof(gint));
@@ -304,7 +315,7 @@ void ProjectileCheckHit(gpointer data, gpointer user_data)
     if ( p->x >= e->x-32 && p->y >= e->y-32 &&
          p->x < e->x && p->y < e->y )
     {
-        e->cur_hp--;
+        e->cur_hp -= p->damage;
         p->used = 1;
         if ( e->cur_hp <= 0 )
         {
@@ -411,11 +422,12 @@ void TowerMove(gpointer data, gpointer user_data)
     {
         t->reloadtimeleft = t->reloadtime;
         Projectile *p = g_malloc(sizeof(Projectile));
+        memcpy(p,t->projectile,sizeof(Projectile));
         p->x = ce[0]-16;
         p->y = ce[1]-16;
         p->tx = ce[3]-16;
         p->ty = ce[4]-16;
-        p->speed = 5;
+//        p->speed = 5;
         p->used = 0;
         p->rotation = t->rotationgoal;
         Gamedata.ProjectileList = g_slist_insert(Gamedata.ProjectileList,p,0);
@@ -479,6 +491,7 @@ void GameNew(void)
     Gamedata.TowerList = NULL;
     Gamedata.EnemyTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Gamedata.TowerTemplates = g_hash_table_new(g_int_hash,g_int_equal);
+    Gamedata.ProjectileTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Gamedata.money = 0;
     Gamedata.score = 0;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);

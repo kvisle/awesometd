@@ -39,6 +39,16 @@ dir=2
 x=19
 y=2
 
+# Projectile definitions; Towers define which projectile they want to use.
+#
+# name      = A string naming the projectile.
+# damage    = The amount of damage on impact.
+# speed     = The speed of the projectile.
+[Projectile_1]
+name=Laser 1
+damage=5
+speed=6
+
 # Tower definitions; The towers appear on the toolbar in the order they are
 # added in this file.
 #
@@ -52,6 +62,7 @@ reloadtime=10
 range=100
 gfx=twrPillbox.png
 price=20
+projectile=1
 
 # Enemy-definitions.
 # name      = A string naming the enemy.
