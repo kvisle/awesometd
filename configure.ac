@@ -11,11 +11,25 @@ AM_INIT_AUTOMAKE(awesometd, 0.4-devel, [-Wall -Werror foreign])
 
 # Checks for programs.
 AC_PROG_CC
+AM_PROG_CC_C_O
+AC_PROG_INSTALL
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lGL':
+PKG_CHECK_MODULES([GL],[gl])
+PKG_CHECK_MODULES([GLU],[glu])
 PKG_CHECK_MODULES([SDL],[sdl])
+AC_CHECK_LIB([jpeg],[main])
+AC_CHECK_LIB([png],[main])
+AC_CHECK_LIB([z],[main])
+AC_CHECK_LIB([tiff],[main])
+AC_CHECK_LIB([png],[main])
+AC_CHECK_LIB([z],[main])
+AC_CHECK_LIB([SDL_image],[main])
+AC_CHECK_LIB([freetype],[main])
+AC_CHECK_LIB([SDL_ttf],[main])
 PKG_CHECK_MODULES([GLIB],[glib-2.0])
+
 AC_CHECK_LIB([GL], [main])
 # FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [main])
