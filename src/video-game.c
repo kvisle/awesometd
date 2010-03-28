@@ -35,6 +35,67 @@
 #define SNAP_CAMERA_AT_W    128
 #define SNAP_CAMERA_AT_H    128
 
+typedef struct vgicons {
+    Texture *money;
+    Texture *score;
+}VGIcons_t;
+
+static VGIcons_t VGIcons;
+
+void VideoGameInitIcons(void)
+{
+    Texture *t = g_hash_table_lookup(TextureTable,"icoMoney.png");
+    if ( t )
+    {
+        if ( t->texid == 0 )
+        {
+            *t = VideoLoadTexture(t->filename);
+        }
+        VGIcons.money = t;
+    }
+    t = g_hash_table_lookup(TextureTable,"icoScore.png");
+    if ( t )
+    {
+        if ( t->texid == 0 )
+        {
+            *t = VideoLoadTexture(t->filename);
+        }
+        VGIcons.score = t;
+    }
+}
+
+void VideoGameDrawIcons(void)
+{
+    glPushMatrix();
+    GLfloat vcoords[] = {
+        -12.0, -16.0,
+        12.0, -16.0,
+        12.0, 16.0,
+        -12.0, 16.0
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    };
+    glTranslatef(screen->w-24,screen->h-48,0.0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, VGIcons.money->texid);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords);
+    glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glBindTexture(GL_TEXTURE_2D, VGIcons.score->texid);
+    glTranslatef(0.0,28,0.0);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
 void VideoGameSnapCamera(void)
 {
     if ( LevelCamera[0] > screen->w - SNAP_CAMERA_AT_W )      LevelCamera[0] = screen->w - SNAP_CAMERA_AT_W;
@@ -96,6 +157,8 @@ void VideoGameDrawCursor(void)
         glVertexPointer(2, GL_FLOAT, 0, vcoords);
         glEnableClientState(GL_VERTEX_ARRAY);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        glTranslatef(16.0,16.0,0.0);
+        VideoDrawCircle(100);
     }
     glPopMatrix();
 }
@@ -237,27 +300,27 @@ void VideoGameCoverEdges(void)
     glPushMatrix();
     glTranslatef(LevelCamera[0],LevelCamera[1],0.0);
     GLfloat vcoords[] = {
-        -64.0, -64.0,
-        64.0+(32*Level.w), -64.0,
-        64.0+(32*Level.w), 0.0,
-        -64.0,0.0
+        -6400.0, -6400.0,
+        6400.0+(32*Level.w), -6400.0,
+        6400.0+(32*Level.w), 0.0,
+        -6400.0,0.0
     };
     GLfloat vcoords2[] = {
-        -64.0, Level.h*32,
-        64.0+(32*Level.w), Level.h*32,
-        64.0+(32*Level.w), Level.h*32+64.0,
-        -64.0,Level.h*32+64.0
+        -6400.0, Level.h*32,
+        6400.0+(32*Level.w), Level.h*32,
+        6400.0+(32*Level.w), Level.h*32+6400.0,
+        -6400.0,Level.h*32+6400.0
     };
     GLfloat vcoords3[] = {
-        -64.0, 0.0,
+        -6400.0, 0.0,
         0.0, 0.0,
         0.0, Level.h*32,
-        -64.0, Level.h*32
+        -6400.0, Level.h*32
     };
     GLfloat vcoords4[] = {
         Level.w*32, 0.0,
-        Level.w*32+64, 0.0,
-        Level.w*32+64, Level.h*32,
+        Level.w*32+6400, 0.0,
+        Level.w*32+6400, Level.h*32,
         Level.w*32, Level.h*32
     };
     glColor4d( 0.0f, 0.0f, 0.0f, 1.0f);
@@ -393,13 +456,14 @@ void VideoGameDraw(void)
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
     g_slist_foreach(Gamedata.TowerList,VideoGameDrawTower,NULL);
     g_slist_foreach(Gamedata.ProjectileList,VideoGameDrawProjectiles,NULL);
+    VideoGameDrawCursor();
     VideoGameCoverEdges();
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
     VideoGameTextId = 0;
     g_slist_foreach(Gamedata.TextList,VideoGameDrawText,NULL);
-    VideoGameDrawCursor();
     VideoGameDrawToolbar();
-    VideoDrawNumber(screen->w-64,screen->h-60,Gamedata.money);
-    VideoDrawNumber(screen->w-64,screen->h-30,Gamedata.score);
+    VideoDrawNumber(screen->w-32,screen->h-61,Gamedata.money);
+    VideoDrawNumber(screen->w-32,screen->h-31,Gamedata.score);
+    VideoGameDrawIcons();
 }

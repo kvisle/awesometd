@@ -53,6 +53,7 @@ void VideoDraw(void);
 Texture VideoLoadTexture(char *filename);
 String * VideoLoadText(char *string, SDL_Color fg,int ft);
 void VideoDrawNumber(int x, int y, int val);
+void VideoDrawCircle(float r);
 
 SDL_Surface *screen;
 TTF_Font *font, *monofont;

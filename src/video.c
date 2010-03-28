@@ -23,10 +23,12 @@
 #include <GL/gl.h>
 #endif
 #include <dirent.h>
+#include <math.h>
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
 
 #include "video.h"
 #include "video-game.h"
@@ -39,6 +41,20 @@ static char *TextureDirectories[] = {
 };
 
 static String *Numbers;
+
+void VideoDrawCircle(float r)
+{
+    int i;
+    GLfloat vcoords[360*2];
+    for (i=0;i<360;i++) {
+        vcoords[i*2] = cos(i*(M_PI/180));
+        vcoords[i*2+1] = sin(i*(M_PI/180));
+    }
+    glScalef(r,r,0.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,360);
+}
 
 void VideoScanDirForTextures(char * dir)
 {
@@ -154,6 +170,9 @@ int VideoInit(void)
     int x = VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
     SDL_Color tc = { 255, 255, 255 };
     Numbers = VideoLoadText("0123456789",tc,1);
+
+    VideoGameInitIcons();
+
     return x;
 }
 
