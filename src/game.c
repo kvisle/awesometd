@@ -31,6 +31,27 @@
 
 //static GSList *Gamedata.EnemyList;
 
+void ClickToolbarButton(int button)
+{
+    Tower *t;
+    if ( button == 0 )
+    {
+        Gamedata.button_selected = 0;
+        return;
+    }
+    t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
+    if ( t )
+    {
+        Gamedata.button_selected = button;
+    }
+}
+
+void ClickMap(int x, int y)
+{
+    if ( Gamedata.button_selected > 0 )
+        TowerAdd(Gamedata.button_selected,x,y);
+}
+
 void MessageAdd(char *string)
 {
     String *s;// = g_malloc(sizeof(String));
@@ -437,6 +458,7 @@ void TowerMove(gpointer data, gpointer user_data)
 
 void TowerAdd(int id, int x, int y)
 {
+    if ( id == 0 ) return;
     if ( x > Level.w || x < 0 || y > Level.h || y < 0 ) return;
 
     gint loc[] = { x,y,0 };

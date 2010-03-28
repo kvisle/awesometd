@@ -206,8 +206,12 @@ void VideoGameDrawCursor(void)
         glVertexPointer(2, GL_FLOAT, 0, vcoords);
         glEnableClientState(GL_VERTEX_ARRAY);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        glTranslatef(16.0,16.0,0.0);
-        VideoDrawCircle(100);
+        if ( Gamedata.button_selected > 0 )
+        {
+            glTranslatef(16.0,16.0,0.0);
+            Tower *t = g_hash_table_lookup(Gamedata.TowerTemplates,&Gamedata.button_selected);
+            VideoDrawCircle(t->range);
+        }
     }
     glPopMatrix();
 }
@@ -477,7 +481,10 @@ void VideoGameDrawToolbarTowerButton(gpointer key, gpointer value, gpointer user
         1.0, 1.0,
         0.5, 1.0
     };
-    glColor4d(1.0,1.0,1.0,1.0f);
+    if ( Gamedata.button_selected == *id )
+        glColor4d(1.0,1.0,1.0,0.5f);
+    else
+        glColor4d(1.0,1.0,1.0,1.0f);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,t->tex->texid);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
@@ -521,7 +528,10 @@ void VideoGameDrawToolbar(void)
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
 
     glTranslatef(32.0,32.0,0.0);
-    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    if ( Gamedata.button_selected == 0 )
+        glColor4d(1.0f,1.0f,1.0f,0.5f);
+    else
+        glColor4d(1.0f,1.0f,1.0f,1.0f);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, VGIcons.pointer->texid);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);

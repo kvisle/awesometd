@@ -66,7 +66,9 @@ int EventLoop(void) {
                         break;
                     case SDL_BUTTON_LEFT:
                         if ( eventqueue.button.state == SDL_RELEASED )
-                            TowerAdd(1,(eventqueue.button.x-LevelCamera[0])/32+1,(eventqueue.button.y-LevelCamera[1])/32+1);
+                            ClickMap((eventqueue.button.x-LevelCamera[0])/32+1,(eventqueue.button.y-LevelCamera[1])/32+1);
+                        if ( screen->h - eventqueue.button.y < 64 )
+                            ClickToolbarButton(eventqueue.button.x/64);
                         break;
                 }
             break;
