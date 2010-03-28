@@ -99,6 +99,12 @@ int VideoSetMode(int w, int h) {
     return 0;
 }
 
+void VideoFreeText(String *ptr)
+{
+    glDeleteTextures(1,&(ptr->texid));
+    g_free(ptr);
+}
+
 String * VideoLoadText(char *str, SDL_Color fg, int ft)
 {
     TTF_Font *f;

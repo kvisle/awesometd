@@ -134,7 +134,6 @@ int LevelLoad(char *filename)
             Tower t;
             int id;
             sscanf(groups[i],"Tower_%d",&id);
-            printf("Address for t.projectile: %x\n",t.projectile);
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
@@ -165,7 +164,6 @@ int LevelLoad(char *filename)
                     }
                 }
             }
-            printf("Address for t.projectile: %x\n",t.projectile);
             t.frame = 0;
             t.reloadtimeleft = 0;
             t.rotation = 0;

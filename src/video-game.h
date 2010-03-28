@@ -25,6 +25,7 @@
 #define CELL_SIZE_W 32
 #define CELL_SIZE_H 32
 
+void VideoGameUpdateTooltip(int button);
 void VideoGameInitIcons(void);
 void VideoGameSnapCamera(void);
 void VideoGameDraw(void);

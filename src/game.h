@@ -95,6 +95,7 @@ struct gamedata{
     int GameStepN;
     int money;
     int score;
+    int button_selected;
 };
 
 void EnemyFreeAll(void);

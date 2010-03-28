@@ -38,9 +38,45 @@
 typedef struct vgicons {
     Texture *money;
     Texture *score;
+
+    Texture *pointer;
+    int tooltip_no;
+    String *tooltip;
 }VGIcons_t;
 
 static VGIcons_t VGIcons;
+
+void VideoGameUpdateTooltip(int button)
+{
+    if ( button == VGIcons.tooltip_no ) return;
+
+    SDL_Color fg = { 255,255,255 };
+    Tower *t;
+    gchar *string;
+
+    VideoFreeText(VGIcons.tooltip);
+    if ( button == 0 )
+    {
+        VGIcons.tooltip = VideoLoadText("Cursor",fg,1);
+        VGIcons.tooltip_no = 0;
+        VGIcons.tooltip->alpha = 100;
+        return;
+    }
+    t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
+    if ( t )
+    {
+        string = g_strdup_printf("%s, costs %d$",t->name,t->price);
+        VGIcons.tooltip = VideoLoadText(string,fg,1);
+        VGIcons.tooltip_no = button;
+        g_free(string);
+    }
+    else
+    {
+        VGIcons.tooltip = VideoLoadText(" ",fg,1);
+        VGIcons.tooltip_no = -1;
+    }
+    VGIcons.tooltip->alpha = 100;
+}
 
 void VideoGameInitIcons(void)
 {
@@ -62,6 +98,19 @@ void VideoGameInitIcons(void)
         }
         VGIcons.score = t;
     }
+    t = g_hash_table_lookup(TextureTable,"icoPointer.png");
+    if ( t )
+    {
+        if ( t->texid == 0 )
+        {
+            *t = VideoLoadTexture(t->filename);
+        }
+        VGIcons.pointer = t;
+    }
+    SDL_Color fg = { 255,255,255 };
+    VGIcons.tooltip = VideoLoadText(" ",fg,1);
+    VGIcons.tooltip_no = -1;
+    VGIcons.tooltip->alpha = 100;
 }
 
 void VideoGameDrawIcons(void)
@@ -263,12 +312,41 @@ void VideoGameDrawWave(gpointer data, gpointer user_data)
 
 int VideoGameTextId;
 
-void VideoGameDrawText(gpointer data, gpointer user_data)
+void VideoGameDrawMessage(gpointer data, gpointer user_data)
 {
     VideoGameTextId++;
     String *s = (String*)data;
     glPushMatrix();
     glTranslatef(100.0,screen->h-100-(VideoGameTextId*20),0.0);
+    GLfloat vcoords[] = {
+        0.0, 0.0,
+        s->w, 0.0,
+        s->w, s->h,
+        0.0, s->h
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    };
+    glColor4d(1.0,1.0,1.0,(double)s->alpha/100);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,s->texid);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
+void VideoGameDrawText(String *s, int x, int y)
+{
+    glPushMatrix();
+    glTranslatef(x,y,0.0);
     GLfloat vcoords[] = {
         0.0, 0.0,
         s->w, 0.0,
@@ -378,8 +456,9 @@ void VideoGameDrawToolbarTowerButton(gpointer key, gpointer value, gpointer user
 {
     gint *id = key;
     Tower *t = (Tower*)value;
+    glTranslatef(64,0.0,0.0);
     glPushMatrix();
-    glTranslatef(50.0+(*id*64)+32,screen->h-32,0.0);
+//    glTranslatef(64,0.0,0.0);
     GLfloat vcoords[] = {
         -32.0, -32.0,
         32.0, -32.0,
@@ -423,12 +502,34 @@ void VideoGameDrawToolbar(void)
         screen->w, 64.0,
         0.0, 64.0
     };
+    GLfloat vcoords_cb[] = {
+        -32.0, -32.0,
+        32.0, -32.0,
+        32.0, 32.0,
+        -32.0, 32.0
+    };
+    GLfloat tcoords[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    };
+
     glColor4d(0.0f,0.0f,0.0f,0.5f);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
-    glPopMatrix();
+
+    glTranslatef(32.0,32.0,0.0);
+    glColor4d(1.0f,1.0f,1.0f,1.0f);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, VGIcons.pointer->texid);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glVertexPointer(2,GL_FLOAT,0,vcoords_cb);
+    glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
     g_hash_table_foreach(Gamedata.TowerTemplates,VideoGameDrawToolbarTowerButton,NULL);
+    glPopMatrix();
 }
 
 void VideoGameDrawProjectiles(gpointer data, gpointer used_data)
@@ -461,9 +562,10 @@ void VideoGameDraw(void)
     VideoGameDrawWaveOSD();
     g_slist_foreach(Gamedata.WaveList,VideoGameDrawWave,NULL);
     VideoGameTextId = 0;
-    g_slist_foreach(Gamedata.TextList,VideoGameDrawText,NULL);
+    g_slist_foreach(Gamedata.TextList,VideoGameDrawMessage,NULL);
     VideoGameDrawToolbar();
     VideoDrawNumber(screen->w-32,screen->h-61,Gamedata.money);
     VideoDrawNumber(screen->w-32,screen->h-31,Gamedata.score);
+    VideoGameDrawText(VGIcons.tooltip,screen->w-VGIcons.tooltip->w-64,screen->h-100);
     VideoGameDrawIcons();
 }

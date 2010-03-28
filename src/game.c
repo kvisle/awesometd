@@ -49,8 +49,9 @@ void MessageDo(gpointer data, gpointer user_data)
     else if ( s->timeleft == 0 && s->alpha > 0 ) s->alpha--;
     else if ( s->timeleft == 0 && s->alpha == 0 ) 
     {
-        glDeleteTextures(1,&(s->texid));
+//        glDeleteTextures(1,&(s->texid));
         Gamedata.TextList = g_slist_remove(Gamedata.TextList,data);
+        VideoFreeText(s);
     }
     else return;
 }
@@ -494,6 +495,7 @@ void GameNew(void)
     Gamedata.ProjectileTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Gamedata.money = 0;
     Gamedata.score = 0;
+    Gamedata.button_selected = 0;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");

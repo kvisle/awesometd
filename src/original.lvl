@@ -49,6 +49,11 @@ name=Laser 1
 damage=5
 speed=6
 
+[Projectile_2]
+name=Laser 2
+damage=7
+speed=7
+
 # Tower definitions; The towers appear on the toolbar in the order they are
 # added in this file.
 #
@@ -63,6 +68,14 @@ range=100
 gfx=twrPillbox.png
 price=20
 projectile=1
+
+[Tower_2]
+name=Not a pillbox
+reloadtime=7
+range=120
+gfx=twrPillbox.png
+price=30
+projectile=2
 
 # Enemy-definitions.
 # name      = A string naming the enemy.

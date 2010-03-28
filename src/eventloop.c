@@ -77,6 +77,10 @@ int EventLoop(void) {
                     LevelCamera[1] += eventqueue.motion.yrel;
                     VideoGameSnapCamera();
                 }
+                if ( screen->h - eventqueue.motion.y < 64 )
+                    VideoGameUpdateTooltip(eventqueue.motion.x/64);
+                else
+                    VideoGameUpdateTooltip(-1);
             break;
             default:
             break;
