@@ -54,7 +54,7 @@ typedef struct projectile {
     int damage;
     int type;
     int speed;
-    int tx,ty;
+    int dx,dy; // Direction
     int used;
     int rotation;
 }Projectile;

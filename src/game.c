@@ -350,15 +350,16 @@ void ProjectileCheckHit(gpointer data, gpointer user_data)
 void ProjectileMove(gpointer data, gpointer user_data)
 {
     Projectile *p = (Projectile*)data;
-    float dx = p->tx - p->x;
-    float dy = p->ty - p->y;
-    float d = sqrt(dx*dx + dy*dy);
-    float x = dx/d;
-    float y = dy/d;
+    // Calculate direction in normalized units
+    float dx = p->dx;
+    float dy = p->dy;
+    float d = 1.0f/sqrt(dx*dx + dy*dy);
+    float x = dx*d;
+    float y = dy*d;
     p->x += x * p->speed;
     p->y += y * p->speed;
-    p->tx += x*10;
-    p->ty += y*10;
+    //p->tx += x*10;
+    //p->ty += y*10;
     g_slist_foreach(Gamedata.EnemyList,ProjectileCheckHit,p);
     if ( p->x < 0 || p->x > Level.w*32 || p->y < 0 || p->y > Level.h*32 ) p->used++;
     if ( p->used )
@@ -447,8 +448,8 @@ void TowerMove(gpointer data, gpointer user_data)
         memcpy(p,t->projectile,sizeof(Projectile));
         p->x = ce[0]-16;
         p->y = ce[1]-16;
-        p->tx = ce[3]-16;
-        p->ty = ce[4]-16;
+        p->dx = ce[3]-16 - p->x;
+        p->dy = ce[4]-16 - p->y;
 //        p->speed = 5;
         p->used = 0;
         p->rotation = t->rotationgoal;
