@@ -49,12 +49,12 @@ typedef struct enemy {
 }Enemy;
 
 typedef struct projectile {
-    int x,y;
+    float x,y;
     gchar *name;
     int damage;
     int type;
-    int speed;
-    int tx,ty;
+    float speed;
+    float tx,ty;
     int used;
     int rotation;
 }Projectile;
