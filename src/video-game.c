@@ -179,7 +179,7 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
     float pos_y = LevelCamera[1]-16+e->y;
     VideoDrawTexturedQuad(pos_x, pos_y, 32.0, 32.0, e->rotation, e->tex, e->frame,1.0);
     VideoDrawColoredQuad(pos_x, pos_y+14, 28.0, 3.0, 0.0, 1.0, 0.0, 0.0, 1.0);
-    VideoDrawColoredQuad(pos_x-((((float)e->max_hp-e->cur_hp)/(float)e->max_hp)*14), pos_y+14, (((float)e->cur_hp/(float)e->max_hp)*28), 3, 0.0, 0.0, 1.0, 0.0, 1.0);
+    VideoDrawColoredQuad(floorf(pos_x-((((float)e->max_hp-e->cur_hp)/(float)e->max_hp)*14)), pos_y+14, (((float)e->cur_hp/(float)e->max_hp)*28), 3, 0.0, 0.0, 1.0, 0.0, 1.0);
 }
 
 /*void VideoGameDrawWaveOSD(void)
