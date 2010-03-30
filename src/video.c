@@ -42,6 +42,58 @@ static char *TextureDirectories[] = {
 
 static String *Numbers;
 
+void VideoDrawTexturedQuad(float x, float y, float w, float h, float rot, Texture *tex, int sliceid,float alpha)
+{
+    float x_start = (float)(sliceid % tex->columns) / (float)tex->columns;
+    float x_end = x_start + 1.0/(float)tex->columns;
+    float y_start = (float)(sliceid / tex->columns) / (float)tex->rows;
+    float y_end = y_start + 1.0/(float)tex->rows;
+
+    glPushMatrix();
+    glTranslatef(x,y,0.0);
+    GLfloat vcoords[] = {
+        ceilf(0.0-(w/2.0)), ceilf(0.0-(h/2.0)),
+        ceilf(w/2.0), ceilf(0.0-(h/2.0)),
+        ceilf(w/2.0), ceilf(h/2.0),
+        ceilf(0.0-(w/2.0)), ceilf(h/2.0)
+    };
+    GLfloat tcoords[] = {
+        x_start, y_start,
+        x_end, y_start,
+        x_end, y_end,
+        x_start, y_end
+    };
+    glColor4d(1.0f,1.0f,1.0f,alpha);
+    glRotated(rot,0.0,0.0,1.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, tex->texid);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
+void VideoDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a)
+{
+    glPushMatrix();
+    glTranslatef(x,y,0.0);
+    GLfloat vcoords[] = {
+        ceilf(0.0-(w/2)), ceilf(0.0-(h/2.0)),
+        ceilf(w/2.0), ceilf(0.0-(h/2.0)),
+        ceilf(w/2.0), ceilf(h/2.0),
+        ceilf(0.0-(w/2.0)), ceilf(h/2.0)
+    };
+    glColor4d(r,g,b,a);
+    glRotated(rot,0.0,0.0,1.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
 void VideoDrawCircle(float r)
 {
     int i;
@@ -101,7 +153,7 @@ int VideoSetMode(int w, int h) {
 
 void VideoFreeText(String *ptr)
 {
-    glDeleteTextures(1,&(ptr->texid));
+    glDeleteTextures(1,&(ptr->tex.texid));
     g_free(ptr);
 }
 
@@ -109,7 +161,10 @@ String * VideoLoadText(char *str, SDL_Color fg, int ft)
 {
     TTF_Font *f;
     String *s = g_malloc(sizeof(String));
-    s->texid = 0;
+    s->tex.texid = 0;
+    s->tex.columns = 1;
+    s->tex.rows = 1;
+    s->tex.frames = 1;
     if ( ft == 0 ) f = font;
     else f = monofont;
     SDL_Surface *i = TTF_RenderUTF8_Blended(f,str,fg);
@@ -117,8 +172,8 @@ String * VideoLoadText(char *str, SDL_Color fg, int ft)
     {
         s->w = i->w;
         s->h = i->h;
-        glGenTextures(1,&(s->texid));
-        glBindTexture(GL_TEXTURE_2D,s->texid);
+        glGenTextures(1,&(s->tex.texid));
+        glBindTexture(GL_TEXTURE_2D,s->tex.texid);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
@@ -131,7 +186,7 @@ String * VideoLoadText(char *str, SDL_Color fg, int ft)
     }
 }
 
-Texture VideoLoadTexture(char *filename)
+Texture VideoLoadTexture(char *filename, int size)
 {
     Texture tex;
     tex.filename = filename;
@@ -146,6 +201,25 @@ Texture VideoLoadTexture(char *filename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0,
         GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
+        switch(size)
+        {
+            case TEXTURE_SIZE_48x64:
+                tex.columns = i->w / 48;
+                tex.rows = i->h / 64;
+                break;
+            case TEXTURE_SIZE_32x32:
+                tex.columns = i->w / 32;
+                tex.rows = i->h / 32;
+                break;
+            case TEXTURE_SIZE_64x64:
+                tex.columns = i->w / 64; 
+                tex.rows = i->h / 64; 
+                break;
+            case TEXTURE_SIZE_128x128:
+                tex.columns = i->w / 128; 
+                tex.rows = i->h / 128;
+                break;
+        }
         tex.frames = i->w/i->h;
         SDL_FreeSurface(i);
         return tex;
@@ -196,7 +270,7 @@ void VideoDrawNumber(int x, int y, int val)
     glPushMatrix();
     glTranslatef(x,y,0.0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,Numbers->texid);
+    glBindTexture(GL_TEXTURE_2D,Numbers->tex.texid);
     glColor4d(1.0,1.0,1.0,1.0);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);

@@ -34,14 +34,22 @@
 
 #define FPS 60
 
+#define TEXTURE_SIZE_48x64      0
+#define TEXTURE_SIZE_32x32      1
+#define TEXTURE_SIZE_64x64      2
+#define TEXTURE_SIZE_128x128    3
+
 typedef struct texture {
     GLuint texid;
     gchar *filename;
     int frames;
+    int rows;
+    int columns;
 }Texture;
 
 typedef struct string {
-    GLuint texid;
+    Texture tex;
+//    GLuint texid;
     int w,h;
     int timeleft;
     int alpha;
@@ -50,11 +58,13 @@ typedef struct string {
 int VideoSetMode(int w, int h);
 int VideoInit(void);
 void VideoDraw(void);
-Texture VideoLoadTexture(char *filename);
+Texture VideoLoadTexture(char *filename, int size);
 String * VideoLoadText(char *string, SDL_Color fg,int ft);
 void VideoFreeText(String *ptr);
 void VideoDrawNumber(int x, int y, int val);
 void VideoDrawCircle(float r);
+void VideoDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a);
+void VideoDrawTexturedQuad(float x, float y, float w, float h, float rot, Texture *tex, int sliceid, float alpha);
 
 SDL_Surface *screen;
 TTF_Font *font, *monofont;

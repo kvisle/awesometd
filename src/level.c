@@ -100,7 +100,7 @@ int LevelLoad(char *filename)
                     {
                         if ( t->texid == 0 )
                         {
-                            *t = VideoLoadTexture(t->filename);
+                            *t = VideoLoadTexture(t->filename,TEXTURE_SIZE_32x32);
                         }
                         e.tex = t;
                     }
@@ -158,7 +158,7 @@ int LevelLoad(char *filename)
                     {
                         if ( tt->texid == 0 )
                         {
-                            *tt = VideoLoadTexture(tt->filename);
+                            *tt = VideoLoadTexture(tt->filename,TEXTURE_SIZE_64x64);
                         }
                         t.tex = tt;
                     }
@@ -194,7 +194,7 @@ int LevelLoad(char *filename)
             w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
                    w->start,intervals,types);
-            w->tex = VideoLoadTexture("../share/gfx/wave.png");
+//            w->tex = VideoLoadTexture("../share/gfx/wave.png");
             WaveAdd(w);
         }
         else if ( g_pattern_match_simple("Start_*",groups[i]) )
