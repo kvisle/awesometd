@@ -196,7 +196,7 @@ void EnemyMove(gpointer data, gpointer user_data)
             }
             if ( e->poisontimeleft == 0 ) e->poisoned = 0;
         }
-        if ( e->poisonfade > 0.0 ) e->poisonfade -= 0.05;
+        if ( e->poisoned == 0 && e->poisonfade > 0.0 ) e->poisonfade -= 0.05;
         e->moved++;
         if ( e->moved % 15 == 0 ) {
             e->frame++;
@@ -383,10 +383,12 @@ void ProjectileCheckHit(gpointer data, gpointer user_data)
         switch(p->type)
         {
             case PROJECTILE_TYPE_IMPACT:
+                if ( p->used ) break;
                 e->cur_hp -= p->damage;
                 p->used = 1;
                 break;
             case PROJECTILE_TYPE_POISON:
+                if ( p->used ) break;
                 e->poisoned = 1;
                 e->poisontimeleft = p->modifier;
                 p->used = 1;
