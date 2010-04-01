@@ -27,9 +27,12 @@
 #include "level.h"
 #include "game.h"
 
-#define PI 3.14159265
-
-//static GSList *Gamedata.EnemyList;
+typedef struct towerdecidetarget {
+    Tower *t;
+    guint bestmatch;
+    float dx;
+    float dy;
+}TowerDecideTarget;
 
 void ClickToolbarButton(int button)
 {
@@ -375,41 +378,41 @@ void TowerLocatedAt(gpointer data, gpointer user_data)
 
 void TowerCheckForWeakestEnemy(gpointer data, gpointer user_data)
 {
-    guint *ce = (guint*)user_data;
+    TowerDecideTarget *tdt = (TowerDecideTarget*)user_data;
     Enemy *e = (Enemy*)data;
-    if ( (guint)e->cur_hp < ce[2] )
+    if ( (guint)e->cur_hp < tdt->bestmatch )
     {
-        ce[2] = e->cur_hp;
-        ce[3] = e->x;
-        ce[4] = e->y;
+        tdt->bestmatch = e->cur_hp;
+        tdt->bestmatch = e->x;
+        tdt->bestmatch = e->y;
     }
 }
 
 void TowerCheckForStrongestEnemy(gpointer data, gpointer user_data)
 {
-    guint *ce = (guint*)user_data;
+    TowerDecideTarget *tdt = (TowerDecideTarget*)user_data;
     Enemy *e = (Enemy*)data;
-    if ( (guint)e->cur_hp > ce[2] || ce[2] == 0xffffffff )
+    if ( (guint)e->cur_hp > tdt->bestmatch || tdt->bestmatch == 0xffffffff )
     {
-        ce[2] = e->cur_hp;
-        ce[3] = e->x;
-        ce[4] = e->y;
+        tdt->bestmatch = e->cur_hp;
+        tdt->dx = e->x;
+        tdt->dy = e->y;
     }
 }
 
 void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
 {
-    guint *ce = (guint*)user_data;
+    TowerDecideTarget *tdt = (TowerDecideTarget*)user_data;
     Enemy *e = (Enemy*)data;
-    gint k1 = (e->x-ce[0]) * (e->x-ce[0]);
-    gint k2 = (e->y-ce[1]) * (e->y-ce[1]);
+    gint k1 = (e->x - (tdt->t->x*32)) * (e->x - (tdt->t->x*32));
+    gint k2 = (e->y - (tdt->t->y*32)) * (e->y - (tdt->t->y*32));
     guint h = sqrt(k1+k2);
 
-    if ( h < ce[2] && h < ce[5] )
+    if ( h < tdt->bestmatch && h < tdt->t->range )
     {
-        ce[2] = h;
-        ce[3] = e->x;
-        ce[4] = e->y;
+        tdt->bestmatch = h;
+        tdt->dx = e->x;
+        tdt->dy = e->y;
     }
 }
 
@@ -417,12 +420,13 @@ void TowerMove(gpointer data, gpointer user_data)
 {
     int i;
     Tower *t = (Tower*)data;
-    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, t->range };
-    g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&ce);
+    TowerDecideTarget tdt = { t, 0xffffffff, 0xffffffff, 0xffffffff };
+//    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, t->range };
+    g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&tdt);
     if ( t->reloadtimeleft > 0 ) t->reloadtimeleft--;
-    if ( ce[3] != 0xffffffff )
+    if ( tdt.bestmatch != 0xffffffff )
     {
-        float angle = (float)(atan2((int)ce[4]-(int)ce[1],(int)ce[3]-(int)ce[0])*180)/PI;
+        float angle = (float)(atan2((int)tdt.dy-((int)t->y*32),(int)tdt.dx-((int)t->x*32))*180)/M_PI;
         t->rotationgoal = angle+90;
     }
     if ( t->rotationgoal != t->rotation )
@@ -441,15 +445,15 @@ void TowerMove(gpointer data, gpointer user_data)
         if ( t->rotation >= 270 ) t->rotation -= 360;
         else if ( t->rotation < -90 ) t->rotation += 360;
     }
-    else if ( t->reloadtimeleft == 0 && ce[2] < 0xffffffff )
+    else if ( t->reloadtimeleft == 0 && tdt.bestmatch < 0xffffffff )
     {
         t->reloadtimeleft = t->reloadtime;
         Projectile *p = g_malloc(sizeof(Projectile));
         memcpy(p,t->projectile,sizeof(Projectile));
-        p->x = ce[0]-16;
-        p->y = ce[1]-16;
-        p->dx = ce[3]-16 - p->x;
-        p->dy = ce[4]-16 - p->y;
+        p->x = t->x*32-16;
+        p->y = t->y*32-16;
+        p->dx = tdt.dx-16 - p->x;
+        p->dy = tdt.dy-16 - p->y;
 //        p->speed = 5;
         p->used = 0;
         p->rotation = t->rotationgoal;
