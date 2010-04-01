@@ -42,7 +42,7 @@ static char *TextureDirectories[] = {
 
 static String *Numbers;
 
-void VideoDrawTexturedQuad(float x, float y, float w, float h, float rot, Texture *tex, int sliceid,float alpha)
+void VideoDrawTexturedQuadC(float x, float y, float w, float h, float rot, Texture *tex, int sliceid,float r, float g, float b, float alpha)
 {
     float x_start = (float)(sliceid % tex->columns) / (float)tex->columns;
     float x_end = x_start + 1.0/(float)tex->columns;
@@ -63,7 +63,7 @@ void VideoDrawTexturedQuad(float x, float y, float w, float h, float rot, Textur
         x_end, y_end,
         x_start, y_end
     };
-    glColor4d(1.0f,1.0f,1.0f,alpha);
+    glColor4d(r,g,b,alpha);
     glRotated(rot,0.0,0.0,1.0);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
     glEnableClientState(GL_VERTEX_ARRAY);

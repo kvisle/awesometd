@@ -64,7 +64,9 @@ void VideoFreeText(String *ptr);
 void VideoDrawNumber(int x, int y, int val);
 void VideoDrawCircle(float r);
 void VideoDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a);
-void VideoDrawTexturedQuad(float x, float y, float w, float h, float rot, Texture *tex, int sliceid, float alpha);
+
+#define VideoDrawTexturedQuad(x,y,w,h,rot,tex,sliceid,alpha) VideoDrawTexturedQuadC(x,y,w,h,rot,tex,sliceid,1.0,1.0,1.0,alpha)
+void VideoDrawTexturedQuadC(float x, float y, float w, float h, float rot, Texture *tex, int sliceid, float r, float g, float b, float alpha);
 
 SDL_Surface *screen;
 TTF_Font *font, *monofont;

@@ -110,6 +110,8 @@ int LevelLoad(char *filename)
             e.progress = 0;
             e.rotation = 0;
             e.moved = 0;
+            e.poisoned = 0;
+            e.poisonfade = 0;
             EnemyTemplateAdd(id,&e);
         }
         else if ( g_pattern_match_simple("Projectile_*",groups[i]) )
@@ -126,6 +128,10 @@ int LevelLoad(char *filename)
                     p.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("damage",keys[y]) )
                     p.damage = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("modifier",keys[y]) )
+                    p.modifier = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("type",keys[y]) )
+                    p.type = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
             }
             ProjectileTemplateAdd(id,&p);
         }

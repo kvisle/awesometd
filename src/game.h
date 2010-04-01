@@ -28,6 +28,9 @@
 #define DIR_S 2
 #define DIR_W 3
 
+#define PROJECTILE_TYPE_IMPACT  0
+#define PROJECTILE_TYPE_POISON  1
+
 void GameStep(void);
 
 typedef struct enemy {
@@ -38,6 +41,9 @@ typedef struct enemy {
     int progress;
     int spawn_in;
     int frame;
+    int poisoned;
+    int poisontimeleft;
+    float poisonfade;
     gint sp;
     gchar *name;
     Texture *tex;
@@ -53,6 +59,7 @@ typedef struct projectile {
     gchar *name;
     int damage;
     int type;
+    int modifier;
     float speed;
     float dx,dy;
     int used;
@@ -83,6 +90,13 @@ typedef struct wave {
     Texture tex;
 }Wave;
 
+typedef struct particlegroup {
+    GLfloat xpos, ypos;
+    GLfloat particles[8];
+    GLfloat r,g,b,alpha;
+    GLfloat size;
+}ParticleGroup;
+
 struct gamedata{
     GSList *EnemyList;
     GSList *TowerList;
@@ -92,6 +106,7 @@ struct gamedata{
     GHashTable *ProjectileTemplates;
     GSList *WaveList;
     GSList *TextList;
+    GSList *ParticleList;
     int GameStepN;
     int money;
     int score;

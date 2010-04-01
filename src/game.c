@@ -34,6 +34,33 @@ typedef struct towerdecidetarget {
     float dy;
 }TowerDecideTarget;
 
+void PoisonCloudAdd(int x, int y)
+{
+    int i;
+    ParticleGroup *p = g_malloc(sizeof(ParticleGroup));
+    for ( i=0 ; i<4 ; i++ )
+    {
+        int rx = rand() % 32 - 16;
+        int ry = rand() % 32 - 16;
+        p->particles[i*2] = rx;
+        p->particles[i*2+1] = ry;
+    }
+    p->xpos = x;
+    p->ypos = y;
+    p->r = p->b = 0.0;
+    p->g = 1.0;
+    p->alpha = 0.5;
+    p->size = 6.0;
+    Gamedata.ParticleList = g_slist_insert(Gamedata.ParticleList,p,-1);
+}
+
+void PoisonCloudMove(gpointer data, gpointer user_data)
+{
+    ParticleGroup *p = (ParticleGroup*)data;
+    p->alpha -= 0.0125;
+    p->size += 0.5;
+}
+
 void ClickToolbarButton(int button)
 {
     Tower *t;
@@ -109,6 +136,8 @@ void EnemyFreeIfDead(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)data;
     if ( e->cur_hp <= 0 ) {
+        Gamedata.score += e->score;
+        Gamedata.money += e->money;
         Gamedata.EnemyList = g_slist_remove(Gamedata.EnemyList,e);
         free(e);
     }
@@ -156,7 +185,18 @@ void EnemyMove(gpointer data, gpointer user_data)
         e->spawn_in--;
     }
     else
-    {   
+    {
+        if ( e->poisoned > 0 )
+        {
+            e->poisontimeleft--;
+            if ( e->poisonfade < 1.0 ) e->poisonfade += 0.05;
+            if ( e->poisontimeleft % 10 == 0 ) {
+                e->cur_hp -= e->poisoned;
+                PoisonCloudAdd(e->x-16,e->y-16);
+            }
+            if ( e->poisontimeleft == 0 ) e->poisoned = 0;
+        }
+        if ( e->poisonfade > 0.0 ) e->poisonfade -= 0.05;
         e->moved++;
         if ( e->moved % 15 == 0 ) {
             e->frame++;
@@ -340,12 +380,17 @@ void ProjectileCheckHit(gpointer data, gpointer user_data)
     if ( p->x >= e->x-32 && p->y >= e->y-32 &&
          p->x < e->x && p->y < e->y )
     {
-        e->cur_hp -= p->damage;
-        p->used = 1;
-        if ( e->cur_hp <= 0 )
+        switch(p->type)
         {
-            Gamedata.score += e->score;
-            Gamedata.money += e->money;
+            case PROJECTILE_TYPE_IMPACT:
+                e->cur_hp -= p->damage;
+                p->used = 1;
+                break;
+            case PROJECTILE_TYPE_POISON:
+                e->poisoned = 1;
+                e->poisontimeleft = p->modifier;
+                p->used = 1;
+                break;
         }
     }
 }
@@ -541,6 +586,7 @@ void GameStep(void)
     g_slist_foreach(Gamedata.TowerList,TowerMove,NULL);
     g_slist_foreach(Gamedata.ProjectileList,ProjectileMove,NULL);
     g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
+    g_slist_foreach(Gamedata.ParticleList,PoisonCloudMove,NULL);
     g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
     EnemyFreeDead();
 }

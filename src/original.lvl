@@ -44,15 +44,21 @@ y=2
 # name      = A string naming the projectile.
 # damage    = The amount of damage on impact.
 # speed     = The speed of the projectile.
+# modifier  = An integer used in combination with some projectile types.
+# type      =   0   Impact, damages the enemy on impact.
+#               1   Poison, poinsons the enemy for modifier ticks.
 [Projectile_1]
 name=Laser 1
 damage=5
 speed=6
+type=0
 
 [Projectile_2]
-name=Laser 2
+name=Poison dart
 damage=7
 speed=7
+modifier=600
+type=1
 
 # Tower definitions; The towers appear on the toolbar in the order they are
 # added in this file.
@@ -71,8 +77,8 @@ projectile=1
 
 [Tower_2]
 name=Not a pillbox
-reloadtime=7
-range=120
+reloadtime=100
+range=300
 gfx=twrPillbox.png
 price=30
 projectile=2

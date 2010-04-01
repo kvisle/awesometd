@@ -177,7 +177,7 @@ void VideoGameDrawEnemy(gpointer data, gpointer user_data)
     Enemy *e = (Enemy*)data;
     float pos_x = LevelCamera[0]-16+e->x;
     float pos_y = LevelCamera[1]-16+e->y;
-    VideoDrawTexturedQuad(pos_x, pos_y, 32.0, 32.0, e->rotation, e->tex, e->frame,1.0);
+    VideoDrawTexturedQuadC(pos_x, pos_y, 32.0, 32.0, e->rotation, e->tex, e->frame,1.0-e->poisonfade,1.0,1.0-e->poisonfade,1.0);
     VideoDrawColoredQuad(pos_x, pos_y+14, 28.0, 3.0, 0.0, 1.0, 0.0, 0.0, 1.0);
     VideoDrawColoredQuad(floorf(pos_x-((((float)e->max_hp-e->cur_hp)/(float)e->max_hp)*14)), pos_y+14, (((float)e->cur_hp/(float)e->max_hp)*28), 3, 0.0, 0.0, 1.0, 0.0, 1.0);
 }
@@ -323,12 +323,28 @@ void VideoGameDrawProjectiles(gpointer data, gpointer used_data)
     VideoDrawColoredQuad(LevelCamera[0]+(p->x), LevelCamera[1]+(p->y), 2, 8, p->rotation, 1.0, 0.0, 0.0, 1.0);
 }
 
+void VideoGameDrawParticles(gpointer data, gpointer user_data)
+{
+    ParticleGroup *p = (ParticleGroup*)data;
+    glPushMatrix();
+    glEnable(GL_POINT_SMOOTH);
+    glTranslatef(LevelCamera[0]+p->xpos,LevelCamera[1]+p->ypos,0.0);
+    glColor4d(p->r,p->g,p->b,p->alpha);
+    glPointSize(p->size);
+//    glScalef(p->size,p->size,0.0);
+    glVertexPointer(2,GL_FLOAT,0,p->particles);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_POINTS,0,4);
+    glPopMatrix();
+}
+
 void VideoGameDraw(void)
 {
     VideoGameDrawLevel();
     g_slist_foreach(Gamedata.EnemyList,VideoGameDrawEnemy,NULL);
     g_slist_foreach(Gamedata.TowerList,VideoGameDrawTower,NULL);
     g_slist_foreach(Gamedata.ProjectileList,VideoGameDrawProjectiles,NULL);
+    g_slist_foreach(Gamedata.ParticleList,VideoGameDrawParticles,NULL);
     VideoGameDrawCursor();
     VideoGameCoverEdges();
 //    VideoGameDrawWaveOSD();
