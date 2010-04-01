@@ -161,12 +161,6 @@ void EnemyFreeAll(void)
     g_slist_foreach(Gamedata.EnemyList,EnemyFree,NULL);
 }
 
-void EnemyLoseHP(gpointer data, gpointer user_data)
-{
-    Enemy *e = (Enemy*) data;
-    // eh wat?
-}
-
 void EnemyCheckSquare(gpointer data, gpointer user_data)
 {
     Enemy *e = (Enemy*)user_data;
