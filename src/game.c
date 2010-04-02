@@ -59,7 +59,7 @@ void PoisonCloudMove(gpointer data, gpointer user_data)
     ParticleGroup *p = (ParticleGroup*)data;
     p->alpha -= 0.0125;
     p->size += 0.5;
-    if ( p->alpha == 0.0 ) Gamedata.ParticleList = g_slist_remove(Gamedata.ParticleList,p);
+    if ( p->alpha <= 0.0 ) Gamedata.ParticleList = g_slist_remove(Gamedata.ParticleList,p);
 }
 
 void ClickToolbarButton(int button)
