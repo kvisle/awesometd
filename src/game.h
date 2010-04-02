@@ -111,6 +111,7 @@ struct gamedata{
     int money;
     int score;
     int button_selected;
+    int NextLevel;
 };
 
 void EnemyFreeAll(void);

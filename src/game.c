@@ -358,7 +358,11 @@ void WaveMove(gpointer data, gpointer user_data)
         w->blowup++;
         return;
     }
-    if ( w->start == 0 ) EnemySpawn(w);
+    if ( w->start == 0 ) 
+    {
+        EnemySpawn(w);
+        Gamedata.WaveList = g_slist_remove(Gamedata.WaveList,w);
+    }
 }
 
 void StartPositionPrint(gpointer key, gpointer value, gpointer user_data)
@@ -565,6 +569,7 @@ void GameNew(void)
     Gamedata.money = 0;
     Gamedata.score = 0;
     Gamedata.button_selected = 0;
+    Gamedata.NextLevel = 0;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
@@ -586,4 +591,9 @@ void GameStep(void)
     g_slist_foreach(Gamedata.ParticleList,PoisonCloudMove,NULL);
     g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
     EnemyFreeDead();
+    if ( g_slist_length(Gamedata.EnemyList) + g_slist_length(Gamedata.WaveList) == 0 && Gamedata.NextLevel == 0 )
+    {
+        Gamedata.NextLevel++;
+        MessageAdd("We completed the level! YAY!");
+    }
 }
