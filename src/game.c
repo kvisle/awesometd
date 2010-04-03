@@ -570,6 +570,9 @@ void GameNew(void)
     Gamedata.score = 0;
     Gamedata.button_selected = 0;
     Gamedata.NextLevel = 0;
+    Gamedata.fps = 0;
+    Gamedata.ticks = SDL_GetTicks();
+    Gamedata.fps_gamesteps = 0;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
@@ -595,5 +598,11 @@ void GameStep(void)
     {
         Gamedata.NextLevel++;
         MessageAdd("We completed the level! YAY!");
+    }
+    if ( SDL_GetTicks() >= Gamedata.ticks+1000 )
+    {
+        Gamedata.fps = Gamedata.GameStepN - Gamedata.fps_gamesteps;
+        Gamedata.fps_gamesteps = Gamedata.GameStepN;
+        Gamedata.ticks = SDL_GetTicks();
     }
 }

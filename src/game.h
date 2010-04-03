@@ -112,6 +112,9 @@ struct gamedata{
     int score;
     int button_selected;
     int NextLevel;
+    int ticks;
+    int fps;
+    int fps_gamesteps;
 };
 
 void EnemyFreeAll(void);

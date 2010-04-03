@@ -40,6 +40,7 @@ typedef struct vgicons {
     Texture *score;
 
     Texture *pointer;
+    Texture *point;
     int tooltip_no;
     String *tooltip;
 }VGIcons_t;
@@ -107,6 +108,16 @@ void VideoGameInitIcons(void)
         }
         VGIcons.pointer = t;
     }
+    t = g_hash_table_lookup(TextureTable,"genPoint.png");
+    if ( t )
+    {
+        if ( t->texid == 0 )
+        {
+            *t = VideoLoadTexture(t->filename,TEXTURE_SIZE_32x32);
+        }
+        VGIcons.point = t;
+    }
+
     SDL_Color fg = { 255,255,255 };
     VGIcons.tooltip = VideoLoadText(" ",fg,1);
     VGIcons.tooltip_no = -1;
@@ -325,17 +336,13 @@ void VideoGameDrawProjectiles(gpointer data, gpointer used_data)
 
 void VideoGameDrawParticles(gpointer data, gpointer user_data)
 {
+    int i;
     ParticleGroup *p = (ParticleGroup*)data;
-    glPushMatrix();
-    glEnable(GL_POINT_SMOOTH);
-    glTranslatef(LevelCamera[0]+p->xpos,LevelCamera[1]+p->ypos,0.0);
-    glColor4d(p->r,p->g,p->b,p->alpha);
-    glPointSize(p->size);
-//    glScalef(p->size,p->size,0.0);
-    glVertexPointer(2,GL_FLOAT,0,p->particles);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glDrawArrays(GL_POINTS,0,4);
-    glPopMatrix();
+    for (i=0;i<4;i++)
+    VideoDrawTexturedQuadC(LevelCamera[0]+p->xpos+p->particles[i*2],LevelCamera[1]+p->ypos+p->particles[i*2+1],
+                          p->size,p->size, 0.0,
+                          VGIcons.point,0,
+                          p->r,p->g,p->b,p->alpha);
 }
 
 void VideoGameDraw(void)
