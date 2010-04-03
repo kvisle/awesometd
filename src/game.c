@@ -204,7 +204,7 @@ void EnemyMove(gpointer data, gpointer user_data)
             if ( e->rotation < 0 ) e->rotation += 360;
         }
         e->progress += e->speed;
-        if ( e->progress > 100 )
+        while ( e->progress > 100 )
         {
             if ( e->y % 32 == 0 && e->x % 32 == 0 )
                 g_slist_foreach(Level.ep,EnemyCheckSquare,e);
