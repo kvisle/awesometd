@@ -2,7 +2,7 @@ Source: awesometd
 Section: games
 Priority: extra
 Maintainer: Trygve Vea <trygve.vea@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libsdl-image1.2-dev, libsdl-ttf2.0-dev, libglib2.0-dev, mesa-common-dev, libglu1-mesa-dev
+Build-Depends: debhelper (>= 7), autotools-dev, libsdl-image1.2-dev, libsdl-ttf2.0-dev, libglib2.0-dev, mesa-common-dev, libglu1-mesa-dev, libxext-dev
 Standards-Version: 3.8.1
 Homepage: http://github.com/kvisle/awesometd/downloads
 
@@ -10,4 +10,6 @@ Package: awesometd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libsdl-image1.2, libsdl-ttf2.0-0, libglib2.0-0
 Description: A Tower Defense game written in C/OpenGL
- blattiblatti
+ Awesome Tower Defense is written in C/OpenGL.  First of all as a personal
+ experiment for the author.  Secondly to satisfy the need of a free Tower 
+ Defense game.
