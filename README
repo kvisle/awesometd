@@ -1,17 +1,8 @@
-Awesome Tower Defense    0.3
-============================
+Awesome Tower Defense    0.3.5
+==============================
 
 Awesome Tower Defense is one of Trygve Vea's pet projects. It is written in
 C/SDL, because C is awesome and SDL is easy. The combination makes it pretty
 easy to port the game into different platforms.
 
 It is also licensed under the GNU General Public License v2.0
-
-It's currently known to work unmodified and natively on the following 
-platforms/architectures:
-
-    GNU/Linux 2.6 x86
-    GNU/Linux 2.6 x86-64
-    Mac OS X x86
-    Mac OS X PPC
-    Windows XP/Vista x86
