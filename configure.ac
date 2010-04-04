@@ -13,6 +13,8 @@ AM_INIT_AUTOMAKE(awesometd, 0.4-devel, [-Wall -Werror foreign])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
+AC_PROG_LN_S
+
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lGL':

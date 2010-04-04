@@ -4,7 +4,7 @@
 #include <glib.h>
 
 static char *BaseDirectories[] = {
-    "/usr/share/awesometd",
+    DATADIR,
     "../share",
     "./share",
     ".",

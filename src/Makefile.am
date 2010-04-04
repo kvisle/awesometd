@@ -10,4 +10,4 @@ awesometd_LDADD = $(GL_LIBS) \
                   $(GLIB_LIBS) 
 
 #awesometd_LDADD += -L/Developer/SDKs/MacOSX10.4u.sdk/usr/X11R6/lib/
-awesometd_CFLAGS = -g $(GL_CFLAGS) $(GLU_CFLAGS) $(SDL_CFLAGS) $(SDL_image_CFLAGS) $(SDL_ttf_CFLAGS) $(GLIB_CFLAGS)
+awesometd_CFLAGS = -DDATADIR=\"$(datadir)/awesometd\" -g $(GL_CFLAGS) $(GLU_CFLAGS) $(SDL_CFLAGS) $(SDL_image_CFLAGS) $(SDL_ttf_CFLAGS) $(GLIB_CFLAGS)
