@@ -29,16 +29,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-
+#include "common.h"
 #include "video.h"
 #include "video-game.h"
-
-static char *TextureDirectories[] = {
-    "/usr/share/awesometd/textures",
-    "../share/textures",
-    ".",
-    "NULL"
-};
 
 static String *Numbers;
 
@@ -126,6 +119,27 @@ void VideoScanDirForTextures(char * dir)
         }
     }
     closedir(datadir);
+    g_free(dir);
+    return;
+}
+
+void VideoScanDirForFonts(char * dir)
+{
+    DIR *datadir;
+    struct dirent *ent;
+    if ((datadir = opendir(dir)) == NULL )
+        return;
+    while (( ent = readdir(datadir)) != NULL )
+    {
+        if ( g_pattern_match_simple("*.ttf",ent->d_name) )
+        {
+            gchar *key = g_strconcat(ent->d_name,NULL);
+            gchar *value = g_strconcat(dir,"/",ent->d_name,NULL);
+            g_hash_table_insert(FontTable,key,value);
+        }
+    }
+    closedir(datadir);
+    g_free(dir);
     return;
 }
 
@@ -235,16 +249,34 @@ int VideoInit(void)
 {
     int i;
     char *h = getenv("HOME");
-    gchar *hgd = g_strconcat(h,"/.awesometd/textures",NULL);
+    gchar *hgd = g_strconcat(h,"/.awesometd",NULL);
+    gchar *fn;
     TextureTable = g_hash_table_new(g_str_hash,g_str_equal);
-    for (i=0;!g_pattern_match_simple("NULL",TextureDirectories[i]);i++)
-        VideoScanDirForTextures(TextureDirectories[i]);
-    VideoScanDirForTextures(hgd);
+    FontTable = g_hash_table_new(g_str_hash,g_str_equal);
+
+    for (i=0;!g_pattern_match_simple("NULL",BaseDirectories[i]);i++)
+    {
+        VideoScanDirForTextures(g_strconcat(BaseDirectories[i],"/textures",NULL));
+        VideoScanDirForFonts(g_strconcat(BaseDirectories[i],"/fonts",NULL));
+    }
+    VideoScanDirForTextures(g_strconcat(hgd,"/textures",NULL));
+    VideoScanDirForFonts(g_strconcat(hgd,"/fonts",NULL));
     g_free(hgd);
 
+
     TTF_Init();
-    font = TTF_OpenFont("../share/fonts/font.ttf",16);
-    monofont = TTF_OpenFont("../share/fonts/mono.ttf",24);
+    fn = g_hash_table_lookup(FontTable,"font.ttf");
+    if (!fn) {
+        printf("FATAL: We don't know where font.ttf is!");
+        return -1;
+    }
+    font = TTF_OpenFont(fn,16);
+    fn = g_hash_table_lookup(FontTable,"mono.ttf");
+    if (!fn) {
+        printf("FATAL: We don't know where mono.ttf is!");
+        return -1;
+    }
+    monofont = TTF_OpenFont(fn,24);
     TTF_SetFontStyle(font,TTF_STYLE_BOLD);
     
     int x = VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);

@@ -27,6 +27,7 @@
 
 #include <glib.h>
 
+#include "common.h"
 #include "video.h"
 #include "video-game.h"
 #include "game.h"

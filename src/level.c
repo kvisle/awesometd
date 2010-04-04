@@ -20,13 +20,50 @@
 #include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <dirent.h>
 
+#include "common.h"
 #include "video.h"
 #include "level.h"
 #include "game.h"
 
-int LevelLoad(char *filename)
+void VideoScanDirForLevels(char * dir)
 {
+    DIR *datadir;
+    struct dirent *ent;
+    if ((datadir = opendir(dir)) == NULL )
+        return;
+    while (( ent = readdir(datadir)) != NULL )
+    {
+        if ( g_pattern_match_simple("*.lvl",ent->d_name) )
+        {
+            gchar *key = g_strconcat(ent->d_name,NULL);
+            gchar *value = g_strconcat(dir,"/",ent->d_name,NULL);
+            g_hash_table_insert(LevelTable,key,value);
+        }
+    }
+    closedir(datadir);
+    g_free(dir);
+    return;
+}
+
+int LevelLoad(char *fn)
+{
+    if ( !LevelTable )
+    {
+        int i;
+        LevelTable = g_hash_table_new(g_str_hash,g_str_equal);
+        for (i=0;!g_pattern_match_simple("NULL",BaseDirectories[i]);i++)
+        {
+            VideoScanDirForLevels(g_strconcat(BaseDirectories[i],"/levels",NULL));
+        }
+    }
+    gchar *filename = g_hash_table_lookup(LevelTable,fn);
+    if (!filename)
+    {
+        printf("Levelfile not found!\n");
+        return -1;
+    }
     GKeyFile *keyfile;
     GError *error = NULL;
     gsize c1, c2;

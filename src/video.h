@@ -70,6 +70,5 @@ void VideoDrawTexturedQuadC(float x, float y, float w, float h, float rot, Textu
 
 SDL_Surface *screen;
 TTF_Font *font, *monofont;
-GHashTable *TextureTable;
 
 #endif /* __VIDEO_H__ */
