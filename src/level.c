@@ -52,11 +52,15 @@ int LevelLoad(char *fn)
     if ( !LevelTable )
     {
         int i;
+        char *h = getenv("HOME");
+        gchar *hgd = g_strconcat(h,"/.awesometd",NULL);
         LevelTable = g_hash_table_new(g_str_hash,g_str_equal);
         for (i=0;!g_pattern_match_simple("NULL",BaseDirectories[i]);i++)
         {
             VideoScanDirForLevels(g_strconcat(BaseDirectories[i],"/levels",NULL));
         }
+        VideoScanDirForLevels(g_strconcat(hgd,"/levels",NULL));
+        g_free(hgd);
     }
     gchar *filename = g_hash_table_lookup(LevelTable,fn);
     if (!filename)
