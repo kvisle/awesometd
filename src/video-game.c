@@ -254,6 +254,7 @@ void VideoGameDrawText(String *s, int x, int y)
 {
     int posx = x+(s->w/2);
     int posy = y+(s->h/2);
+    VideoDrawTexturedQuadC(posx+1, posy+1, s->w, s->h, 0.0, &(s->tex), 0, 0.0, 0.0, 0.0, (float)s->alpha/100);
     VideoDrawTexturedQuad(posx, posy, s->w, s->h, 0.0, &(s->tex), 0,(float)s->alpha/100);
 }
 
