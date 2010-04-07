@@ -167,7 +167,9 @@ void EnemyCheckSquare(gpointer data, gpointer user_data)
     EndPosition *ep = (EndPosition*)data;
     if ( ep->x == e->x / 32 && ep->y == e->y / 32 )
     {
-        e->cur_hp = 0;
+        Gamedata.lives--;
+        Gamedata.EnemyList = g_slist_remove(Gamedata.EnemyList,e);
+//        e->cur_hp = 0;
         MessageAdd("Enemy killed you.");
     }
 }
@@ -568,6 +570,7 @@ void GameNew(void)
     Gamedata.ProjectileTemplates = g_hash_table_new(g_int_hash,g_int_equal);
     Gamedata.money = 0;
     Gamedata.score = 0;
+    Gamedata.lives = 0;
     Gamedata.button_selected = 0;
     Gamedata.NextLevel = 0;
     Gamedata.fps = 0;
@@ -586,14 +589,22 @@ void GameNew(void)
 void GameStep(void)
 {
     if ( Gamedata.GameStepN == 0 ) GameNew();
-    Gamedata.GameStepN++;
-    g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
-    g_slist_foreach(Gamedata.TowerList,TowerMove,NULL);
-    g_slist_foreach(Gamedata.ProjectileList,ProjectileMove,NULL);
-    g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
-    g_slist_foreach(Gamedata.ParticleList,PoisonCloudMove,NULL);
-    g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
+    if ( Gamedata.lives > 0 )
+    {
+        Gamedata.GameStepN++;
+        g_slist_foreach(Gamedata.EnemyList,EnemyMove,NULL);
+        g_slist_foreach(Gamedata.TowerList,TowerMove,NULL);
+        g_slist_foreach(Gamedata.ProjectileList,ProjectileMove,NULL);
+        g_slist_foreach(Gamedata.WaveList,WaveMove,NULL);
+        g_slist_foreach(Gamedata.ParticleList,PoisonCloudMove,NULL);
+        g_slist_foreach(Gamedata.TextList,MessageDo,NULL);
+    }
     EnemyFreeDead();
+    if ( Gamedata.lives == 0 && Gamedata.NextLevel == 0 )
+    {
+        Gamedata.NextLevel--;
+        MessageAdd("Game Over!");
+    }
     if ( g_slist_length(Gamedata.EnemyList) + g_slist_length(Gamedata.WaveList) == 0 && Gamedata.NextLevel == 0 )
     {
         Gamedata.NextLevel++;

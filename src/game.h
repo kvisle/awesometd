@@ -110,6 +110,7 @@ struct gamedata{
     int GameStepN;
     int money;
     int score;
+    int lives;
     int button_selected;
     int NextLevel;
     int ticks;

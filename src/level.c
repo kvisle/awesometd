@@ -107,6 +107,8 @@ int LevelLoad(char *fn)
                     mapname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("money",keys[y]) )
                     Gamedata.money = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("lives",keys[y]) )
+                    Gamedata.lives = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
             }
 //            printf("Width: %d, Height: %d\n",w,h);
 //            printf("The map contained %d elements! (%d * %d = %d)\n",(int)mapsize,w,h,w*h);

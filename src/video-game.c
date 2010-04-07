@@ -363,6 +363,7 @@ void VideoGameDraw(void)
     VideoGameDrawToolbar();
     VideoDrawNumber(screen->w-32,screen->h-61,Gamedata.money);
     VideoDrawNumber(screen->w-32,screen->h-31,Gamedata.score);
+    VideoDrawNumber(screen->w-128,screen->h-31,Gamedata.lives);
     VideoGameDrawText(VGIcons.tooltip,screen->w-VGIcons.tooltip->w-64,screen->h-100);
     VideoGameDrawIcons();
 }
