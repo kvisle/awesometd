@@ -104,7 +104,7 @@ int LevelLoad(char *fn)
                 if ( g_pattern_match_simple("map",keys[y]) )
                     map = g_key_file_get_integer_list(keyfile,groups[i],keys[y],&mapsize,&error);
                 if ( g_pattern_match_simple("name",keys[y]) )
-                    mapname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    mapname = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                 if ( g_pattern_match_simple("money",keys[y]) )
                     Gamedata.money = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("lives",keys[y]) )
@@ -125,7 +125,7 @@ int LevelLoad(char *fn)
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
-                    e.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    e.name = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                 if ( g_pattern_match_simple("speed",keys[y]) )
                     e.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("maxhp",keys[y]) )
@@ -136,7 +136,7 @@ int LevelLoad(char *fn)
                     e.money = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
-                    gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    gchar *tname = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                     Texture *t = g_hash_table_lookup(TextureTable,tname);
                     g_free(tname);
                     if ( t )
@@ -166,7 +166,7 @@ int LevelLoad(char *fn)
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
-                    p.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    p.name = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                 if ( g_pattern_match_simple("speed",keys[y]) )
                     p.speed = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("damage",keys[y]) )
@@ -186,7 +186,7 @@ int LevelLoad(char *fn)
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
-                    t.name = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    t.name = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                 if ( g_pattern_match_simple("reloadtime",keys[y]) )
                     t.reloadtime = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("range",keys[y]) )
@@ -200,7 +200,7 @@ int LevelLoad(char *fn)
                 }
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
-                    gchar *tname = g_key_file_get_string(keyfile,groups[i],keys[y],&error);
+                    gchar *tname = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
                     Texture *tt = g_hash_table_lookup(TextureTable,tname);
                     g_free(tname);
                     if ( tt )
