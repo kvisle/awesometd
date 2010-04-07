@@ -56,8 +56,8 @@ type=0
 
 [Projectile_2]
 name=Poison dart
-damage=7
-speed=7
+damage=9
+speed=9
 modifier=600
 type=1
 
@@ -70,6 +70,7 @@ type=1
 # gfx       = Which texture-file we should use for rendering this tower.
 [Tower_1]
 name=Pillbox
+name[nb_NO]=Bunker
 reloadtime=10
 range=100
 gfx=twrPillbox.png
@@ -77,11 +78,12 @@ price=20
 projectile=1
 
 [Tower_2]
-name=Not a pillbox
+name=Poison Shooter
+name[nb_NO]=Giftskyter
 reloadtime=100
-range=300
+range=200
 gfx=twrPillbox.png
-price=30
+price=35
 projectile=2
 
 # Enemy-definitions.
@@ -94,7 +96,7 @@ projectile=2
 [Enemy_1]
 name=Brute
 speed=50
-maxhp=50
+maxhp=100
 gfx=sprBrute.png
 score=40
 money=5
@@ -102,7 +104,7 @@ money=5
 [Enemy_2]
 name=Bleh
 speed=40
-maxhp=80
+maxhp=140
 gfx=sprBug.png
 score=50
 money=6
@@ -110,7 +112,7 @@ money=6
 [Enemy_3]
 name=Tank
 speed=90
-maxhp=120
+maxhp=200
 gfx=sprTank.png
 score=60
 money=7
@@ -129,18 +131,19 @@ money=7
 # same.
 [Wave_1]
 start=500
-intervals=100;100;100;100;100
-types=1;1;1;1;1
-sp=1;1;1;1;1
+intervals=100;100;100;100;100;100;100;100;100;100;100;100;100;100;100
+types=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
+sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
 
 [Wave_2]
 start=2000
-intervals=145;145;145;145;145
-types=2;2;2;2;2
-sp=1;1;1;1;1
+intervals=145;145;145;145;145;145;145;145;145;145;145;145;145;145;145
+types=2;2;2;2;2;2;2;2;2;2;2;2;2;2;2
+sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
 
 [Wave_3]
 start=3000
-intervals=80;80;80;80;80;80;80
-types=3;3;3;3;3;3;3
-sp=1;1;1;1;1
+intervals=80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80
+types=3;3;3;3;3;3;3;3;3;3;3;3;3;3;3;3;3
+sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
+
