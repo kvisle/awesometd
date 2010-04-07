@@ -134,16 +134,18 @@ start=500
 intervals=100;100;100;100;100;100;100;100;100;100;100;100;100;100;100
 types=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
 sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
+message=You hear marching brutes in the distance.
 
 [Wave_2]
 start=2000
 intervals=145;145;145;145;145;145;145;145;145;145;145;145;145;145;145
 types=2;2;2;2;2;2;2;2;2;2;2;2;2;2;2
 sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
+message=The buzzing sound of insects make you worry
 
 [Wave_3]
 start=3000
 intervals=80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80;80
 types=3;3;3;3;3;3;3;3;3;3;3;3;3;3;3;3;3
 sp=1;1;1;1;1;1;1;1;1;1;1;1;1;1;1;1;1
-
+message=Kim Jong Il and his tanks are on the way

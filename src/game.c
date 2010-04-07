@@ -287,15 +287,15 @@ void EnemyMove(gpointer data, gpointer user_data)
         }
         return;
     }
-    if ( e->spawn_in == 0 )
-    MessageAdd("Spawning enemy !");
+//    if ( e->spawn_in == 0 )
+//    MessageAdd("Spawning enemy !");
 }
 
 void EnemySpawn(Wave *w)
 {
     int i,interval = 0;
     StartPosition *sp;
-    MessageAdd("Wave spawning!");
+    MessageAdd(w->message);
     for (i=0;i<w->enemies;i++)
     {
         if ( w->sp[i] > 0 )

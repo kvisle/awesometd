@@ -88,6 +88,7 @@ typedef struct wave {
     gint enemies;
     gint blowup;
     Texture tex;
+    gchar *message;
 }Wave;
 
 typedef struct particlegroup {

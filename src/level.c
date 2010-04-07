@@ -226,6 +226,7 @@ int LevelLoad(char *fn)
             sscanf(groups[i],"Wave_%d",&id);
             printf("Processing wave... (#%d)\n",id);
             w->blowup = 0;
+            w->message = "";
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("start",keys[y]) )
@@ -239,6 +240,8 @@ int LevelLoad(char *fn)
                 if ( g_pattern_match_simple("sp",keys[y]) )
                     w->sp = g_key_file_get_integer_list(keyfile,groups[i],keys[y],
                                                         &types,&error);
+                if ( g_pattern_match_simple("message",keys[y]) )
+                    w->message = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
             }
             w->enemies = types;
             printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
