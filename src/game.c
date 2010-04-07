@@ -576,6 +576,7 @@ void GameNew(void)
     Gamedata.fps = 0;
     Gamedata.ticks = SDL_GetTicks();
     Gamedata.fps_gamesteps = 0;
+    Gamedata.gamespeed = 1;
     Level.st = g_hash_table_new(g_int_hash,g_int_equal);
     // TODO: Validate if the load was a success.
     LevelLoad("original.lvl");
@@ -589,6 +590,15 @@ void GameNew(void)
 void GameStep(void)
 {
     if ( Gamedata.GameStepN == 0 ) GameNew();
+    int i;
+    for (i=0;i<Gamedata.gamespeed;i++)
+    {
+        GameStepN();
+    }
+}
+
+void GameStepN(void)
+{
     if ( Gamedata.lives > 0 )
     {
         Gamedata.GameStepN++;

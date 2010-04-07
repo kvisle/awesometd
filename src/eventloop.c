@@ -23,6 +23,7 @@
 #include "video.h"
 #include "video-game.h"
 #include "level.h"
+#include "game.h"
 
 static char lastkeys[32] = { 0 };
 
@@ -50,10 +51,8 @@ int EventLoop(void) {
 
                 switch(eventqueue.key.keysym.sym)
                 {
-                    case SDLK_UP: LevelCamera[1]--; break;
-                    case SDLK_DOWN: LevelCamera[1]++; break;
-                    case SDLK_RIGHT: LevelCamera[0]++; break;
-                    case SDLK_LEFT: LevelCamera[0]--; break;
+                    case SDLK_UP: Gamedata.gamespeed++; break;
+                    case SDLK_DOWN: Gamedata.gamespeed--; break;
                 }
             break;
             case SDL_MOUSEBUTTONDOWN:

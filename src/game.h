@@ -116,6 +116,7 @@ struct gamedata{
     int ticks;
     int fps;
     int fps_gamesteps;
+    int gamespeed;
 };
 
 void EnemyFreeAll(void);
