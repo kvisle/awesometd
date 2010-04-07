@@ -270,7 +270,7 @@ int VideoInit(void)
         printf("FATAL: We don't know where font.ttf is!");
         return -1;
     }
-    font = TTF_OpenFont(fn,16);
+    font = TTF_OpenFont(fn,12);
     fn = g_hash_table_lookup(FontTable,"mono.ttf");
     if (!fn) {
         printf("FATAL: We don't know where mono.ttf is!");

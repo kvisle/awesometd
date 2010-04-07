@@ -247,7 +247,7 @@ void VideoGameDrawMessage(gpointer data, gpointer user_data)
 {
     VideoGameTextId++;
     String *s = (String*)data;
-    VideoGameDrawText(s,100, screen->h-100-(VideoGameTextId*20));
+    VideoGameDrawText(s,100, screen->h-100-(VideoGameTextId*18));
 }
 
 void VideoGameDrawText(String *s, int x, int y)
