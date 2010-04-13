@@ -34,6 +34,12 @@ typedef struct towerdecidetarget {
     float dy;
 }TowerDecideTarget;
 
+gint g_FindTower(Tower *a, Tower *b)
+{
+    if ( a->x == b->x && a->y == b->y ) return 0;
+    return -1;
+}
+
 void PoisonCloudAdd(int x, int y)
 {
     int i;
@@ -70,6 +76,29 @@ void ClickToolbarButton(int button)
         Gamedata.button_selected = 0;
         return;
     }
+    if ( button == Gamedata.toolbar_towers+2 && Gamedata.TowerSelected )
+    {
+        Tower *t = Gamedata.TowerSelected;
+        if ( t->upgradeto > 0 )
+        {
+            Tower *n = g_hash_table_lookup(Gamedata.TowerTemplates,&(t->upgradeto));
+            if ( Gamedata.money >= n->price )
+            {
+                Gamedata.money -= n->price;
+                int oldx = t->x;
+                int oldy = t->y;
+                memcpy(t,n,sizeof(Tower));
+                t->x = oldx;
+                t->y = oldy;
+                t->rotationgoal = t->rotation = (rand() % 360)-90;
+                MessageAdd("Tower upgraded! \\o/");
+            }
+            else
+            {
+                MessageAdd("You can't afford to upgrade this tower.");
+            }
+        }
+    }
     t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
     if ( t )
     {
@@ -79,8 +108,20 @@ void ClickToolbarButton(int button)
 
 void ClickMap(int x, int y)
 {
+    Tower *t;
     if ( Gamedata.button_selected > 0 )
         TowerAdd(Gamedata.button_selected,x,y);
+    Tower *f = g_malloc(sizeof(Tower));
+    f->x = x;
+    f->y = y;
+    GSList *l = g_slist_find_custom(Gamedata.TowerList,f,g_FindTower);
+    if ( l ) t = l->data;
+    else t = NULL;
+    g_free(f);
+    if ( t ) 
+    {
+        Gamedata.TowerSelected = t;
+    }
 }
 
 void MessageAdd(char *string)
@@ -559,7 +600,7 @@ void TowerTemplateAdd(int id,Tower *t)
 void TowerTemplatePrint(gpointer key, gpointer value, gpointer user_data)
 {
     Tower *t = (Tower*)value;
-    printf("Tower:\n\tname\t: %s\n\treload\t: %d\n",t->name,t->reloadtime);
+    printf("Tower:\n\tname\t: %s\n\treload\t: %d\n\ttoolbared\t: %d\n",t->name,t->reloadtime,t->toolbared);
 }
 
 void GameNew(void)

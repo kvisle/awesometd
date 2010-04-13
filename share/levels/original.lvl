@@ -76,6 +76,7 @@ range=100
 gfx=twrPillbox.png
 price=20
 projectile=1
+upgradeto=2
 
 [Tower_2]
 name=Poison Shooter
@@ -85,6 +86,7 @@ range=200
 gfx=twrPillbox.png
 price=35
 projectile=2
+toolbared=0
 
 # Enemy-definitions.
 # name      = A string naming the enemy.

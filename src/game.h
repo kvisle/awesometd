@@ -78,6 +78,8 @@ typedef struct tower {
     int range;
     Texture *tex;
     Projectile *projectile;
+    int toolbared;
+    int upgradeto;
 }Tower;
 
 typedef struct wave {
@@ -118,6 +120,8 @@ struct gamedata{
     int fps;
     int fps_gamesteps;
     int gamespeed;
+    int toolbar_towers;
+    Tower *TowerSelected;
 };
 
 void EnemyFreeAll(void);

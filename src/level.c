@@ -87,7 +87,7 @@ int LevelLoad(char *fn)
         return -1;
     }
     groups = g_key_file_get_groups(keyfile,&c1);
-
+    Gamedata.toolbar_towers = 0;
     for (i=0;i<c1;i++)
     {
 //        printf("groupname: %s\n", groups[i]);
@@ -183,6 +183,8 @@ int LevelLoad(char *fn)
             Tower t;
             int id;
             sscanf(groups[i],"Tower_%d",&id);
+            t.toolbared = 1;
+            t.upgradeto = 0;
             for (y=0;y<c2;y++)
             {
                 if ( g_pattern_match_simple("name",keys[y]) )
@@ -198,6 +200,10 @@ int LevelLoad(char *fn)
                     gint z = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                     t.projectile = g_hash_table_lookup(Gamedata.ProjectileTemplates,&z);
                 }
+                if ( g_pattern_match_simple("toolbared",keys[y]) )
+                    t.toolbared = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
+                if ( g_pattern_match_simple("upgradeto",keys[y]) )
+                    t.upgradeto = g_key_file_get_integer(keyfile,groups[i],keys[y],&error);
                 if ( g_pattern_match_simple("gfx",keys[y]) )
                 {
                     gchar *tname = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
@@ -216,6 +222,7 @@ int LevelLoad(char *fn)
             t.frame = 0;
             t.reloadtimeleft = 0;
             t.rotation = 0;
+            if ( t.toolbared == 1 ) Gamedata.toolbar_towers++;
             TowerTemplateAdd(id,&t);
         }
         else if ( g_pattern_match_simple("Wave_*",groups[i]) )

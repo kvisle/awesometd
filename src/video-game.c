@@ -64,19 +64,35 @@ void VideoGameUpdateTooltip(int button)
         VGIcons.tooltip->alpha = 100;
         return;
     }
-    t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
-    if ( t )
+    if ( button == Gamedata.toolbar_towers+2 && Gamedata.TowerSelected )
     {
+//        t = g_hash_table_lookup(Gamedata.TowerTemplates,Gamedata.button_selected);
+//        if ( t )
+        if ( Gamedata.TowerSelected->upgradeto > 0 )
+        {
+            t = Gamedata.TowerSelected;
+            t = g_hash_table_lookup(Gamedata.TowerTemplates,&(t->upgradeto));
+            string = g_strdup_printf("Upgrade to %s, costs %d$",t->name,t->price);
+            VGIcons.tooltip = VideoLoadText(string,fg,1);
+            VGIcons.tooltip_no = button;
+            g_free(string);
+            VGIcons.tooltip->alpha = 100;
+            return;
+        }
+    }
+    t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
+    while ( t )
+    {
+        if ( t->toolbared == 0 ) break;
         string = g_strdup_printf("%s, costs %d$",t->name,t->price);
         VGIcons.tooltip = VideoLoadText(string,fg,1);
         VGIcons.tooltip_no = button;
         g_free(string);
+        VGIcons.tooltip->alpha = 100;
+        return;
     }
-    else
-    {
-        VGIcons.tooltip = VideoLoadText(" ",fg,1);
-        VGIcons.tooltip_no = -1;
-    }
+    VGIcons.tooltip = VideoLoadText(" ",fg,1);
+    VGIcons.tooltip_no = -1;
     VGIcons.tooltip->alpha = 100;
 }
 
@@ -298,6 +314,8 @@ void VideoGameCoverEdges(void)
 void VideoGameDrawTower(gpointer data, gpointer user_data)
 {
     Tower *t = (Tower*)data;
+    if ( t == Gamedata.TowerSelected )
+        VideoDrawColoredQuad(LevelCamera[0]+(t->x*32)-16, LevelCamera[1]+(t->y*32)-16, 32, 32, 0.0, 1.0, 1.0, 1.0, 0.5);
     VideoDrawTexturedQuad(LevelCamera[0]+(t->x*32)-16, LevelCamera[1]+(t->y*32)-16, 32, 32, 0.0, t->tex, 0,1.0);
     VideoDrawTexturedQuad(LevelCamera[0]+(t->x*32)-16, LevelCamera[1]+(t->y*32)-16, 32, 32, t->rotation, t->tex, 1,1.0);
 }
@@ -307,6 +325,7 @@ void VideoGameDrawToolbarTowerButton(gpointer key, gpointer value, gpointer user
     float alpha = 1.0;
     gint *id = key;
     Tower *t = (Tower*)value;
+    if ( t->toolbared == 0 ) return;
     glTranslatef(64,0.0,0.0);
 
     if ( Gamedata.button_selected == *id ) alpha = 0.5;
@@ -328,6 +347,15 @@ void VideoGameDrawToolbar(void)
     glTranslatef(32.0,32.0,0.0);
     g_hash_table_foreach(Gamedata.TowerTemplates,VideoGameDrawToolbarTowerButton,NULL);
     glPopMatrix();
+    if ( Gamedata.TowerSelected )
+    {
+//        Tower *t = g_hash_table_lookup(Gamedata.TowerTemplates,&Gamedata.button_selected);
+        Tower *t = Gamedata.TowerSelected;
+        if ( t->upgradeto == 0 ) return;
+        t = g_hash_table_lookup(Gamedata.TowerTemplates,&(t->upgradeto));
+        VideoDrawTexturedQuad(Gamedata.toolbar_towers*64+160,screen->h-32,64,64,0.0,t->tex,0,1.0);
+        VideoDrawTexturedQuad(Gamedata.toolbar_towers*64+160,screen->h-32,64,64,290.0,t->tex,1,1.0);
+    }
 }
 
 void VideoGameDrawProjectiles(gpointer data, gpointer used_data)
