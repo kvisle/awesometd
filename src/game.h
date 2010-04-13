@@ -124,11 +124,16 @@ struct gamedata{
     Tower *TowerSelected;
 };
 
+void ClickMap(int x, int y);
+void ClickToolbarButton(int button);
 void EnemyFreeAll(void);
 void EnemyTemplateAdd(int id,Enemy *e);
 void TowerTemplateAdd(int id,Tower *t);
+void ProjectileTemplateAdd(int id,Projectile *p);
 void TowerAdd(int id, int x, int y);
 void WaveAdd(Wave *w);
+void MessageAdd(char *string);
+void GameStepN(void);
 
 struct gamedata Gamedata;
 

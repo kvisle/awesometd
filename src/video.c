@@ -29,6 +29,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+#define DEFBASEDIRS
 #include "common.h"
 #include "video.h"
 #include "video-game.h"

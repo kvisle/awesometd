@@ -25,6 +25,7 @@
 #include <GL/glu.h>
 #endif
 
+#include <math.h>
 #include <glib.h>
 
 #include "common.h"
@@ -276,7 +277,6 @@ void VideoGameDrawText(String *s, int x, int y)
 
 void VideoGameCoverEdges(void)
 {
-    int i;
     if ( LevelCamera[1] > 0 )
         VideoDrawColoredQuad(
                 screen->w/2, 

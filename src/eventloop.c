@@ -64,6 +64,8 @@ int EventLoop(void) {
                     case SDLK_9:
                         ClickToolbarButton(eventqueue.key.keysym.sym-49);
                     break;
+                    default:
+                    break;
                 }
             break;
             case SDL_MOUSEBUTTONDOWN:

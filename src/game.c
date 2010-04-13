@@ -115,7 +115,7 @@ void ClickMap(int x, int y)
     Tower *f = g_malloc(sizeof(Tower));
     f->x = x;
     f->y = y;
-    GSList *l = g_slist_find_custom(Gamedata.TowerList,f,g_FindTower);
+    GSList *l = g_slist_find_custom(Gamedata.TowerList,f,(GCompareFunc)g_FindTower);
     if ( l ) t = l->data;
     else t = NULL;
     g_free(f);
@@ -508,10 +508,8 @@ void TowerCheckDistanceToEnemy(gpointer data, gpointer user_data)
 
 void TowerMove(gpointer data, gpointer user_data)
 {
-    int i;
     Tower *t = (Tower*)data;
     TowerDecideTarget tdt = { t, 0xffffffff, 0xffffffff, 0xffffffff };
-//    guint ce[] = { (t->x*32), (t->y*32), 0xffffffff, 0xffffffff, 0xffffffff, t->range };
     g_slist_foreach(Gamedata.EnemyList,TowerCheckDistanceToEnemy,&tdt);
     if ( t->reloadtimeleft > 0 ) t->reloadtimeleft--;
     if ( tdt.bestmatch != 0xffffffff )

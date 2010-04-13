@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <dirent.h>
 
+#define DEFBASEDIRS
 #include "common.h"
 #include "video.h"
 #include "level.h"
@@ -251,8 +252,8 @@ int LevelLoad(char *fn)
                     w->message = g_key_file_get_locale_string(keyfile,groups[i],keys[y],NULL,&error);
             }
             w->enemies = types;
-            printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
-                   w->start,intervals,types);
+/*            printf("Wave starts at tick %d. Got %d intervals and %d types.\n",
+                   w->start,intervals,types);*/
 //            w->tex = VideoLoadTexture("../share/gfx/wave.png");
             WaveAdd(w);
         }
@@ -293,4 +294,5 @@ int LevelLoad(char *fn)
     Level.h = h;
     LevelCamera[0] = 64;
     LevelCamera[1] = 64;
+    return 0;
 }

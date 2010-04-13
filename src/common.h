@@ -3,6 +3,7 @@
 
 #include <glib.h>
 
+#ifdef DEFBASEDIRS
 static char *BaseDirectories[] = {
     DATADIR,
     "../share",
@@ -10,6 +11,7 @@ static char *BaseDirectories[] = {
     ".",
     "NULL"
 };
+#endif
 
 GHashTable *TextureTable, *FontTable, *LevelTable;
 

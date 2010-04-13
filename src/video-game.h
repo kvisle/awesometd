@@ -29,5 +29,6 @@ void VideoGameUpdateTooltip(int button);
 void VideoGameInitIcons(void);
 void VideoGameSnapCamera(void);
 void VideoGameDraw(void);
+void VideoGameDrawText(String *s, int x, int y);
 
 #endif /* __VIDEO_GAME_H__ */
