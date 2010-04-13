@@ -102,6 +102,7 @@ void ClickToolbarButton(int button)
     t = g_hash_table_lookup(Gamedata.TowerTemplates,&button);
     if ( t )
     {
+        if ( t->toolbared )
         Gamedata.button_selected = button;
     }
 }

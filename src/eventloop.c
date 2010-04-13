@@ -53,6 +53,17 @@ int EventLoop(void) {
                 {
                     case SDLK_UP: Gamedata.gamespeed++; break;
                     case SDLK_DOWN: Gamedata.gamespeed--; break;
+                    case SDLK_1:
+                    case SDLK_2:
+                    case SDLK_3:
+                    case SDLK_4:
+                    case SDLK_5:
+                    case SDLK_6:
+                    case SDLK_7:
+                    case SDLK_8:
+                    case SDLK_9:
+                        ClickToolbarButton(eventqueue.key.keysym.sym-49);
+                    break;
                 }
             break;
             case SDL_MOUSEBUTTONDOWN:
@@ -64,7 +75,7 @@ int EventLoop(void) {
                         else moving = 1;
                         break;
                     case SDL_BUTTON_LEFT:
-                        if ( screen->h - eventqueue.button.y < 64 )
+                        if ( screen->h - eventqueue.button.y < 64 && eventqueue.button.state == SDL_RELEASED)
                             ClickToolbarButton(eventqueue.button.x/64);
                         else if ( eventqueue.button.state == SDL_RELEASED )
                             ClickMap((eventqueue.button.x-LevelCamera[0])/32+1,(eventqueue.button.y-LevelCamera[1])/32+1);
