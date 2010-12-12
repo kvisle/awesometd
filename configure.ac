@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([awesometd], [0.4-devel], [awesometd@trygvevea.com])
+AC_INIT([awesometd], [0.5], [awesometd@trygvevea.com])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
 
@@ -27,9 +27,9 @@ AC_CHECK_LIB([tiff],[main])
 AC_CHECK_LIB([png],[main])
 AC_CHECK_LIB([z],[main])
 AC_CHECK_LIB([SDL_image],[main])
-AC_CHECK_LIB([freetype],[main])
-AC_CHECK_LIB([SDL_ttf],[main])
-PKG_CHECK_MODULES([GLIB],[glib-2.0])
+#AC_CHECK_LIB([freetype],[main])
+#AC_CHECK_LIB([SDL_ttf],[main])
+#PKG_CHECK_MODULES([GLIB],[glib-2.0])
 
 AC_CHECK_LIB([GL], [main])
 # FIXME: Replace `main' with a function in `-lm':

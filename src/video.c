@@ -1,333 +1,377 @@
-/*
-    Awesome Tower Defense
-    Copyright (C) 2008-2010  Trygve Vea and contributors (read AUTHORS)
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#include <dirent.h>
-#include <math.h>
-
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-
-#define DEFBASEDIRS
-#include "common.h"
 #include "video.h"
-#include "video-game.h"
 
-static String *Numbers;
+#include <SDL_image.h>
 
-void VideoDrawTexturedQuadC(float x, float y, float w, float h, float rot, Texture *tex, int sliceid,float r, float g, float b, float alpha)
+// FIXME: I haven't managed to get this to work without an alignment of 4.
+//        That's just stupid.
+static const GLubyte charmap[256][32] = {
+    ['\'']= { 0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, 
+              0x00, 0, 0, 0, 0x08, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, },
+    ['*'] = { 0x00, 0, 0, 0, 0x10, 0, 0, 0, 0x54, 0, 0, 0, 0x38, 0, 0, 0, 
+              0xfe, 0, 0, 0, 0x38, 0, 0, 0, 0x54, 0, 0, 0, 0x10, 0, 0, 0, },
+    [','] = { 0x30, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x00, 0, 0, 0, 
+              0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, },
+    ['-'] = { 0x00, 0, 0, 0, 0x80, 0, 0, 0, 0xc0, 0, 0, 0, 0x60, 0, 0, 0, 
+              0x30, 0, 0, 0, 0x18, 0, 0, 0, 0x0c, 0, 0, 0, 0x06, 0, 0, 0, },
+    ['.'] = { 0x00, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x00, 0, 0, 0, 
+              0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, 0x00, 0, 0, 0, },
+    ['0'] = { 0x00, 0, 0, 0, 0x38, 0, 0, 0, 0x64, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x4c, 0, 0, 0, 0x38, 0, 0, 0, },
+    ['1'] = { 0x00, 0, 0, 0, 0xfc, 0, 0, 0, 0x30, 0, 0, 0, 0x30, 0, 0, 0, 
+              0x30, 0, 0, 0, 0x30, 0, 0, 0, 0x70, 0, 0, 0, 0x30, 0, 0, 0, },
+    ['2'] = { 0x00, 0, 0, 0, 0xfe, 0, 0, 0, 0xe0, 0, 0, 0, 0x78, 0, 0, 0, 
+              0x3c, 0, 0, 0, 0x06, 0, 0, 0, 0xc6, 0, 0, 0, 0x7c, 0, 0, 0, },
+    ['3'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0x06, 0, 0, 0, 
+              0x3c, 0, 0, 0, 0x18, 0, 0, 0, 0x0c, 0, 0, 0, 0x7e, 0, 0, 0, },
+    ['4'] = { 0x00, 0, 0, 0, 0x0c, 0, 0, 0, 0x0c, 0, 0, 0, 0xfe, 0, 0, 0, 
+              0xcc, 0, 0, 0, 0x6c, 0, 0, 0, 0x3c, 0, 0, 0, 0x1c, 0, 0, 0, },
+    ['5'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0x06, 0, 0, 0, 
+              0x06, 0, 0, 0, 0xfc, 0, 0, 0, 0xc0, 0, 0, 0, 0xfc, 0, 0, 0, },
+    ['6'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xfc, 0, 0, 0, 0xc0, 0, 0, 0, 0x60, 0, 0, 0, 0x3c, 0, 0, 0, },
+    ['7'] = { 0x00, 0, 0, 0, 0x30, 0, 0, 0, 0x30, 0, 0, 0, 0x30, 0, 0, 0, 
+              0x18, 0, 0, 0, 0x0c, 0, 0, 0, 0xc6, 0, 0, 0, 0xfe, 0, 0, 0, },
+    ['8'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x7c, 0, 0, 0, },
+    ['9'] = { 0x00, 0, 0, 0, 0x78, 0, 0, 0, 0x0c, 0, 0, 0, 0x06, 0, 0, 0, 
+              0x7e, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x7c, 0, 0, 0, },
+    ['a'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xfe, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x6c, 0, 0, 0, 0x38, 0, 0, 0, },
+    ['b'] = { 0x00, 0, 0, 0, 0xfc, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xfc, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xfc, 0, 0, 0, },
+    ['c'] = { 0x00, 0, 0, 0, 0x3c, 0, 0, 0, 0x66, 0, 0, 0, 0xc0, 0, 0, 0, 
+              0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0x66, 0, 0, 0, 0x3c, 0, 0, 0, },
+    ['d'] = { 0x00, 0, 0, 0, 0xf8, 0, 0, 0, 0xcc, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xcc, 0, 0, 0, 0xf8, 0, 0, 0, },
+    ['e'] = { 0x00, 0, 0, 0, 0xfe, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 
+              0xfc, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xfe, 0, 0, 0, },
+    ['f'] = { 0x00, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 
+              0xfc, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xfe, 0, 0, 0, },
+    ['g'] = { 0x00, 0, 0, 0, 0x3e, 0, 0, 0, 0x66, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xce, 0, 0, 0, 0xc0, 0, 0, 0, 0x60, 0, 0, 0, 0x3e, 0, 0, 0, },
+    ['h'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xfe, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['i'] = { 0x00, 0, 0, 0, 0x7e, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 
+              0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x7e, 0, 0, 0, },
+    ['j'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0x06, 0, 0, 0, 0x06, 0, 0, 0, 0x06, 0, 0, 0, 0x1e, 0, 0, 0, },
+    ['k'] = { 0x00, 0, 0, 0, 0xce, 0, 0, 0, 0xdc, 0, 0, 0, 0xf8, 0, 0, 0, 
+              0xf0, 0, 0, 0, 0xd8, 0, 0, 0, 0xcc, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['l'] = { 0x00, 0, 0, 0, 0xfe, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 
+              0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, },
+    ['m'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xd6, 0, 0, 0, 
+              0xfe, 0, 0, 0, 0xfe, 0, 0, 0, 0xee, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['n'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xce, 0, 0, 0, 0xde, 0, 0, 0, 
+              0xfe, 0, 0, 0, 0xf6, 0, 0, 0, 0xe6, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['o'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x7c, 0, 0, 0, },
+    ['p'] = { 0x00, 0, 0, 0, 0xc0, 0, 0, 0, 0xc0, 0, 0, 0, 0xfc, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xfc, 0, 0, 0, },
+    ['q'] = { 0x00, 0, 0, 0, 0x7a, 0, 0, 0, 0xcc, 0, 0, 0, 0xde, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0x7c, 0, 0, 0, },
+    ['r'] = { 0x00, 0, 0, 0, 0xce, 0, 0, 0, 0xdc, 0, 0, 0, 0xf8, 0, 0, 0, 
+              0xce, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xfc, 0, 0, 0, },
+    ['s'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0x06, 0, 0, 0, 
+              0x7c, 0, 0, 0, 0xc0, 0, 0, 0, 0xcc, 0, 0, 0, 0x78, 0, 0, 0, },
+    ['t'] = { 0x00, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 
+              0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x7e, 0, 0, 0, },
+    ['u'] = { 0x00, 0, 0, 0, 0x7c, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 
+              0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['v'] = { 0x00, 0, 0, 0, 0x10, 0, 0, 0, 0x38, 0, 0, 0, 0x7c, 0, 0, 0, 
+              0xee, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['w'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xee, 0, 0, 0, 0xfe, 0, 0, 0, 
+              0xfe, 0, 0, 0, 0xd6, 0, 0, 0, 0xc6, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['x'] = { 0x00, 0, 0, 0, 0xc6, 0, 0, 0, 0xee, 0, 0, 0, 0x7c, 0, 0, 0, 
+              0x38, 0, 0, 0, 0x7c, 0, 0, 0, 0xee, 0, 0, 0, 0xc6, 0, 0, 0, },
+    ['y'] = { 0x00, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 0x18, 0, 0, 0, 
+              0x3c, 0, 0, 0, 0x66, 0, 0, 0, 0x66, 0, 0, 0, 0x66, 0, 0, 0, },
+    ['z'] = { 0x00, 0, 0, 0, 0xfe, 0, 0, 0, 0xe0, 0, 0, 0, 0x70, 0, 0, 0, 
+              0x38, 0, 0, 0, 0x1c, 0, 0, 0, 0x0e, 0, 0, 0, 0xfe, 0, 0, 0, },
+};
+
+static void vDrawString(int x, int y, const char *string, float r, float g, float b, float a)
 {
-    float x_start = (float)(sliceid % tex->columns) / (float)tex->columns;
-    float x_end = x_start + 1.0/(float)tex->columns;
-    float y_start = (float)(sliceid / tex->columns) / (float)tex->rows;
-    float y_end = y_start + 1.0/(float)tex->rows;
-
     glPushMatrix();
+        glColor4f(r, g, b, a);
+        glRasterPos2i(x, y+8);
+        glPixelTransferi(GL_UNPACK_ALIGNMENT, 4);
+		while (*string != '\0')
+		{
+            glBitmap(8, 8, 0, 0, 8, 0, (const GLubyte *) &charmap[(int) *string]);
+			string++;
+		}
+	glPopMatrix();
+}
+
+static void vDrawColoredLine(float x, float y, float tx, float ty, float width, float r, float g, float b, float a)
+{
+	glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
+	GLfloat vcoords[] = {
+		x, y,
+		tx, ty
+	};
+	glColor4f(r, g, b, a);
+	glLineWidth(width);
+	glVertexPointer(2, GL_FLOAT, 0, vcoords);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDrawArrays(GL_LINE_STRIP,0,2);
+	glPopMatrix();
+}
+
+static void vDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a)
+{
+    glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
     glTranslatef(x,y,0.0);
     GLfloat vcoords[] = {
-        ceilf(0.0-(w/2.0)), ceilf(0.0-(h/2.0)),
-        ceilf(w/2.0), ceilf(0.0-(h/2.0)),
-        ceilf(w/2.0), ceilf(h/2.0),
-        ceilf(0.0-(w/2.0)), ceilf(h/2.0)
+        0.0, 0.0,
+        w, 0.0,
+        w, h,
+        0.0, h
+    };
+    glColor4f(r,g,b,a);
+    glRotated(rot,0.0,0.0,1.0);
+    glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
+static void vDrawTexturedQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a, GLuint id, int sid, int size)
+{
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glTranslatef(x+(w/2),y+(h/2),0.0);
+    GLfloat vcoords[] = {
+        -(w/2), -(h/2),
+        w/2, -(h/2),
+        w/2, h/2,
+        -(w/2), h/2
     };
     GLfloat tcoords[] = {
-        x_start, y_start,
-        x_end, y_start,
-        x_end, y_end,
-        x_start, y_end
+        0.0+(0.25*(sid % 4)), 0.0+(0.25*(sid / 4)),
+        0.25+(0.25*(sid % 4)), 0.0+(0.25*(sid / 4)),
+        0.25+(0.25*(sid % 4)), 0.25+(0.25*(sid / 4)),
+        0.0+(0.25*(sid % 4)), 0.25+(0.25*(sid / 4))
     };
-    glColor4d(r,g,b,alpha);
+    glColor4f(r,g,b,a);
+    glBindTexture(GL_TEXTURE_2D, id);
     glRotated(rot,0.0,0.0,1.0);
     glVertexPointer(2,GL_FLOAT,0,vcoords);
+    glTexCoordPointer(2,GL_FLOAT,0,tcoords);
     glEnableClientState(GL_VERTEX_ARRAY);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex->texid);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, tcoords);
     glDrawArrays(GL_TRIANGLE_FAN,0,4);
+    glPopMatrix();
+}
+
+static void vDrawGrid(const struct video *v, const struct game *cg)
+{
+    int w, h;
+	char buf[8];
+    float r, g, b;
+    float px, py, pw, ph;
+    for(w=0;w<G_WIDTH;w++)
+    {
+        for(h=0;h<G_HEIGHT;h++)
+        {
+            px = w*32;
+			py = h*32;
+			pw = 32;
+			ph = 32;
+            switch(cg->grid[h][w])
+            {
+                case 0: r = 0.0; g = 1.0; b = 0.0; break;
+                case 1: r = 0.5; g = 0.5; b = 0.3; break;
+				case 2: r = 1.0; g = 0.5; b = 0.0; break;
+                default:r = 1.0; g = 1.0; b = 1.0; break;
+            }
+            vDrawTexturedQuad(px, py, pw, ph, 0, 1, 1, 1, 1, v->terrain.texid, cg->grid[h][w], S32X32);
+//            vDrawColoredQuad(px, py, pw, ph, 0, r, g, b, 1.0);
+// Uncomment below to print the pathfinding results on the map.
+/*			if ( cg->grid[h][w] == 0 )
+			{*/
+//				sprintf((char *)&buf, "%4d",cg->path[h][w]);
+//				vDrawString(px, py, buf, 0, 0, 0, 1);
+//			}*/
+        }
+    }
+}
+
+static void vDrawEnemy(struct game *g, struct video *v)
+{
+    struct enemy *e = g->enemy;
+    while(e)
+    {
+		float a;
+		if ( e->timeleft <= 50 ) {
+			a = 1.0 - ((float)e->timeleft * 0.04);
+//	        vDrawColoredQuad(e->x, e->y, 32, 32, 0, 0.5, 0.5, 0.5, a);
+            vDrawTexturedQuad(e->x, e->y, 32, 32, e->rot, 1, 1, 1, a, v->octopi.texid, e->frame, S32X32);
+			vDrawColoredQuad(e->x+2, e->y+28, ((float)e->hp/(float)e->hp_max)*28.0, 2, 0, 0, 1, 0, a);
+			if ( e->debuffs[GDB_TYPE_DOT].time_left )
+				vDrawColoredQuad(e->x, e->y, 4, 4, 0, 0, 1, 0, 1);
+            if ( e->debuffs[GDB_TYPE_SLOW].time_left )
+                vDrawColoredQuad(e->x+4, e->y, 4, 4, 0, 0, 0, 1, 1);
+		}
+        e = e->next;
+    }
+}
+
+static void vDrawTower(struct game *g)
+{
+    char buf[4];
+	struct tower *t = g->tower;
+	while(t)
+	{
+        sprintf((char *)&buf, "%2d", t->type);
+		vDrawColoredQuad(t->x*32+4, t->y*32+4, 24, 24, 0, 0.5, 0.5, 0.9, 1);
+//        vDrawString(t->x*32+4, t->y*32+4, buf, 0, 0, 0, 1);
+		t = t->next;
+	}
+}
+
+static void vDrawShot(struct game *g)
+{
+    struct shot *s = g->shot;
+    while(s)
+    {
+		if ( s->type == GS_TYPE_DIRECT )
+		{
+			vDrawColoredLine(s->x, s->y, s->tx, s->ty, 2, 1, 0, 0, 0.5);
+			vDrawColoredLine(s->x, s->y, s->tx, s->ty, 1, 1, 0, 0, 1);
+		}
+		else
+		{
+			if ( s->video == GS_VIDEO_LASER_RED )
+			{
+				vDrawColoredQuad(s->x-4, s->y-1, 8, 2, s->rot, 1, 0.25, 0.25, 1);
+			}
+			else
+			{
+		        vDrawColoredQuad(s->x-2, s->y-2, 4, 4, 0, 1, 1, 1, 1);
+			}
+		}
+        s = s->next;
+    }
+}
+
+static void vDrawSidebar(struct game *g)
+{
+	int i;
+	char buf[16];
+    vDrawColoredQuad(512, 0, 128, 480, 0, 0.75, 0.75, 0.75, 1.0);
+
+	vDrawString(528, 16, "level x", 0, 0, 0, 1);
+	vDrawString(527, 15, "level x", 1, 1, 1, 1);
+
+	sprintf((char *)&buf, "%5d", g->lives);
+    vDrawString(528, 32, "lives", 0, 0, 0, 1);
+	vDrawString(527, 31, "lives", 1, 1, 1, 1);
+	vDrawString(592, 32, buf, 0, 0, 0, 1);
+    vDrawString(591, 31, buf, 1, 0, 0, 1);
+
+	sprintf((char *)&buf, "%5d", g->money);
+    vDrawString(528, 48, "money", 0, 0, 0, 1);
+	vDrawString(527, 47, "money", 1, 1, 1, 1);
+    vDrawString(592, 48, buf, 0, 0, 0, 1);
+    vDrawString(591, 47, buf, 1, 1, 0, 1);
+
+    sprintf((char *)&buf, "%05d", g->score);
+    vDrawString(528, 64, "score", 0, 0, 0, 1);
+    vDrawString(527, 63, "score", 1, 1, 1, 1);
+    vDrawString(592, 64, buf, 0, 0, 0, 1);
+    vDrawString(591, 63, buf, 0, 1, 0, 1);
+
+    sprintf((char *)&buf, "%5d", g->waveN);
+    vDrawString(528, 80, "wave", 0, 0, 0, 1);
+    vDrawString(527, 79, "wave", 1, 1, 1, 1);
+    vDrawString(592, 80, buf, 0, 0, 0, 1);
+    vDrawString(591, 79, buf, 0, 1, 0, 1);
+
+    if ( g->wave )
+    {
+        sprintf((char *)&buf, "%5d", g->wave->timeleft);
+        vDrawString(528, 96, "next", 0, 0, 0, 1);
+        vDrawString(527, 95, "next", 1, 1, 1, 1);
+        vDrawString(592, 96, buf, 0, 0, 0, 1);
+        vDrawString(591, 95, buf, 0, 1, 0, 1);
+    }
+
+    vDrawString(528, 116, "towers", 0, 0, 0, 1);
+    vDrawString(527, 115, "towers", 1, 1, 1, 1);
+
+
+	for (i=0; i < G_TOWERS; i++)
+	{
+        if ( i == g->btowerid )
+        {
+            vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 1, 0.75, 0, 1);
+            vDrawString(536, 136+(i*24), g->towerT[i].name, 0, 0, 0, 1);
+        }
+        else
+        {
+            vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 0, 0, 0, 1);
+    	    vDrawColoredQuad(528, 128+(i*24), 96, 16, 0, 1, 1, 0, 1);
+    		vDrawString(532, 132+(i*24), g->towerT[i].name, 0, 0, 0, 1);
+        }
+	}
+}
+
+void vDraw(struct video *v, struct game *g)
+{
+    glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT);
+// Stuff
+    vDrawGrid(v, g);
     glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    vDrawEnemy(g, v);
+	vDrawTower(g);
+    vDrawShot(g);
+// The sidebar should be considered a part of the HUD/OSD/whatnot, and is drawn
+// on top of other stuff.
+    vDrawSidebar(g);
+    SDL_GL_SwapBuffers();
 }
 
-void VideoDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a)
+struct texture vLoadTexture(char *fn)
 {
-    glPushMatrix();
-    glTranslatef(x,y,0.0);
-    GLfloat vcoords[] = {
-        ceilf(0.0-(w/2)), ceilf(0.0-(h/2.0)),
-        ceilf(w/2.0), ceilf(0.0-(h/2.0)),
-        ceilf(w/2.0), ceilf(h/2.0),
-        ceilf(0.0-(w/2.0)), ceilf(h/2.0)
-    };
-    glColor4d(r,g,b,a);
-    glRotated(rot,0.0,0.0,1.0);
-    glVertexPointer(2,GL_FLOAT,0,vcoords);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glDrawArrays(GL_TRIANGLE_FAN,0,4);
-    glPopMatrix();
-}
-
-void VideoDrawCircle(float r)
-{
-    int i;
-    GLfloat vcoords[360*2];
-    for (i=0;i<360;i++) {
-        vcoords[i*2] = cos(i*(M_PI/180));
-        vcoords[i*2+1] = sin(i*(M_PI/180));
-    }
-    glScalef(r,r,0.0);
-    glVertexPointer(2,GL_FLOAT,0,vcoords);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glDrawArrays(GL_TRIANGLE_FAN,0,360);
-}
-
-void VideoScanDirForTextures(char * dir)
-{
-    DIR *datadir;
-    struct dirent *ent;
-    if ((datadir = opendir(dir)) == NULL )
-        return;
-    while (( ent = readdir(datadir)) != NULL )
+    struct texture t;
+    SDL_Surface *img = IMG_Load(fn);
+    if ( !img )
     {
-        if ( g_pattern_match_simple("*.png",ent->d_name) )
-        {
-            gchar *key = g_strconcat(ent->d_name,NULL);
-            Texture *value = g_malloc(sizeof(Texture));
-            value->filename = g_strconcat(dir,"/",ent->d_name,NULL);
-            value->texid = 0;
-            g_hash_table_insert(TextureTable,key,value);
-        }
+        printf("IMG_Load(%s) failed: %s\n", fn, SDL_GetError());
     }
-    closedir(datadir);
-    g_free(dir);
-    return;
+    glEnable(GL_TEXTURE_2D);
+    glGenTextures(1, &t.texid);
+    glBindTexture(GL_TEXTURE_2D, t.texid);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, img->w, img->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img->pixels);
+
+    t.w = img->w;
+    t.h = img->h;
+    SDL_FreeSurface(img);
+    return t;
 }
 
-void VideoScanDirForFonts(char * dir)
+struct video vSetup(void)
 {
-    DIR *datadir;
-    struct dirent *ent;
-    if ((datadir = opendir(dir)) == NULL )
-        return;
-    while (( ent = readdir(datadir)) != NULL )
-    {
-        if ( g_pattern_match_simple("*.ttf",ent->d_name) )
-        {
-            gchar *key = g_strconcat(ent->d_name,NULL);
-            gchar *value = g_strconcat(dir,"/",ent->d_name,NULL);
-            g_hash_table_insert(FontTable,key,value);
-        }
-    }
-    closedir(datadir);
-    g_free(dir);
-    return;
-}
+    struct video v;
 
-int VideoSetMode(int w, int h) {
-    screen = SDL_SetVideoMode(w, h, 
-                              VIDEOMODE_DEPTH, SDL_OPENGL|SDL_RESIZABLE);
-    if (screen == NULL)
-    {
-        printf("Error when initializing video: %s\n", SDL_GetError());
-        return -1;
-    }
-    SDL_WM_SetCaption("Awesome Tower Defense 0.4","");
-    glViewport(0,0,w,h);
+    v.s = SDL_SetVideoMode(640, 480, 32, SDL_OPENGL);
+    glViewport(0, 0, 640, 480);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(  0.0, w,
-                h, 0.0,
-            -10.0, 10.0);
+    glOrtho(  0.0, 640.0,
+            480.0,   0.0,
+            -10.0,  10.0);
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    VideoGameSnapCamera();
-    return 0;
-}
 
-void VideoFreeText(String *ptr)
-{
-    glDeleteTextures(1,&(ptr->tex.texid));
-    g_free(ptr);
-}
-
-String * VideoLoadText(char *str, SDL_Color fg, int ft)
-{
-    TTF_Font *f;
-    String *s = g_malloc(sizeof(String));
-    s->tex.texid = 0;
-    s->tex.columns = 1;
-    s->tex.rows = 1;
-    s->tex.frames = 1;
-    if ( ft == 0 ) f = font;
-    else f = monofont;
-    SDL_Surface *i = TTF_RenderUTF8_Blended(f,str,fg);
-    if ( i )
-    {
-        s->w = i->w;
-        s->h = i->h;
-        glGenTextures(1,&(s->tex.texid));
-        glBindTexture(GL_TEXTURE_2D,s->tex.texid);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
-        SDL_FreeSurface(i);
-        return s;
-    }
-    else
-    {
-        return s;
-    }
-}
-
-Texture VideoLoadTexture(char *filename, int size)
-{
-    Texture tex;
-    tex.filename = filename;
-    printf("Loading texture: %s\n",filename);
-    SDL_Surface *i = IMG_Load(filename);
-    glEnable(GL_TEXTURE_2D);
-    if ( i )
-    {
-        glGenTextures(1, &tex.texid);
-        glBindTexture(GL_TEXTURE_2D, tex.texid);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, i->w, i->h, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, i->pixels);
-        switch(size)
-        {
-            case TEXTURE_SIZE_48x64:
-                tex.columns = i->w / 48;
-                tex.rows = i->h / 64;
-                break;
-            case TEXTURE_SIZE_32x32:
-                tex.columns = i->w / 32;
-                tex.rows = i->h / 32;
-                break;
-            case TEXTURE_SIZE_64x64:
-                tex.columns = i->w / 64; 
-                tex.rows = i->h / 64; 
-                break;
-            case TEXTURE_SIZE_128x128:
-                tex.columns = i->w / 128; 
-                tex.rows = i->h / 128;
-                break;
-        }
-        tex.frames = i->w/i->h;
-        SDL_FreeSurface(i);
-        return tex;
-    }
-    else
-    {
-        printf("IMG_Load: %s\n",IMG_GetError());
-        return tex;
-    }
-}
-
-int VideoInit(void)
-{
-    int i;
-    char *h = getenv("HOME");
-    gchar *hgd = g_strconcat(h,"/.awesometd",NULL);
-    gchar *fn;
-    TextureTable = g_hash_table_new(g_str_hash,g_str_equal);
-    FontTable = g_hash_table_new(g_str_hash,g_str_equal);
-
-    for (i=0;!g_pattern_match_simple("NULL",BaseDirectories[i]);i++)
-    {
-        VideoScanDirForTextures(g_strconcat(BaseDirectories[i],"/textures",NULL));
-        VideoScanDirForFonts(g_strconcat(BaseDirectories[i],"/fonts",NULL));
-    }
-    VideoScanDirForTextures(g_strconcat(hgd,"/textures",NULL));
-    VideoScanDirForFonts(g_strconcat(hgd,"/fonts",NULL));
-    g_free(hgd);
-
-
-    TTF_Init();
-    fn = g_hash_table_lookup(FontTable,"font.ttf");
-    if (!fn) {
-        printf("FATAL: We don't know where font.ttf is!");
-        return -1;
-    }
-    font = TTF_OpenFont(fn,12);
-    fn = g_hash_table_lookup(FontTable,"mono.ttf");
-    if (!fn) {
-        printf("FATAL: We don't know where mono.ttf is!");
-        return -1;
-    }
-    monofont = TTF_OpenFont(fn,24);
-    TTF_SetFontStyle(font,TTF_STYLE_BOLD);
-    
-    int x = VideoSetMode(VIDEOMODE_WIDTH,VIDEOMODE_HEIGHT);
-    SDL_Color tc = { 255, 255, 255 };
-    Numbers = VideoLoadText("0123456789",tc,1);
-
-    VideoGameInitIcons();
-
-    return x;
-}
-
-void VideoDrawNumber(int x, int y, int val)
-{
-    int i;
-    char string[9];
-    sprintf(string,"%8d",val);
-    GLfloat vcoords[] = {
-        0.0, 0.0,
-        14.4, 0.0,
-        14.4, 25.0,
-        0.0, 25.0
-    };
-    glPushMatrix();
-    glTranslatef(x,y,0.0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,Numbers->tex.texid);
-    glColor4d(1.0,1.0,1.0,1.0);
-    glVertexPointer(2,GL_FLOAT,0,vcoords);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    for (i=0;i<8;i++)
-    {
-        glTranslatef(-15.0,0.0,0.0);
-        int num = string[7-i]-48;
-        if ( num > 9 || num < 0 ) break;
-        GLfloat tcoords[] = {
-            num*0.1, 0.0,
-            0.1+(num*0.1), 0.0,
-            0.1+(num*0.1), 1.0,
-            num*0.1, 1.0
-        };
-        glTexCoordPointer(2,GL_FLOAT,0,tcoords);
-        glDrawArrays(GL_TRIANGLE_FAN,0,4);
-    }
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
-}
-
-void VideoDraw(void) {
-    glLoadIdentity();
-    glClear(GL_COLOR_BUFFER_BIT);
-    VideoGameDraw();
-    SDL_GL_SwapBuffers();
+    v.terrain = vLoadTexture("share/gfx/theme_lame.png");
+    v.octopi = vLoadTexture("share/gfx/octopi.png");
+    return v;
 }

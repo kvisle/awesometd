@@ -1,0 +1,17 @@
+# Level file
+
+[generic]
+lives = 20
+money = 100
+
+[tower_0]
+name = "watch tower"
+price = 25
+speed = 10
+range = 100
+
+[map]
+width = 16
+height = 15
+grid = 0
+

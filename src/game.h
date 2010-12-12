@@ -1,140 +1,119 @@
-/*
-    Awesome Tower Defense
-    Copyright (C) 2008-2010  Trygve Vea and contributors (read AUTHORS)
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
-
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "video.h"
-#include <glib.h>
+#define VM_GREEN		1
+#define VM_BLUE			2
 
-#define DIR_N 0
-#define DIR_E 1
-#define DIR_S 2
-#define DIR_W 3
+#define G_WIDTH      	16
+#define G_HEIGHT     	15
+#define G_SIZE       	G_WIDTH*G_HEIGHT
+#define G_START_MAX  	8
+#define G_EXITS_MAX  	8
 
-#define PROJECTILE_TYPE_IMPACT  0
-#define PROJECTILE_TYPE_POISON  1
+#define G_PATH_NEXT_N   1
+#define G_PATH_NEXT_E   2
+#define G_PATH_NEXT_S   3
+#define G_PATH_NEXT_W   4
+#define G_PATH_NEXT_NE  5
+#define G_PATH_NEXT_NW  6
+#define G_PATH_NEXT_SE  7
+#define G_PATH_NEXT_SW  8
+#define G_PATH_NEXT_U   -1
 
-void GameStep(void);
+#define G_TOWERS     	5
+#define G_DEBUFF_MAX	3
+#define G_WAVES			4
 
-typedef struct enemy {
-    int x,y;
-    int cur_hp, max_hp;
-    int speed;
-    int direction;
-    int progress;
-    int spawn_in;
-    int frame;
-    int poisoned;
-    int poisontimeleft;
-    float poisonfade;
-    gint sp;
-    gchar *name;
-    Texture *tex;
-    int moved;
-    int rotation;
-    int rotdir;
-    int score;
-    int money;
-}Enemy;
+#define GS_TYPE_IMPACT	1
+#define GS_TYPE_POISON	2
+#define GS_TYPE_SPLASH	3
+#define GS_TYPE_DIRECT	4
+#define GS_TYPE_HOMING	5
 
-typedef struct projectile {
-    float x,y;
-    gchar *name;
-    int damage;
-    int type;
-    int modifier;
-    float speed;
-    float dx,dy;
-    int used;
-    int rotation;
-}Projectile;
+#define GDB_TYPE_DOT	1
+#define GDB_TYPE_SLOW	2
 
-typedef struct tower {
-    int x,y;
-    gchar *name;
-    int reloadtime;
-    int reloadtimeleft;
-    int price;
-    int frame;
-    int rotation;
-    int rotationgoal;
-    int range;
-    Texture *tex;
-    Projectile *projectile;
-    int toolbared;
-    int upgradeto;
-}Tower;
 
-typedef struct wave {
-    gint start;
-    gint *intervals;
-    gint *types;
-    gint *sp;
-    gint enemies;
-    gint blowup;
-    Texture tex;
-    gchar *message;
-}Wave;
+#define GS_VIDEO_LASER_RED	1
 
-typedef struct particlegroup {
-    GLfloat xpos, ypos;
-    GLfloat particles[8];
-    GLfloat r,g,b,alpha;
-    GLfloat size;
-}ParticleGroup;
-
-struct gamedata{
-    GSList *EnemyList;
-    GSList *TowerList;
-    GSList *ProjectileList;
-    GHashTable *EnemyTemplates;
-    GHashTable *TowerTemplates;
-    GHashTable *ProjectileTemplates;
-    GSList *WaveList;
-    GSList *TextList;
-    GSList *ParticleList;
-    int GameStepN;
-    int money;
-    int score;
-    int lives;
-    int button_selected;
-    int NextLevel;
-    int ticks;
-    int fps;
-    int fps_gamesteps;
-    int gamespeed;
-    int toolbar_towers;
-    Tower *TowerSelected;
+struct debuff {
+	int type;
+	int damage;
+	int interval;
+	float speed_mod;
+	int time_left;
+	int counter;   // Just a counter that is 
+	int video_mod; // if we should apply a video effect on the enemy affected by this
 };
 
-void ClickMap(int x, int y);
-void ClickToolbarButton(int button);
-void EnemyFreeAll(void);
-void EnemyTemplateAdd(int id,Enemy *e);
-void TowerTemplateAdd(int id,Tower *t);
-void ProjectileTemplateAdd(int id,Projectile *p);
-void TowerAdd(int id, int x, int y);
-void WaveAdd(Wave *w);
-void MessageAdd(char *string);
-void GameStepN(void);
+struct shot {
+    float x, y;
+    float dx, dy;
+	float tx, ty;
+    int type;
+    int damage;
+    float speed;
+	struct debuff debuff;
+	int video;
+	int rot;
+    struct shot *next;
+};
 
-struct gamedata Gamedata;
+struct tower {
+    int x, y;
+    char *name;
+    int type;
+    int price;
+    int speed;
+    int progress;
+	int range;
+    int damage;
+	struct shot shot_template;
+    struct tower *next;
+};
+
+struct enemy {
+    int x, y;
+    int hp, hp_max;
+    int speed;
+    int timeleft;
+    int moveX, moveY;
+    int moveleft;
+    int progress;
+    int price;
+    int frame;
+    int rot;
+    int rot_goal;
+	struct debuff debuffs[G_DEBUFF_MAX];
+    struct enemy *next;
+};
+
+struct wave {
+    int timeleft;
+    struct enemy enemy_template;
+    int enemies; // The amount of enemies to spawn.
+    struct wave *next;
+};
+
+struct game {
+    struct tower towerT[G_TOWERS];
+    int grid[G_HEIGHT][G_WIDTH];
+    int path[G_HEIGHT][G_WIDTH];
+    int time, waveN, lives, money, score;
+    int startN, exitN, needpath, btowerid;
+    int start[G_START_MAX][2], exit[G_EXITS_MAX][2];
+    struct tower *tower;
+    struct enemy *enemy;
+    struct wave *wave;
+    struct shot *shot;
+};
+
+void gDo(struct game *g);
+struct game gNew(void);
+void gClickCell(struct game *g, int cx, int cy);
+
+// pathfind.c
+int pPathfind(struct game *g, int checkonly);
+
 
 #endif /* __GAME_H__ */
