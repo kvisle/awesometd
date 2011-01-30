@@ -95,6 +95,11 @@ struct wave {
     struct wave *next;
 };
 
+struct soundtable {
+    int laser;
+    int laser_last;
+};
+
 struct game {
     struct tower towerT[G_TOWERS];
     int grid[G_HEIGHT][G_WIDTH];
@@ -106,6 +111,7 @@ struct game {
     struct enemy *enemy;
     struct wave *wave;
     struct shot *shot;
+    struct soundtable st;
 };
 
 void gDo(struct game *g);

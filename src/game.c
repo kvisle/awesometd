@@ -90,6 +90,9 @@ static void sNew(struct game *g, struct tower *t, struct enemy *e)
 	s->debuff = t->shot_template.debuff;
 	s->video = t->shot_template.video;
 	s->rot = ((float)(atan2((int)e->y-((int)t->y*32),(int)e->x-((int)t->x*32))*180)/M_PI);
+
+    g->st.laser++;
+
 	if ( s->type == GS_TYPE_DIRECT )
 	{
 		s->x = e->x+16;
