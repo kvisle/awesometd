@@ -219,14 +219,17 @@ static void vDrawEnemy(struct game *g, struct video *v)
     }
 }
 
-static void vDrawTower(struct game *g)
+static void vDrawTower(struct game *g, struct video *v)
 {
     char buf[4];
 	struct tower *t = g->tower;
 	while(t)
 	{
         sprintf((char *)&buf, "%2d", t->type);
-		vDrawColoredQuad(t->x*32+4, t->y*32+4, 24, 24, 0, 0.5, 0.5, 0.9, 1);
+        vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, 0, 1, 1, 1, 1, v->tower1.texid, 0, S32X32);
+        vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, t->rot, 1, 1, 1, 1, v->tower1.texid, 8, S32X32);
+
+//		vDrawColoredQuad(t->x*32+4, t->y*32+4, 24, 24, 0, 0.5, 0.5, 0.9, 1);
 //        vDrawString(t->x*32+4, t->y*32+4, buf, 0, 0, 0, 1);
 		t = t->next;
 	}
@@ -327,7 +330,7 @@ void vDraw(struct video *v, struct game *g)
     vDrawGrid(v, g);
     glDisable(GL_TEXTURE_2D);
     vDrawEnemy(g, v);
-	vDrawTower(g);
+	vDrawTower(g, v);
     vDrawShot(g);
 // The sidebar should be considered a part of the HUD/OSD/whatnot, and is drawn
 // on top of other stuff.
@@ -373,5 +376,6 @@ struct video vSetup(void)
 
     v.terrain = vLoadTexture("share/gfx/theme_lame.png");
     v.octopi = vLoadTexture("share/gfx/octopi.png");
+    v.tower1 = vLoadTexture("share/gfx/tower1.png");
     return v;
 }

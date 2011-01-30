@@ -68,6 +68,7 @@ struct tower {
     int progress;
 	int range;
     int damage;
+    int rot;
 	struct shot shot_template;
     struct tower *next;
 };

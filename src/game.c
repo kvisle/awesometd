@@ -197,13 +197,15 @@ static struct enemy * tFindWeakest(struct game *g, struct tower *t)
 static void tMove(struct game *g, struct tower *t)
 {
 	t->progress += t->speed;
-	if ( t->progress >= 100 )
+	struct enemy *e = tFindWeakest(g, t);
+	if ( e )
 	{
-		struct enemy *e = tFindWeakest(g, t);
-		t->progress = 0;
-		if ( e )
-		{
+        float angle = (float)(atan2((int)e->y-((int)t->y*32),(int)e->x-((int)t->x*32))*180)/M_PI;;
+        t->rot = angle + 90;
+        if ( t->progress >= 100 )
+        {
             sNew(g, t, e);
+            t->progress = 0;
 		}
 	}
 }
@@ -216,6 +218,7 @@ static void tNew(struct game *g, struct tower *template, int cx, int cy)
 	t->x = cx;
 	t->y = cy;
 	t->progress = 0;
+    t->rot = rand() % 360;
 	if ( g->tower )
 	{
 		p = g->tower;

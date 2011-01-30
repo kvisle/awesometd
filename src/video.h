@@ -19,6 +19,7 @@ struct video {
 	SDL_Surface *s;
     struct texture terrain;
     struct texture octopi;
+    struct texture tower1;
 };
 
 struct video vSetup(void);
