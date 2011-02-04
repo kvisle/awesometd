@@ -18,7 +18,8 @@ struct texture {
 struct video {
 	SDL_Surface *s;
     struct texture terrain;
-    struct texture octopi;
+    struct texture enemy1;
+    struct texture enemy2;
     struct texture tower1;
 };
 

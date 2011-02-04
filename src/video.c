@@ -95,28 +95,28 @@ static void vDrawString(int x, int y, const char *string, float r, float g, floa
         glColor4f(r, g, b, a);
         glRasterPos2i(x, y+8);
         glPixelTransferi(GL_UNPACK_ALIGNMENT, 4);
-		while (*string != '\0')
-		{
+        while (*string != '\0')
+        {
             glBitmap(8, 8, 0, 0, 8, 0, (const GLubyte *) &charmap[(int) *string]);
-			string++;
-		}
-	glPopMatrix();
+            string++;
+        }
+    glPopMatrix();
 }
 
 static void vDrawColoredLine(float x, float y, float tx, float ty, float width, float r, float g, float b, float a)
 {
-	glPushMatrix();
+    glPushMatrix();
     glDisable(GL_TEXTURE_2D);
-	GLfloat vcoords[] = {
-		x, y,
-		tx, ty
-	};
-	glColor4f(r, g, b, a);
-	glLineWidth(width);
-	glVertexPointer(2, GL_FLOAT, 0, vcoords);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawArrays(GL_LINE_STRIP,0,2);
-	glPopMatrix();
+    GLfloat vcoords[] = {
+        x, y,
+        tx, ty
+    };
+    glColor4f(r, g, b, a);
+    glLineWidth(width);
+    glVertexPointer(2, GL_FLOAT, 0, vcoords);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays(GL_LINE_STRIP,0,2);
+    glPopMatrix();
 }
 
 static void vDrawColoredQuad(float x, float y, float w, float h, float rot, float r, float g, float b, float a)
@@ -169,7 +169,7 @@ static void vDrawTexturedQuad(float x, float y, float w, float h, float rot, flo
 static void vDrawGrid(const struct video *v, const struct game *cg)
 {
     int w, h;
-	char buf[8];
+    char buf[8];
     float r, g, b;
     float px, py, pw, ph;
     for(w=0;w<G_WIDTH;w++)
@@ -177,24 +177,24 @@ static void vDrawGrid(const struct video *v, const struct game *cg)
         for(h=0;h<G_HEIGHT;h++)
         {
             px = w*32;
-			py = h*32;
-			pw = 32;
-			ph = 32;
+            py = h*32;
+            pw = 32;
+            ph = 32;
             switch(cg->grid[h][w])
             {
                 case 0: r = 0.0; g = 1.0; b = 0.0; break;
                 case 1: r = 0.5; g = 0.5; b = 0.3; break;
-				case 2: r = 1.0; g = 0.5; b = 0.0; break;
+                case 2: r = 1.0; g = 0.5; b = 0.0; break;
                 default:r = 1.0; g = 1.0; b = 1.0; break;
             }
             vDrawTexturedQuad(px, py, pw, ph, 0, 1, 1, 1, 1, v->terrain.texid, cg->grid[h][w], S32X32);
 //            vDrawColoredQuad(px, py, pw, ph, 0, r, g, b, 1.0);
 // Uncomment below to print the pathfinding results on the map.
-/*			if ( cg->grid[h][w] == 0 )
-			{*/
-//				sprintf((char *)&buf, "%4d",cg->path[h][w]);
-//				vDrawString(px, py, buf, 0, 0, 0, 1);
-//			}*/
+/*            if ( cg->grid[h][w] == 0 )
+            {*/
+//                sprintf((char *)&buf, "%4d",cg->path[h][w]);
+//                vDrawString(px, py, buf, 0, 0, 0, 1);
+//            }*/
         }
     }
 }
@@ -204,17 +204,17 @@ static void vDrawEnemy(struct game *g, struct video *v)
     struct enemy *e = g->enemy;
     while(e)
     {
-		float a;
-		if ( e->timeleft <= 50 ) {
-			a = 1.0 - ((float)e->timeleft * 0.04);
-//	        vDrawColoredQuad(e->x, e->y, 32, 32, 0, 0.5, 0.5, 0.5, a);
-            vDrawTexturedQuad(e->x, e->y, 32, 32, e->rot, 1, 1, 1, a, v->octopi.texid, e->frame, S32X32);
-			vDrawColoredQuad(e->x+2, e->y+28, ((float)e->hp/(float)e->hp_max)*28.0, 2, 0, 0, 1, 0, a);
-			if ( e->debuffs[GDB_TYPE_DOT].time_left )
-				vDrawColoredQuad(e->x, e->y, 4, 4, 0, 0, 1, 0, 1);
+        float a;
+        if ( e->timeleft <= 50 ) {
+            a = 1.0 - ((float)e->timeleft * 0.04);
+//            vDrawColoredQuad(e->x, e->y, 32, 32, 0, 0.5, 0.5, 0.5, a);
+            vDrawTexturedQuad(e->x, e->y, 32, 32, e->rot, 1, 1, 1, a, v->enemy2.texid, 0, S32X32);
+            vDrawColoredQuad(e->x+2, e->y+28, ((float)e->hp/(float)e->hp_max)*28.0, 2, 0, 0, 1, 0, a);
+            if ( e->debuffs[GDB_TYPE_DOT].time_left )
+                vDrawColoredQuad(e->x, e->y, 4, 4, 0, 0, 1, 0, 1);
             if ( e->debuffs[GDB_TYPE_SLOW].time_left )
                 vDrawColoredQuad(e->x+4, e->y, 4, 4, 0, 0, 0, 1, 1);
-		}
+        }
         e = e->next;
     }
 }
@@ -222,17 +222,17 @@ static void vDrawEnemy(struct game *g, struct video *v)
 static void vDrawTower(struct game *g, struct video *v)
 {
     char buf[4];
-	struct tower *t = g->tower;
-	while(t)
-	{
+    struct tower *t = g->tower;
+    while(t)
+    {
         sprintf((char *)&buf, "%2d", t->type);
         vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, 0, 1, 1, 1, 1, v->tower1.texid, 0, S32X32);
         vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, t->rot, 1, 1, 1, 1, v->tower1.texid, 8, S32X32);
 
-//		vDrawColoredQuad(t->x*32+4, t->y*32+4, 24, 24, 0, 0.5, 0.5, 0.9, 1);
+//        vDrawColoredQuad(t->x*32+4, t->y*32+4, 24, 24, 0, 0.5, 0.5, 0.9, 1);
 //        vDrawString(t->x*32+4, t->y*32+4, buf, 0, 0, 0, 1);
-		t = t->next;
-	}
+        t = t->next;
+    }
 }
 
 static void vDrawShot(struct game *g)
@@ -240,44 +240,44 @@ static void vDrawShot(struct game *g)
     struct shot *s = g->shot;
     while(s)
     {
-		if ( s->type == GS_TYPE_DIRECT )
-		{
-			vDrawColoredLine(s->x, s->y, s->tx, s->ty, 2, 1, 0, 0, 0.5);
-			vDrawColoredLine(s->x, s->y, s->tx, s->ty, 1, 1, 0, 0, 1);
-		}
-		else
-		{
-			if ( s->video == GS_VIDEO_LASER_RED )
-			{
-				vDrawColoredQuad(s->x-4, s->y-1, 8, 2, s->rot, 1, 0.25, 0.25, 1);
-			}
-			else
-			{
-		        vDrawColoredQuad(s->x-2, s->y-2, 4, 4, 0, 1, 1, 1, 1);
-			}
-		}
+        if ( s->type == GS_TYPE_DIRECT )
+        {
+            vDrawColoredLine(s->x, s->y, s->tx, s->ty, 2, 1, 0, 0, 0.5);
+            vDrawColoredLine(s->x, s->y, s->tx, s->ty, 1, 1, 0, 0, 1);
+        }
+        else
+        {
+            if ( s->video == GS_VIDEO_LASER_RED )
+            {
+                vDrawColoredQuad(s->x-4, s->y-1, 8, 2, s->rot, 1, 0.25, 0.25, 1);
+            }
+            else
+            {
+                vDrawColoredQuad(s->x-2, s->y-2, 4, 4, 0, 1, 1, 1, 1);
+            }
+        }
         s = s->next;
     }
 }
 
 static void vDrawSidebar(struct game *g)
 {
-	int i;
-	char buf[16];
+    int i;
+    char buf[16];
     vDrawColoredQuad(512, 0, 128, 480, 0, 0.75, 0.75, 0.75, 1.0);
 
-	vDrawString(528, 16, "level x", 0, 0, 0, 1);
-	vDrawString(527, 15, "level x", 1, 1, 1, 1);
+    vDrawString(528, 16, "level x", 0, 0, 0, 1);
+    vDrawString(527, 15, "level x", 1, 1, 1, 1);
 
-	sprintf((char *)&buf, "%5d", g->lives);
+    sprintf((char *)&buf, "%5d", g->lives);
     vDrawString(528, 32, "lives", 0, 0, 0, 1);
-	vDrawString(527, 31, "lives", 1, 1, 1, 1);
-	vDrawString(592, 32, buf, 0, 0, 0, 1);
+    vDrawString(527, 31, "lives", 1, 1, 1, 1);
+    vDrawString(592, 32, buf, 0, 0, 0, 1);
     vDrawString(591, 31, buf, 1, 0, 0, 1);
 
-	sprintf((char *)&buf, "%5d", g->money);
+    sprintf((char *)&buf, "%5d", g->money);
     vDrawString(528, 48, "money", 0, 0, 0, 1);
-	vDrawString(527, 47, "money", 1, 1, 1, 1);
+    vDrawString(527, 47, "money", 1, 1, 1, 1);
     vDrawString(592, 48, buf, 0, 0, 0, 1);
     vDrawString(591, 47, buf, 1, 1, 0, 1);
 
@@ -306,8 +306,8 @@ static void vDrawSidebar(struct game *g)
     vDrawString(527, 115, "towers", 1, 1, 1, 1);
 
 
-	for (i=0; i < G_TOWERS; i++)
-	{
+    for (i=0; i < G_TOWERS; i++)
+    {
         if ( i == g->btowerid )
         {
             vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 1, 0.75, 0, 1);
@@ -316,10 +316,10 @@ static void vDrawSidebar(struct game *g)
         else
         {
             vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 0, 0, 0, 1);
-    	    vDrawColoredQuad(528, 128+(i*24), 96, 16, 0, 1, 1, 0, 1);
-    		vDrawString(532, 132+(i*24), g->towerT[i].name, 0, 0, 0, 1);
+            vDrawColoredQuad(528, 128+(i*24), 96, 16, 0, 1, 1, 0, 1);
+            vDrawString(532, 132+(i*24), g->towerT[i].name, 0, 0, 0, 1);
         }
-	}
+    }
 }
 
 void vDraw(struct video *v, struct game *g)
@@ -330,7 +330,7 @@ void vDraw(struct video *v, struct game *g)
     vDrawGrid(v, g);
     glDisable(GL_TEXTURE_2D);
     vDrawEnemy(g, v);
-	vDrawTower(g, v);
+    vDrawTower(g, v);
     vDrawShot(g);
 // The sidebar should be considered a part of the HUD/OSD/whatnot, and is drawn
 // on top of other stuff.
@@ -375,7 +375,8 @@ struct video vSetup(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     v.terrain = vLoadTexture("share/gfx/theme_lame.png");
-    v.octopi = vLoadTexture("share/gfx/octopi.png");
+    v.enemy1 = vLoadTexture("share/gfx/octopi.png");
+    v.enemy2 = vLoadTexture("share/gfx/vikingduck.png");
     v.tower1 = vLoadTexture("share/gfx/tower1.png");
     return v;
 }

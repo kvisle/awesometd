@@ -97,12 +97,15 @@ copy_grid(struct game *g)
     struct grid_t *grid;
     int x,y,i;
 
+//    printf("allocating...\n");
     grid = malloc(sizeof(struct grid_t));
 
+//    printf("setting some values (G_SIZE = %d, G_WIDTH = %d, G_HEIGHT = %d)\n", G_SIZE, G_WIDTH, G_HEIGHT);
     grid->size = G_SIZE;
 	grid->w = G_WIDTH;
 	grid->h = G_HEIGHT;
 
+//    printf("more allocating...\n");
     grid->ar = calloc(grid->size, sizeof(int));
     grid->path = calloc(grid->size, sizeof(int));
     grid->marked = calloc(grid->size, sizeof(int));
@@ -110,6 +113,7 @@ copy_grid(struct game *g)
     // Reads in the level from stdin.
     for(y=0; y < G_HEIGHT; y++) {
 		for(x=0; x < G_WIDTH; x++) {
+//            printf("reading %d x %d\n", x, y);
 			grid->ar[i] = g->grid[y][x];
 			i++;
 		}
@@ -169,10 +173,13 @@ int pPathfind(struct game *g, int checkonly)
     struct queue_t *queue;
 	struct grid_t *grid;
 
-    grid = copy_grid(g);
-    queue = alloc_queue(grid);
+    printf("Copying grid\n");
 
-/*    for(i=0;i< (signed int)grid->size;i++)
+    grid = copy_grid(g);
+    printf("Allocating queue\n");
+    queue = alloc_queue(grid);
+/*    printf("Have we crashed yet?\n");
+    for(i=0;i< (signed int)grid->size;i++)
     {
         if ( i % grid->w == 0 ) printf("\n");
         switch(grid->ar[i]) {
