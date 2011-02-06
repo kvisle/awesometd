@@ -5,10 +5,10 @@ money=100
 #         price
 #         speed
 #         range
-#         ammotype (impact,direct,splash)
+#         ammotype (IMP,DIR,SPL)
 #         ammodamage
 #         ammospeed (ignored on direct)
-#         debuff (NO,DOT,SLOW)
+#         debuff (NOT,DOT,SLW)
 #         if debuff = DOT
 #           damage
 #           interval
@@ -17,11 +17,11 @@ money=100
 #         if debuff = SLOW
 #           speed_mod
 #           time_left
-tower=0,"watch tower",25,10,100,"impact",3,4,NO
-tower=1,"lazer pod",35,100,200,"direct",1,0,NO
-tower=2,"poison",25,1,100,"impact",0,10,DOT,2,5,100,0
-tower=3,"freezer",35,40,200,"impact",3,4,SLOW,0.5,100
-tower=4,"rocket",35,1,200,"splash",60,3,NO
+tower=0,"watch tower",25,10,100,IMP,3,4,NOT
+tower=1,"lazer pod",35,100,200,DIR,1,0,NOT
+tower=2,"poison",25,1,100,IMP,0,10,DOT,2,5,100,0
+tower=3,"freezer",35,40,200,IMP,3,4,SLW,0.5,100
+tower=4,"rocket",35,1,200,SPL,60,3,NOT
 # wave = timeleft
 #        enemies
 #        hp

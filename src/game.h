@@ -62,7 +62,7 @@ struct shot {
 struct tower {
     int x, y;
     char *name;
-    int type;
+    int id;
     int price;
     int speed;
     int progress;
@@ -104,6 +104,7 @@ struct wave {
 struct game {
     struct tower *towerT;
     struct tower *towerS;
+    int map[G_HEIGHT*G_WIDTH];
     int grid[G_HEIGHT][G_WIDTH];
     int path[G_HEIGHT][G_WIDTH];
     int time, waveN, lives, money, score;
@@ -117,7 +118,7 @@ struct game {
 };
 
 void gDo(struct game *g);
-struct game gNew(void);
+struct game gNew(char *level);
 void gClickCell(struct game *g, int cx, int cy);
 
 // pathfind.c

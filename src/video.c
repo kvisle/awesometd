@@ -221,11 +221,11 @@ static void vDrawEnemy(struct game *g, struct video *v)
 
 static void vDrawTower(struct game *g, struct video *v)
 {
-    char buf[4];
+//    char buf[4];
     struct tower *t = g->tower;
     while(t)
     {
-        sprintf((char *)&buf, "%2d", t->type);
+//        sprintf((char *)&buf, "%2d", t->type);
         vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, 0, 1, 1, 1, 1, v->tower1.texid, 0, S32X32);
         vDrawTexturedQuad(t->x*32, t->y*32, 32, 32, t->rot, 1, 1, 1, 1, v->tower1.texid, 8, S32X32);
 

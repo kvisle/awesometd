@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
     all.v = vSetup();
 //    all.a = aSetup();
-    all.g = gNew();
+    all.g = gNew("share/level/level1.lvl");
 
     while ( !iEventLoop(&all.i, &all.g) ) // Inputhandling is done here.
     {

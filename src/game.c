@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "game.h"
+#include "parser.h"
 
 int gPathNext(struct game *g, int x, int y)
 {
@@ -597,6 +598,7 @@ static void ttNew(struct game *g, struct tower tn)
     struct tower *p;
 
     memcpy(t,&tn,sizeof(struct tower));
+
     if ( g->towerT == NULL )
     {
         g->towerT = t;
@@ -611,177 +613,128 @@ static void ttNew(struct game *g, struct tower tn)
     
 }
 
+static void levelParser(struct game *data, char *key, char *value)
+{
+    PUSH_INT(lives);
+    PUSH_INT(money);
+    PUSH_INT_ARRAY(map,G_WIDTH*G_HEIGHT);
+
+    if ( strcmp(key, "tower") == 0 )
+    {
+        char *wp, *sn;
+        struct tower t;
+
+        wp = sn = value;
+
+        t.id = strtol(wp,&wp,10);
+
+        if ( *wp != '\0' ) wp++;
+        if ( *wp != '"' )
+        {
+            printf("Invalid formatting on tower.\n");
+            return;
+        }
+        wp++;
+        sn = wp;
+        while ( *wp != '"' && *wp != '\0' )
+            wp++;
+
+        if ( *wp == '"' )
+        {
+            *wp = '\0';
+            wp += 2;
+            t.name = strdup(sn);
+        }
+        else
+        {
+            printf("Invalid formatting on tower.\n");
+            return;
+        }
+
+        t.price = strtol(wp,&wp,10); wp++;
+        t.speed = strtol(wp,&wp,10); wp++;
+        t.range = strtol(wp,&wp,10); wp++;
+
+        if ( strncmp(wp, "IMP", 3) == 0 )
+            t.shot_template.type = GS_TYPE_IMPACT;
+        else if ( strncmp(wp, "DIR", 3) == 0 )
+            t.shot_template.type = GS_TYPE_DIRECT;
+        else if ( strncmp(wp, "SPL", 3) == 0 )
+            t.shot_template.type = GS_TYPE_SPLASH;
+        else
+        {
+            free(t.name);
+            printf("Invalid formatting on tower.\n");
+            return;
+        }
+        wp += 4;
+
+        t.shot_template.damage = strtol(wp,&wp,10); wp++;
+        t.shot_template.speed = strtol(wp,&wp,10); wp++;
+
+        if ( strncmp(wp, "NOT", 3) == 0 )
+        {
+            t.shot_template.debuff.type = 0;
+        }
+        else if ( strncmp(wp, "DOT", 3) == 0 )
+        {
+            wp += 4;
+            t.shot_template.debuff.type = GDB_TYPE_DOT;
+            t.shot_template.debuff.damage = strtol(wp,&wp,10); wp++;
+            t.shot_template.debuff.interval = strtol(wp,&wp,10); wp++;
+            t.shot_template.debuff.time_left = strtol(wp,&wp,10); wp++;
+            t.shot_template.debuff.counter = strtol(wp,&wp,10); wp++;
+        }
+        else if ( strncmp(wp, "SLW", 3) == 0 )
+        {
+            wp += 4;
+            t.shot_template.debuff.type = GDB_TYPE_SLOW;
+            t.shot_template.debuff.speed_mod = strtod(wp, &wp);
+            wp++;
+            t.shot_template.debuff.time_left = strtol(wp,&wp,10);
+            wp++;
+        }
+        else
+        {
+            free(t.name);
+            printf("Invalid formatting on tower.\n");
+            return;
+        }
+        
+        ttNew(data, t);
+    }
+    if ( strcmp(key, "wave") == 0 )
+    {
+        struct wave w;
+        memset(&w, '\0', sizeof(struct wave));
+
+        char *wp = value;
+
+        w.timeleft = strtol(wp,&wp,10); wp++;
+        w.enemies = strtol(wp,&wp,10); wp++;
+        w.enemy_template.hp = w.enemy_template.hp_max = strtol(wp,&wp,10); wp++;
+        w.enemy_template.speed = strtol(wp,&wp,10); wp++;
+        w.enemy_template.price = strtol(wp,&wp,10); wp++;
+        w.enemy_template.timeleft = strtol(wp,&wp,10); wp++;
+        wNew(data, &w);
+    }
+
+    printf("key: %s, value: %s\n", key, value);
+}
+
 // New game.
-struct game gNew(void)
+struct game gNew(char *level)
 {
     int i;
-    puts("gNew()");
-    struct wave w[G_WAVES] = {
-        [0] = {
-            .timeleft = 100,
-            .enemy_template = {
-                .hp = 100, 
-                .speed = 50,
-                .timeleft = 100,
-                .price = 5,
-            },
-            .enemies = 20,
-            .next = NULL
-        },
-        [1] = {
-            .timeleft = 700,
-            .enemy_template = {
-                .hp = 200,
-                .speed = 60,
-                .timeleft = 90,
-                .price = 7,
-            },
-            .enemies = 40,
-            .next = NULL
-        },
-        [2] = {
-            .timeleft = 1500,
-            .enemy_template = {
-                .hp = 400, 
-                .speed = 70,
-                .timeleft = 80,
-                .price = 9,
-            },
-            .enemies = 10,
-            .next = NULL
-        },
-        [3] = {
-            .timeleft = 3000,
-            .enemy_template = {
-                .hp = 1000,
-                .speed = 80,
-                .timeleft = 70,
-                .price = 15,
-            },
-            .enemies = 30,
-            .next = NULL
-        },
-    };
-    struct tower t1 = {
-                .name = "watch tower",
-                .type = 0,
-                .price = 25,
-                .speed = 10,
-                .range = 100,
-                .shot_template = {
-                    .type = GS_TYPE_IMPACT,
-                    .damage = 3,
-                    .speed = 4,
-                    .debuff = { .type = 0 },
-                    .video = GS_VIDEO_LASER_RED
-                }
-            };
-    struct tower t2 = {
-                .name = "lazer pod",
-                .type = 1,
-                .price = 35,
-                .speed = 100,
-                .range = 200,
-                .shot_template = {
-                    .type = GS_TYPE_DIRECT,
-                    .damage = 1,
-                    .debuff = { .type = 0 },
-                    .video = 0
-                }
-            };
-    struct tower t3 = {
-                .name = "poison",
-                .type = 2,
-                .price = 25,
-                .speed = 1,
-                .range = 100,
-                .shot_template = {
-                    .type = GS_TYPE_IMPACT,
-                    .damage = 0,
-                    .speed = 10,
-                    .debuff = {
-                        .type = GDB_TYPE_DOT,
-                        .damage = 2,
-                        .interval = 5,
-                        .time_left = 100,
-                        .counter = 0,
-                        .video_mod = VM_GREEN
-                    },
-                    .video = 0
-                }
-            };
-    struct tower t4 = {
-                .name = "freezer",
-                .type = 3,
-                .price = 35,
-                .speed = 40,
-                .range = 200,
-                .shot_template = {
-                    .type = GS_TYPE_IMPACT,
-                    .damage = 3,
-                    .speed = 4,
-                    .debuff = {
-                        .type = GDB_TYPE_SLOW,
-                        .speed_mod = 0.5,
-                        .time_left = 100,
-                        .video_mod = VM_BLUE
-                    },
-                    .video = 0
-                }
-            };
-    struct tower t5 = {
-                .name = "rocket",
-                .type = 4,
-                .price = 35,
-                .speed = 1,
-                .range = 200,
-                .shot_template = {
-                    .type = GS_TYPE_SPLASH,
-                    .damage = 60,
-                    .speed = 3,
-                    .debuff = {
-                        .type = 0
-                    },
-                    .video = 0
-                }
-            };
-    struct game g = {
-        .grid = {
-            { 1, 254, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 255, 1 }
-        },
-        .time = 0,
-        .waveN = 0,
-        .lives = 20,
-        .money = 100,
-        .score = 0,
-        .startN = 0,
-        .exitN = 0,
-        .needpath = 1,
-//        .btowerid = 0
-    };
+    printf("gNew(%s)\n", level);
 
-    ttNew(&g, t1);
-    ttNew(&g, t2);
-    ttNew(&g, t3);
-    ttNew(&g, t4);
-    ttNew(&g, t5);
+    struct game g;
+    memset(&g, '\0', sizeof(struct game));
 
-    for(i=0;i<G_WAVES;i++)
-        wNew(&g,&w[i]);
+    parse(level, levelParser, &g);
+
+    for(i=0;i<15*16;i++)
+        g.grid[i/16][i%16] = g.map[i];
 
     gFindHotspots(&g);
     return g;
