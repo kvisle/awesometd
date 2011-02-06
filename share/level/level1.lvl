@@ -1,17 +1,35 @@
-# Level file
-
-[generic]
-lives = 20
-money = 100
-
-[tower_0]
-name = "watch tower"
-price = 25
-speed = 10
-range = 100
-
-[map]
-width = 16
-height = 15
-grid = 0
-
+lives=20
+money=100
+# tower = id
+#         name
+#         price
+#         speed
+#         range
+#         ammotype (impact,direct,splash)
+#         ammodamage
+#         ammospeed (ignored on direct)
+#         debuff (NO,DOT,SLOW)
+#         if debuff = DOT
+#           damage
+#           interval
+#           timeleft
+#           counter
+#         if debuff = SLOW
+#           speed_mod
+#           time_left
+tower=0,"watch tower",25,10,100,"impact",3,4,NO
+tower=1,"lazer pod",35,100,200,"direct",1,0,NO
+tower=2,"poison",25,1,100,"impact",0,10,DOT,2,5,100,0
+tower=3,"freezer",35,40,200,"impact",3,4,SLOW,0.5,100
+tower=4,"rocket",35,1,200,"splash",60,3,NO
+# wave = timeleft
+#        enemies
+#        hp
+#        speed
+#        price (money recieved when killed)
+#        interval
+wave=100,20,100,50,5,100
+wave=700,40,200,60,7,90
+wave=1500,10,400,70,9,80
+wave=3000,30,1000,80,15,70
+map=1,254,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,255,1
