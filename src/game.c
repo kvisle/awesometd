@@ -212,6 +212,7 @@ static void tMove(struct game *g, struct tower *t)
 
 static void tNew(struct game *g, struct tower *template, int cx, int cy)
 {
+    printf("tNew!\n");
     struct tower *p;
     struct tower *t = calloc(1, sizeof(struct tower));
     memcpy(t, template, sizeof(struct tower));
@@ -219,6 +220,7 @@ static void tNew(struct game *g, struct tower *template, int cx, int cy)
     t->y = cy;
     t->progress = 0;
     t->rot = rand() % 360;
+    t->next = NULL;
     if ( g->tower )
     {
         p = g->tower;
@@ -250,13 +252,19 @@ void gClickCell(struct game *g, int cx, int cy)
         e = e->next;
     }
 
+    if (!g->towerS)
+    {
+        printf("No tower-template selected.\n");
+        return;
+    }
+
     if ( g->grid[cy][cx] )
     {
         printf("Inhabitable landscape. Returning\n");
         return;
     }
 
-    if ( g->towerT[g->btowerid].price > g->money )
+    if ( g->towerS->price > g->money )
     {
         printf("Not enough money, returning.\n");
         return;
@@ -270,8 +278,8 @@ void gClickCell(struct game *g, int cx, int cy)
         return;
     }
     
-    g->money -= g->towerT[g->btowerid].price;
-    tNew(g, &(g->towerT[g->btowerid]), cx, cy);
+    g->money -= g->towerS->price;
+    tNew(g, g->towerS, cx, cy);
     g->needpath++;
 }
 
@@ -583,6 +591,26 @@ static void gFindHotspots(struct game *g)
     }
 }
 
+static void ttNew(struct game *g, struct tower tn)
+{
+    struct tower *t = malloc(sizeof(struct tower));
+    struct tower *p;
+
+    memcpy(t,&tn,sizeof(struct tower));
+    if ( g->towerT == NULL )
+    {
+        g->towerT = t;
+        return;
+    }
+
+    p = g->towerT;
+    while ( p->next )
+        p = p->next;
+
+    p->next = t;
+    
+}
+
 // New game.
 struct game gNew(void)
 {
@@ -634,8 +662,7 @@ struct game gNew(void)
             .next = NULL
         },
     };
-    struct game g = {
-        .towerT[0] = {
+    struct tower t1 = {
                 .name = "watch tower",
                 .type = 0,
                 .price = 25,
@@ -648,8 +675,8 @@ struct game gNew(void)
                     .debuff = { .type = 0 },
                     .video = GS_VIDEO_LASER_RED
                 }
-            },
-        .towerT[1] = {
+            };
+    struct tower t2 = {
                 .name = "lazer pod",
                 .type = 1,
                 .price = 35,
@@ -661,8 +688,8 @@ struct game gNew(void)
                     .debuff = { .type = 0 },
                     .video = 0
                 }
-            },
-        .towerT[2] = {
+            };
+    struct tower t3 = {
                 .name = "poison",
                 .type = 2,
                 .price = 25,
@@ -682,8 +709,8 @@ struct game gNew(void)
                     },
                     .video = 0
                 }
-            },
-        .towerT[3] = {
+            };
+    struct tower t4 = {
                 .name = "freezer",
                 .type = 3,
                 .price = 35,
@@ -693,7 +720,7 @@ struct game gNew(void)
                     .type = GS_TYPE_IMPACT,
                     .damage = 3,
                     .speed = 4,
-                    .debuff = { 
+                    .debuff = {
                         .type = GDB_TYPE_SLOW,
                         .speed_mod = 0.5,
                         .time_left = 100,
@@ -701,8 +728,8 @@ struct game gNew(void)
                     },
                     .video = 0
                 }
-            },
-        .towerT[4] = {
+            };
+    struct tower t5 = {
                 .name = "rocket",
                 .type = 4,
                 .price = 35,
@@ -717,7 +744,8 @@ struct game gNew(void)
                     },
                     .video = 0
                 }
-            },
+            };
+    struct game g = {
         .grid = {
             { 1, 254, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -743,8 +771,15 @@ struct game gNew(void)
         .startN = 0,
         .exitN = 0,
         .needpath = 1,
-        .btowerid = 0
+//        .btowerid = 0
     };
+
+    ttNew(&g, t1);
+    ttNew(&g, t2);
+    ttNew(&g, t3);
+    ttNew(&g, t4);
+    ttNew(&g, t5);
+
     for(i=0;i<G_WAVES;i++)
         wNew(&g,&w[i]);
 

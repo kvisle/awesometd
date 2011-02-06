@@ -264,6 +264,8 @@ static void vDrawSidebar(struct game *g)
 {
     int i;
     char buf[16];
+    struct tower *t;
+
     vDrawColoredQuad(512, 0, 128, 480, 0, 0.75, 0.75, 0.75, 1.0);
 
     vDrawString(528, 16, "level x", 0, 0, 0, 1);
@@ -306,19 +308,24 @@ static void vDrawSidebar(struct game *g)
     vDrawString(527, 115, "towers", 1, 1, 1, 1);
 
 
-    for (i=0; i < G_TOWERS; i++)
+    t = g->towerT;
+    i = 0;
+
+    while(t)
     {
-        if ( i == g->btowerid )
+        if ( t == g->towerS )
         {
             vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 1, 0.75, 0, 1);
-            vDrawString(536, 136+(i*24), g->towerT[i].name, 0, 0, 0, 1);
+            vDrawString(536, 136+(i*24), t->name, 0, 0, 0, 1);
         }
         else
         {
             vDrawColoredQuad(532, 132+(i*24), 96, 16, 0, 0, 0, 0, 1);
             vDrawColoredQuad(528, 128+(i*24), 96, 16, 0, 1, 1, 0, 1);
-            vDrawString(532, 132+(i*24), g->towerT[i].name, 0, 0, 0, 1);
+            vDrawString(532, 132+(i*24), t->name, 0, 0, 0, 1);
         }
+        i++;
+        t = t->next;
     }
 }
 

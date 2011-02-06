@@ -16,11 +16,14 @@ static int iKeyEvent(SDL_KeyboardEvent k, struct input *i)
 static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct game *g)
 {
     int n;
+    struct tower *s;
 	if ( b.x >= 512 )
 	{
         if ( b.type == SDL_MOUSEBUTTONDOWN )
         {
-            for (n=0;n<G_TOWERS;n++)
+            n = 0;
+            s = g->towerT;
+            while(s)
             {
                 if ( b.x >= 528 &&
                      b.x <= 628 &&
@@ -30,6 +33,8 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
                     i->pushTID = n;
                     return;
                 }
+                n++;
+                s = s->next;
             }
         }
         else if ( b.type == SDL_MOUSEBUTTONUP && 
@@ -38,7 +43,13 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
                   b.y >= 128+(i->pushTID*24) &&
                   b.y <= 148+(i->pushTID*24) )
         {
-            g->btowerid = i->pushTID;
+            s = g->towerT;
+            for (n=0;n<i->pushTID;n++)
+            {
+                if ( s == NULL ) break;
+                s = s->next;
+            }
+            g->towerS = s;
         }
 		puts("Clicked sidebar");
 		return;

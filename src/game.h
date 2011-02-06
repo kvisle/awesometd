@@ -102,11 +102,12 @@ struct wave {
 //};
 
 struct game {
-    struct tower towerT[G_TOWERS];
+    struct tower *towerT;
+    struct tower *towerS;
     int grid[G_HEIGHT][G_WIDTH];
     int path[G_HEIGHT][G_WIDTH];
     int time, waveN, lives, money, score;
-    int startN, exitN, needpath, btowerid;
+    int startN, exitN, needpath;
     int start[G_START_MAX][2], exit[G_EXITS_MAX][2];
     struct tower *tower;
     struct enemy *enemy;
