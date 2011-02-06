@@ -34,7 +34,7 @@
             char *p = value; \
             while (*p != '\0' && n < max) \
             { \
-                data->map[n] = strtol(p, &p, 10); \
+                data->param[n] = strtol(p, &p, 10); \
                 n++; \
                 if ( *p != '\0' ) \
                     p++; \
