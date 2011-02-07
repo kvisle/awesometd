@@ -736,6 +736,8 @@ struct game gNew(char *level)
     for(i=0;i<15*16;i++)
         g.grid[i/16][i%16] = g.map[i];
 
+    g.needpath = 1;
+
     gFindHotspots(&g);
     return g;
 }
