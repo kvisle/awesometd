@@ -46,6 +46,8 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
             g->state = GAMESTATE_INGAME;
 //            m->currentmenu = MENU_LEVELSELECT;
         }
+        else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 3 )
+            system("xdg-open http://trygvevea.com/awesometd");
         else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 4 )
             m->quit = 1;
 
