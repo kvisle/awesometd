@@ -13,10 +13,47 @@ static int iKeyEvent(SDL_KeyboardEvent k, struct input *i)
 	return 0;
 }
 
-static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct game *g)
+static void iMouseMotionEvent(SDL_MouseMotionEvent e, struct input *i, struct game *g, struct menu *m)
+{
+    if ( g->state == GAMESTATE_MENU )
+    {
+        switch(m->currentmenu)
+        {
+            case MENU_MAINMENU:
+                if ( e.x >= 60 && e.y >= 170 && e.x <= 204 && e.y <= 266 )
+                    m->hovering = (e.y - 170) / 16;
+                else
+                    m->hovering = -1;
+                break;
+        }
+
+        return;
+    }
+}
+
+static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct game *g, struct menu *m)
 {
     int n;
     struct tower *s;
+
+    if ( g->state == GAMESTATE_MENU )
+    {
+        if ( m->currentmenu != MENU_MAINMENU && b.button == SDL_BUTTON_RIGHT )
+            m->currentmenu = MENU_MAINMENU;
+        else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 0 )
+        {
+            *g = gNew("share/level/level1.lvl");
+            g->state = GAMESTATE_INGAME;
+//            m->currentmenu = MENU_LEVELSELECT;
+        }
+        else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 4 )
+            m->quit = 1;
+
+        m->hovering = -1;
+        return;
+    }
+
+
 	if ( b.x >= 512 )
 	{
         if ( b.type == SDL_MOUSEBUTTONDOWN )
@@ -68,7 +105,7 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
 }
 
 // The main event loop.
-int iEventLoop(struct input *i, struct game *g)
+int iEventLoop(struct input *i, struct game *g, struct menu *m)
 {
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
@@ -83,8 +120,11 @@ int iEventLoop(struct input *i, struct game *g)
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				iMouseButtonEvent(event.button, i, g);
+				iMouseButtonEvent(event.button, i, g, m);
 				break;
+            case SDL_MOUSEMOTION:
+                iMouseMotionEvent(event.motion, i, g, m);
+                break;
 			default:
 				break;
 		}

@@ -1,38 +1,40 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#define VM_GREEN		1
-#define VM_BLUE			2
+#define VM_GREEN		    1
+#define VM_BLUE			    2
 
-#define G_WIDTH      	16
-#define G_HEIGHT     	15
-#define G_SIZE       	G_WIDTH*G_HEIGHT
-#define G_START_MAX  	8
-#define G_EXITS_MAX  	8
+#define G_WIDTH      	    16
+#define G_HEIGHT     	    15
+#define G_SIZE       	    G_WIDTH*G_HEIGHT
+#define G_START_MAX  	    8
+#define G_EXITS_MAX  	    8
 
-#define G_PATH_NEXT_N   1
-#define G_PATH_NEXT_E   2
-#define G_PATH_NEXT_S   3
-#define G_PATH_NEXT_W   4
-#define G_PATH_NEXT_NE  5
-#define G_PATH_NEXT_NW  6
-#define G_PATH_NEXT_SE  7
-#define G_PATH_NEXT_SW  8
-#define G_PATH_NEXT_U   -1
+#define G_PATH_NEXT_N       1
+#define G_PATH_NEXT_E       2
+#define G_PATH_NEXT_S       3
+#define G_PATH_NEXT_W       4
+#define G_PATH_NEXT_NE      5
+#define G_PATH_NEXT_NW      6
+#define G_PATH_NEXT_SE      7
+#define G_PATH_NEXT_SW      8
+#define G_PATH_NEXT_U       -1
 
-#define G_TOWERS     	5
-#define G_DEBUFF_MAX	3
-#define G_WAVES			4
+#define G_TOWERS     	    5
+#define G_DEBUFF_MAX	    3
+#define G_WAVES			    4
 
-#define GS_TYPE_IMPACT	1
-#define GS_TYPE_POISON	2
-#define GS_TYPE_SPLASH	3
-#define GS_TYPE_DIRECT	4
-#define GS_TYPE_HOMING	5
+#define GS_TYPE_IMPACT	    1
+#define GS_TYPE_POISON	    2
+#define GS_TYPE_SPLASH	    3
+#define GS_TYPE_DIRECT	    4
+#define GS_TYPE_HOMING	    5
 
-#define GDB_TYPE_DOT	1
-#define GDB_TYPE_SLOW	2
+#define GDB_TYPE_DOT	    1
+#define GDB_TYPE_SLOW	    2
 
+#define GAMESTATE_MENU      0
+#define GAMESTATE_INGAME    1
 
 #define GS_VIDEO_LASER_RED	1
 
@@ -102,6 +104,7 @@ struct wave {
 //};
 
 struct game {
+    int state;
     struct tower *towerT;
     struct tower *towerS;
     int map[G_HEIGHT*G_WIDTH];

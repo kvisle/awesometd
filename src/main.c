@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 
+#include "menu.h"
 #include "video.h"
 #include "input.h"
 #include "game.h"
@@ -16,6 +17,7 @@ struct all {
     struct video v;
     struct input i;
     struct game g;
+    struct menu mn;
 //    struct audio a;
 
     struct main m;
@@ -40,18 +42,22 @@ int main(int argc, char *argv[])
     }
 
     all.v = vSetup();
+    all.mn = mSetup();
 //    all.a = aSetup();
-    all.g = gNew("share/level/level1.lvl");
+//    all.g = gNew("share/level/level1.lvl");
 
-    while ( !iEventLoop(&all.i, &all.g) ) // Inputhandling is done here.
+    while ( !iEventLoop(&all.i, &all.g, &all.mn) && all.mn.quit == 0 ) // Inputhandling is done here.
     {
-        // Moving the game forward is done here.
-        gDo(&all.g);
+        switch(all.g.state)
+        {
+            case GAMESTATE_INGAME: gDo(&all.g); break;
+            case GAMESTATE_MENU: mDo(&all.mn); break;
+        }
 
 //        aDo(&all.g, &all.a);
 
         // Drawing is done here.
-        vDraw(&all.v, &all.g);
+        vDraw(&all.v, &all.g, &all.mn);
 
         all.m.f++;
         if ( all.i.f.debug )

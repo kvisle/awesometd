@@ -1,6 +1,6 @@
 AM_CFLAGS = -Wall
 bin_PROGRAMS = awesometd
-awesometd_SOURCES = game.c input.c main.c pathfind.c video.c parser.c #audio.c
+awesometd_SOURCES = game.c input.c main.c pathfind.c video.c parser.c menu.c #audio.c
 awesometd_LDADD = $(GL_LIBS) \
                   $(SDL_LIBS) \
                   $(SDL_image_LIBS)

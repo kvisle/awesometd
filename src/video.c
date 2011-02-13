@@ -91,6 +91,7 @@ static const GLubyte charmap[256][32] = {
 
 static void vDrawString(int x, int y, const char *string, float r, float g, float b, float a)
 {
+    glDisable(GL_TEXTURE_2D);
     glPushMatrix();
         glColor4f(r, g, b, a);
         glRasterPos2i(x, y+8);
@@ -149,12 +150,22 @@ static void vDrawTexturedQuad(float x, float y, float w, float h, float rot, flo
         w/2, h/2,
         -(w/2), h/2
     };
-    GLfloat tcoords[] = {
-        0.0+(0.25*(sid % 4)), 0.0+(0.25*(sid / 4)),
-        0.25+(0.25*(sid % 4)), 0.0+(0.25*(sid / 4)),
-        0.25+(0.25*(sid % 4)), 0.25+(0.25*(sid / 4)),
-        0.0+(0.25*(sid % 4)), 0.25+(0.25*(sid / 4))
-    };
+    GLfloat tcoords[8];
+
+    if ( size == SFULL )
+    {
+        tcoords[0] = 0.0;   tcoords[1] = 0.0;
+        tcoords[2] = 1.0;   tcoords[3] = 0.0;
+        tcoords[4] = 1.0;   tcoords[5] = 1.0;
+        tcoords[6] = 0.0;   tcoords[7] = 1.0;
+    }
+    else if ( size == S32X32 )
+    {
+        tcoords[0] = 0.0+(0.25*(sid % 4));  tcoords[1] = 0.0+(0.25*(sid / 4));
+        tcoords[2] = 0.25+(0.25*(sid % 4)); tcoords[3] = 0.0+(0.25*(sid / 4));
+        tcoords[4] = 0.25+(0.25*(sid % 4)); tcoords[5] = 0.25+(0.25*(sid / 4));
+        tcoords[6] = 0.0+(0.25*(sid % 4));  tcoords[7] = 0.25+(0.25*(sid / 4));
+    }
     glColor4f(r,g,b,a);
     glBindTexture(GL_TEXTURE_2D, id);
     glRotated(rot,0.0,0.0,1.0);
@@ -329,19 +340,49 @@ static void vDrawSidebar(struct game *g)
     }
 }
 
-void vDraw(struct video *v, struct game *g)
+void vDrawMenu(struct menu *m)
+{
+    int i;
+    int r;
+    vDrawColoredQuad(50, 160, 200, 120, 0, 0.25, 0.25, 0, 1);
+    vDrawColoredQuad(40, 150, 200, 120, 0, 1, 1, 0, 1);
+    for (i=0;i<MAINMENU_ELEMENTS;i++)
+    {
+        if ( m->currentmenu == MENU_MAINMENU && m->hovering == i )
+            r = 1;
+        else
+            r = 0;
+        vDrawString(60, 170+(i*16), m->mainmenu[i], r, 0, 0, 1);
+    }
+
+    if ( m->currentmenu == MENU_LEVELSELECT )
+    {
+        vDrawColoredQuad(70,140,520,290, 0, 0.25, 0, 0, 1);
+        vDrawColoredQuad(60,130,520,290, 0, 1, 0, 0, 1);
+    }
+}
+
+void vDraw(struct video *v, struct game *g, struct menu *m)
 {
     glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT);
 // Stuff
-    vDrawGrid(v, g);
-    glDisable(GL_TEXTURE_2D);
-    vDrawEnemy(g, v);
-    vDrawTower(g, v);
-    vDrawShot(g);
+    if ( g->state == GAMESTATE_MENU )
+    {
+        vDrawTexturedQuad(0, 0, 640, 240, 0, 1, 1, 1, 1, v->logo.texid, 0, SFULL);
+        vDrawMenu(m);
+    }
+    else
+    {
+        vDrawGrid(v, g);
+        glDisable(GL_TEXTURE_2D);
+        vDrawEnemy(g, v);
+        vDrawTower(g, v);
+        vDrawShot(g);
 // The sidebar should be considered a part of the HUD/OSD/whatnot, and is drawn
 // on top of other stuff.
-    vDrawSidebar(g);
+        vDrawSidebar(g);
+    }
     SDL_GL_SwapBuffers();
 }
 
@@ -380,6 +421,8 @@ struct video vSetup(void)
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    v.logo = vLoadTexture("share/gfx/logo.png");
 
     v.terrain = vLoadTexture("share/gfx/theme_lame.png");
     v.enemy1 = vLoadTexture("share/gfx/octopi.png");

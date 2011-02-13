@@ -2,6 +2,7 @@
 #define __INPUT_H__
 
 #include "game.h"
+#include "menu.h"
 
 // This feels wrong.
 struct flags {
@@ -14,6 +15,6 @@ struct input {
     int pushTID;
 };
 
-int iEventLoop(struct input *i, struct game *g);
+int iEventLoop(struct input *i, struct game *g, struct menu *m);
 
 #endif /* __INPUT_H__ */
