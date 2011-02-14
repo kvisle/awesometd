@@ -8,11 +8,17 @@
 
 #define MAINMENU_ELEMENTS   5
 
+struct charelement {
+    char *text;
+    struct charelement *next;
+};
+
 struct menu {
     int currentmenu;
     int hovering;
     int quit;
     char *mainmenu[MAINMENU_ELEMENTS];
+    struct charelement *levels;
 };
 
 void mDo(struct menu *m);
