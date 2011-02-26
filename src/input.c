@@ -25,6 +25,23 @@ static void iMouseMotionEvent(SDL_MouseMotionEvent e, struct input *i, struct ga
                 else
                     m->hovering = -1;
                 break;
+            case MENU_LEVELSELECT:
+                if ( e.x >= 80 && e.y >= 150 && e.x <= 319 && e.y <= 406 )
+                {
+                    if ( ((e.y-150)/16)+(32*m->level_p) < m->levels->e_n )
+                        m->level_h = ((e.y-150)/16)+(32*m->level_p);
+                }
+                if ( e.x >= 340 && e.y >= 150 && e.x <= 579 && e.y <= 406 )
+                {
+                    if ( ((e.y-150)/16)+(32*m->level_p)+16 < m->levels->e_n )
+                        m->level_h = ((e.y-150)/16)+(32*m->level_p)+16;
+                }
+                if ( e.x >= 70 && e.y >= 440 && e.x <= 590 && e.y <= 450 )
+                {
+                    if ( (e.x-70) / 20 <= m->levels->e_n/32 )
+                        m->level_p = (e.x-70) / 20;
+                }
+                break;
         }
 
         return;
@@ -40,11 +57,19 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
     {
         if ( m->currentmenu != MENU_MAINMENU && b.button == SDL_BUTTON_RIGHT )
             m->currentmenu = MENU_MAINMENU;
+        else if ( m->currentmenu == MENU_LEVELSELECT && b.button == SDL_BUTTON_LEFT )
+        {
+            if ( b.x >= 80 && b.y >= 150 && b.x <= 579 && b.y <= 406 )
+            {
+                *g = gNew(m->levels->e[m->level_h].fullname);
+                g->state = GAMESTATE_INGAME;
+            }
+        }
         else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 0 )
         {
-            *g = gNew("share/level/level1.lvl");
-            g->state = GAMESTATE_INGAME;
-//            m->currentmenu = MENU_LEVELSELECT;
+//            *g = gNew("share/level/level1.lvl");
+//            g->state = GAMESTATE_INGAME;
+            m->currentmenu = MENU_LEVELSELECT;
         }
         else if ( m->currentmenu == MENU_MAINMENU && m->hovering == 3 )
             system("xdg-open http://trygvevea.com/awesometd");

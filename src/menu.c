@@ -3,12 +3,19 @@
 #include <string.h>
 #include <dirent.h>
 #include "menu.h"
+#include "hiscore.h"
+#include "filepath.h"
 
-static struct charelement * mPopulateLevelList(void)
+const char *levels[] = {
+    "share/level",
+    NULL
+};
+
+static struct menuelement * mPopulateLevelList(void)
 {
     char *p;
-    struct charelement *te = calloc('\0', sizeof(struct charelement));
-    struct charelement *ce = te;
+    struct menuelement *te = calloc('\0', sizeof(struct menuelement));
+    struct menuelement *ce = te;
     struct dirent *ent;
     DIR *dir;
 
@@ -26,11 +33,12 @@ static struct charelement * mPopulateLevelList(void)
             {
                 if ( ce->text )
                 {
-                    ce->next = calloc('\0', sizeof(struct charelement));
+                    ce->next = calloc('\0', sizeof(struct menuelement));
                     ce = ce->next;
                 }
                 *p = '\0';
                 ce->text = strdup(ent->d_name);
+                ce->score = hsGetTopScore(ce->text);
             }
         }
     }
@@ -54,7 +62,9 @@ struct menu mSetup(void)
     m.mainmenu[2] = "tutorial";
     m.mainmenu[3] = "visit our homepage";
     m.mainmenu[4] = "quit";
-    m.levels = mPopulateLevelList();
+    m.levels = fpEnumerate(levels, NULL);
+//    m.levels = mPopulateLevelList(&m.level_n);
+    m.level_p = m.level_h = 0;
 
     return m;
 }

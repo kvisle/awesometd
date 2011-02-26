@@ -8,9 +8,12 @@
 
 #define MAINMENU_ELEMENTS   5
 
-struct charelement {
+#include "filepath.h"
+
+struct menuelement {
     char *text;
-    struct charelement *next;
+    int score;
+    struct menuelement *next;
 };
 
 struct menu {
@@ -18,7 +21,9 @@ struct menu {
     int hovering;
     int quit;
     char *mainmenu[MAINMENU_ELEMENTS];
-    struct charelement *levels;
+    FilePath_t *levels;
+//    struct menuelement *levels;
+    int level_p, level_h;
 };
 
 void mDo(struct menu *m);

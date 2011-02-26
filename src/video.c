@@ -344,6 +344,8 @@ void vDrawMenu(struct menu *m)
 {
     int i;
     int r;
+    char score[16];
+
     vDrawColoredQuad(50, 160, 200, 120, 0, 0.25, 0.25, 0, 1);
     vDrawColoredQuad(40, 150, 200, 120, 0, 1, 1, 0, 1);
     for (i=0;i<MAINMENU_ELEMENTS;i++)
@@ -357,8 +359,30 @@ void vDrawMenu(struct menu *m)
 
     if ( m->currentmenu == MENU_LEVELSELECT )
     {
-        vDrawColoredQuad(70,140,520,290, 0, 0.25, 0, 0, 1);
-        vDrawColoredQuad(60,130,520,290, 0, 1, 0, 0, 1);
+        vDrawColoredQuad(70,140,520,290, 0, 0, 0.25, 0.25, 1);
+        vDrawColoredQuad(60,130,520,290, 0, 0, 1, 1, 1);
+        vDrawColoredQuad(319,140,2,270, 0, 0, 0, 0, 1);
+
+        for (i=0;i<32;i++)
+        {
+            if ( i+(m->level_p*32) >= m->levels->e_n )
+                break;
+            sprintf(score, "%8d", 0);
+            if ( i+(m->level_p*32) == m->level_h )
+                vDrawColoredQuad(78+((i/16)*260), 148+((i%16)*16), 234, 12, 0, 0, 0.50, 0.50, 1);
+
+            vDrawString(80+((i/16)*260), 150+((i%16)*16), m->levels->e[i+((m->level_p*32))].filename, 0, 0, 0, 1);
+            vDrawString(240+((i/16)*260), 150+((i%16)*16), score, 0, 0, 0, 1);
+        }
+
+        for (i=0 ; i <= m->levels->e_n/32 ; i++)
+        {
+            sprintf(score, "%02d", i+1);
+            if ( i == m->level_p )
+                vDrawString(70+(i*20), 440, score, 0.5, 0.5, 0.5, 1);
+            else
+                vDrawString(70+(i*20), 440, score, 1, 1, 1, 1);
+        }
     }
 }
 
