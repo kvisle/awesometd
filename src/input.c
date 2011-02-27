@@ -55,6 +55,8 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
 
     if ( g->state == GAMESTATE_MENU )
     {
+        if ( b.type != SDL_MOUSEBUTTONDOWN )
+            return;
         if ( m->currentmenu != MENU_MAINMENU && b.button == SDL_BUTTON_RIGHT )
             m->currentmenu = MENU_MAINMENU;
         else if ( m->currentmenu == MENU_LEVELSELECT && b.button == SDL_BUTTON_LEFT )
