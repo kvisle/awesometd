@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/stat.h>
 
 #include "filepath.h"
 
@@ -56,8 +57,14 @@ fpEnumeratePath(FilePath_t *fp, const char *path)
          *  strip other things as well, such as character devices, socket
          *  files, and whatnot.
          */
+#ifndef WIN32
+// dirent on Windows is crap / nonexistent.  TODO: Fix this.
         if ( entry->d_type == DT_DIR )
             continue;
+#else
+        if ( entry->d_name[0] == '.' )
+            continue;
+#endif
 
         /*
          *  If we've filled our buffer, we double its size.

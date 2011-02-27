@@ -25,7 +25,7 @@ static struct menuelement * mPopulateLevelList(void)
         printf("Error: Can't find directory with levels.!\n");
         exit(1);
     }
-    while ((ent = readdir(dir)) != NULL) {
+/*    while ((ent = readdir(dir)) != NULL) {
         if ( ent->d_type == DT_REG )
         {
             p = strstr(ent->d_name, ".lvl");
@@ -41,7 +41,7 @@ static struct menuelement * mPopulateLevelList(void)
                 ce->score = hsGetTopScore(ce->text);
             }
         }
-    }
+    }*/
     closedir(dir);
 
     if ( !te->text )
