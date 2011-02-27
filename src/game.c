@@ -623,6 +623,7 @@ static void levelParser(struct game *data, char *key, char *value)
     {
         char *wp, *sn;
         struct tower t;
+        t.next = NULL;
 
         wp = sn = value;
 
