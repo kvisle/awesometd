@@ -71,7 +71,7 @@ void event_loop(void) {
                                         select_tower((eventqueue.button.x/RECTSIZE_X),(eventqueue.button.y/RECTSIZE_Y));
                                     }
                                 }
-                            } else if ( eventqueue.button.button == SDL_BUTTON_LEFT ) 
+                            } else if ( eventqueue.button.button == SDL_BUTTON_LEFT )
                                 press_button(eventqueue.button.x, eventqueue.button.y);
                         break;
                     }

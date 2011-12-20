@@ -6,7 +6,7 @@ static const char *scoredb = "/var/games/awesometd.scores";
 
 int hsGetTopScore(char *level)
 {
-    
+
     return 0;
 }
 

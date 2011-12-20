@@ -74,9 +74,9 @@ checkfield(struct queue_t *q, struct grid_t *g)
 
 // Pushing information about a cell to be checked to our queue.
 static void
-push(struct queue_t *queue, 
-     struct grid_t *grid, 
-     const int id, 
+push(struct queue_t *queue,
+     struct grid_t *grid,
+     const int id,
      const int next)
 {
     queue->e[queue->tail].id = id;
@@ -85,7 +85,7 @@ push(struct queue_t *queue,
     queue->tail++;
 }
 
-/* 
+/*
  * Parse the grid input and allocate a matching memory segment
  *
  * XXX: Cheapo-error handling

@@ -103,7 +103,7 @@ static void iMouseButtonEvent(SDL_MouseButtonEvent b, struct input *i, struct ga
                 s = s->next;
             }
         }
-        else if ( b.type == SDL_MOUSEBUTTONUP && 
+        else if ( b.type == SDL_MOUSEBUTTONUP &&
                   b.x >= 528 &&
                   b.x <= 628 &&
                   b.y >= 128+(i->pushTID*24) &&

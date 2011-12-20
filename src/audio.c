@@ -9,7 +9,7 @@
 struct audio aSetup()
 {
     struct audio a;
-    
+
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024)==-1) {
         printf("Mix_OpenAudio: %s\n", Mix_GetError());
         exit(2);
@@ -36,7 +36,7 @@ void aDo(struct game *g, struct audio *a)
 
 void aPlaySound(Mix_Chunk *a)
 {
-    if ( a ) 
+    if ( a )
     {
         if ( Mix_PlayChannel(-1, a, 0) == -1 )
         {
