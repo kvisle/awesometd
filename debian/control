@@ -11,5 +11,5 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libsdl-image1.2, libsdl-ttf2.0-0, libglib2.0-0
 Description: A Tower Defense game written in C/OpenGL
  Awesome Tower Defense is written in C/OpenGL.  First of all as a personal
- experiment for the author.  Secondly to satisfy the need of a free Tower 
+ experiment for the author.  Secondly to satisfy the need of a free Tower
  Defense game.

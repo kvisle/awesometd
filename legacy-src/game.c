@@ -63,7 +63,7 @@ void update_lives(int amount) {
     if ( lives < 0 ) {
         lives = 0;
     }
-    if ( lives == 0 ) { 
+    if ( lives == 0 ) {
         show_highscores(SCORE_LOSTMESSAGE);
         return;
     }

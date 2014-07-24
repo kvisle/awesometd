@@ -278,7 +278,7 @@ void gClickCell(struct game *g, int cx, int cy)
         g->grid[cy][cx] = old;
         return;
     }
-    
+
     g->money -= g->towerS->price;
     tNew(g, g->towerS, cx, cy);
     g->needpath++;
@@ -392,7 +392,7 @@ static void eMove(struct game *g, struct enemy *e)
             }
             if ( e->rot < 0 )
                 e->rot += 360;
-    
+
             if ( e->rot >= 360 )
                 e->rot -= 360;
         }
@@ -610,7 +610,7 @@ static void ttNew(struct game *g, struct tower tn)
         p = p->next;
 
     p->next = t;
-    
+
 }
 
 static void levelParser(struct game *data, char *key, char *value)
@@ -701,7 +701,7 @@ static void levelParser(struct game *data, char *key, char *value)
             printf("Invalid formatting on tower.\n");
             return;
         }
-        
+
         ttNew(data, t);
     }
     if ( strcmp(key, "wave") == 0 )
@@ -798,7 +798,7 @@ void gDo(struct game *g)
         }
         return;
     }
-    
+
     g->wave->timeleft--;
 
     if ( !g->wave->timeleft )

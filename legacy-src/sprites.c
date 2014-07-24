@@ -66,7 +66,7 @@ static const int level_monster[1][25][40] = {
 };
 
 static const int monster_batches[1][25] = {
-    { 
+    {
         10, 15, 30, 15, 10, 15, 20, 20, 15, 20,
         20, 25, 20, 15, 20, 15, 15, 15, 15, 15,
         20, 15, 20, 15, 20
@@ -108,7 +108,7 @@ static const struct monster monster_definitions[25] = {
 const struct tower tower_definitions[9] = {
     { 0,0,1,0,1,5,0,0,100,0,80,0,ALGORITHM_TRAVELLED_FARTHEST,0,10,1,0 },
     { 0,0,6,0,1,4,0,0,200,0,125,1,ALGORITHM_TRAVELLED_FARTHEST,0,20,2,0 },
-    { 0,0,9,0,1,3,0,0,400,0,200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0,0,0 }, 
+    { 0,0,9,0,1,3,0,0,400,0,200,2,ALGORITHM_TRAVELLED_FARTHEST,0,0,0,0 },
     { 0,0,3,0,1,40,0,0,300,0,75,3,ALGORITHM_TRAVELLED_FARTHEST,0,10,4,0 },
     { 0,0,7,0,1,30,0,0,600,0,90,4,ALGORITHM_TRAVELLED_FARTHEST,0,20,5,0 },
     { 0,0,10,0,1,20,0,0,900,0,130,5,ALGORITHM_TRAVELLED_FARTHEST,0,0,0,0 },
@@ -179,8 +179,8 @@ static void load_sprite_from_pic(char *filename, int width, int height, int fram
     sprites.sprites[sprites.spritecount] = SDL_LoadBMP_RW(SDL_RWFromMem(filename,memsize),0);
     if ( sprites.sprites[sprites.spritecount] != NULL ) {
         sprites.frames[sprites.spritecount] = frames;
-        SDL_SetColorKey(sprites.sprites[sprites.spritecount], 
-                        SDL_SRCCOLORKEY, 
+        SDL_SetColorKey(sprites.sprites[sprites.spritecount],
+                        SDL_SRCCOLORKEY,
                         SDL_MapRGB(
                             sprites.sprites[sprites.spritecount]->format,
                             255,0,255)
@@ -285,7 +285,7 @@ int spawn_monster(void) {
         for (i = 0; i < MAX_MONSTERS; i++) {
             if ( monsters[i].cur_hp > 0 ) {
 //                printf("Not spawning: Stuff is still alive.\n");
-//   Not spawning any new monsters, 
+//   Not spawning any new monsters,
 //   because we still have live monsters on the field.
                 return 0;
             }
@@ -391,7 +391,7 @@ void move_projectile(void) {
                                     if ( towers[projectiles[i].owner].max_exp > 0 ) monsters[m].exp_gainer = projectiles[i].owner;
 
                                     if ( monsters[m].cur_hp <= 0 ) {
-                                        monsters[m].cur_hp = 0;                
+                                        monsters[m].cur_hp = 0;
                                         for ( ax=(monsters[m].pos_x/RECTSIZE_X);ax<=((monsters[m].pos_x+RECTSIZE_X)/RECTSIZE_X);ax++) {
                                             for ( ay=(monsters[m].pos_y/RECTSIZE_Y);ay<=((monsters[m].pos_y+RECTSIZE_Y)/RECTSIZE_Y);ay++) {
                                                 updaterect(ax,ay);
@@ -679,8 +679,8 @@ void shoot_towers(void) {
                                         if ( monsters[y].cur_hp < monsters[target].cur_hp ) target = y;
                                     break;
                                     case ALGORITHM_FASTEST:
-                                        if ( 
-                                            (monsters[y].effect_speed*(monsters[y].speed*monsters[y].upcoming_effect_speed)) > 
+                                        if (
+                                            (monsters[y].effect_speed*(monsters[y].speed*monsters[y].upcoming_effect_speed)) >
                                             (monsters[target].effect_speed*(monsters[target].speed*monsters[target].upcoming_effect_speed))
                                            ) target = y;
                                     break;

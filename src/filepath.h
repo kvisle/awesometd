@@ -30,10 +30,10 @@ typedef struct {
     int e_max;
 } FilePath_t;
 
-FilePath_t * 
+FilePath_t *
 fpEnumerate(const char *paths[], void* meta(char * fn));
 
-void 
+void
 fpFreeFilePath(FilePath_t *fp, void metafree(void * m));
 
 #endif /* __FILEPATH_H__ */

@@ -82,7 +82,7 @@ fpEnumeratePath(FilePath_t *fp, const char *path)
         fp->e[fp->e_n].filename = strdup(entry->d_name);
         fp->e[fp->e_n].fullname = malloc(len);
         snprintf(fp->e[fp->e_n].fullname, len, "%s/%s", path, entry->d_name);
-        
+
         fp->e_n++;
     }
 
@@ -114,7 +114,7 @@ fpStripDups(FilePath_t *fp)
             /*
              *  Are the file names the same?
              */
-            if ( 
+            if (
                 strcmp(fp->e[i].filename, fp->e[y].filename) == 0 )
             {
                 /*
@@ -124,8 +124,8 @@ fpStripDups(FilePath_t *fp)
                 free(fp->e[y].filename);
                 free(fp->e[y].fullname);
                 memmove(
-                        &(fp->e[y]), 
-                        &(fp->e[y+1]), 
+                        &(fp->e[y]),
+                        &(fp->e[y+1]),
                         sizeof(FilePathElement_t)*(fp->e_max-y)
                     );
                 fp->e_n--;

@@ -129,11 +129,11 @@ static void draw_stuff_on_top(void) {
                 draw_text(screen, fpstext, 520, 0);
             }
             if ( field[2][13] || field[3][13] || field[4][13] || field[5][13] || field[6][13] || field[7][13] || field[8][13] || field[9][13] ||
-                 field[2][14] || field[3][14] || field[4][14] || field[5][14] || field[6][14] || field[7][14] || field[8][14] || field[9][14] 
+                 field[2][14] || field[3][14] || field[4][14] || field[5][14] || field[6][14] || field[7][14] || field[8][14] || field[9][14]
                  ) {
                 draw_numbers();
             }
-            if ( field[16][0] || field[17][0] || field[18][0] || field[19][0] ) 
+            if ( field[16][0] || field[17][0] || field[18][0] || field[19][0] )
                 draw_text(screen, fpstext, 520, 0);
 
             if ( field[8][0] || field[9][0] || field[10][0] || field[11][0] || field[12][0] || field[13][0] || field[14][0] || field[15][0] ) {

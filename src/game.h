@@ -44,7 +44,7 @@ struct debuff {
 	int interval;
 	float speed_mod;
 	int time_left;
-	int counter;   // Just a counter that is 
+	int counter;   // Just a counter that is
 	int video_mod; // if we should apply a video effect on the enemy affected by this
 };
 
